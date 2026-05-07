@@ -1,0 +1,138 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+.idea/
+.vscode/
+
+# Flutter/Dart/Pub
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub/
+.pub-cache/
+build/
+coverage/
+
+# Flutter generated
+**/generated_plugin_registrant.dart
+
+# Android
+/android/.gradle/
+/android/captures/
+/android/local.properties
+/android/**/GeneratedPluginRegistrant.java
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/key.properties
+/android/*.jks
+/android/*.keystore
+
+# Android Studio
+*.iml
+*.ipr
+*.iws
+
+# iOS
+/ios/.symlinks/
+/ios/Flutter/.last_build_id
+/ios/Flutter/App.framework
+/ios/Flutter/Flutter.framework
+/ios/Flutter/Flutter.podspec
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/ephemeral/
+/ios/Pods/
+/ios/Runner.xcworkspace/
+/ios/Runner/GeneratedPluginRegistrant.*
+
+# macOS
+/macos/Flutter/ephemeral/
+/macos/Pods/
+/macos/Runner/GeneratedPluginRegistrant.swift
+
+# Linux
+/linux/flutter/ephemeral/
+
+# Windows
+/windows/flutter/ephemeral/
+
+# Web
+/web/flutter_service_worker.js
+/web/.dart_tool/
+
+# Firebase
+google-services.json
+GoogleService-Info.plist
+firebase_app_id_file.json
+
+# Environment Files
+.env
+.env.*
+*.env
+
+# Fastlane
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+
+# Crashlytics
+crashlytics-build.properties
+
+# Obfuscation
+app.*.symbols
+
+# IntelliJ
+out/
+
+# VS Code
+.history/
+
+# Temporary files
+*.tmp
+*.temp
+
+# APK / AAB
+*.apk
+*.aab
+
+# Dart doc
+doc/api/
+
+# FVM
+.fvm/
+.fvmrc
+
+# Melos
+.melos_tool/
+
+# Test coverage
+lcov.info
+
+# SQLite DB
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+
+# Keys & Certificates
+*.pem
+*.p12
+*.cer
+
+# Generated files
+pubspec.lock
+
+# Optional: keep lock file for apps
+# !pubspec.lock
