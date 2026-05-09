@@ -1,7 +1,8 @@
 import 'package:drift/drift.dart';
 
 class Customers extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id =>
+      integer().autoIncrement()();
 
   TextColumn get name => text()();
 
@@ -12,4 +13,14 @@ class Customers extends Table {
 
   TextColumn get address =>
       text().nullable()();
+
+  RealColumn get creditBalance =>
+      real().withDefault(
+        const Constant(0),
+      )();
+
+  DateTimeColumn get createdAt =>
+      dateTime().withDefault(
+        currentDateAndTime,
+      )();
 }

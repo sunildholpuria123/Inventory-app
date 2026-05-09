@@ -1,3 +1,5 @@
+import 'package:drift/drift.dart';
+
 import '../database/app_database.dart';
 
 class ProductRepository {
@@ -14,6 +16,8 @@ class ProductRepository {
     required double purchasePrice,
     required double sellingPrice,
     required int stockQty,
+    String? barcode,
+    String? imagePath,
   }) async {
     await db.insertProduct(
       ProductsCompanion.insert(
@@ -23,6 +27,10 @@ class ProductRepository {
         sellingPrice: sellingPrice,
         stockQty: stockQty,
         minStock: 5,
+
+        barcode: Value(barcode),
+
+        imagePath: Value(imagePath),
       ),
     );
   }

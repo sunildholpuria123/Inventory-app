@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,6 +16,7 @@ class AddProductDialog
 
 class _AddProductDialogState
     extends ConsumerState<AddProductDialog> {
+  String? imagePath;
   final nameController =
   TextEditingController();
 
@@ -28,6 +30,9 @@ class _AddProductDialogState
   TextEditingController();
 
   final formKey = GlobalKey<FormState>();
+
+  final barcodeController =
+  TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -108,12 +113,36 @@ class _AddProductDialogState
                   'Stock Quantity',
                 ),
               ),
+
+              const SizedBox(height: 15),
+
+              TextFormField(
+                controller: barcodeController,
+                decoration: const InputDecoration(
+                  labelText: 'Barcode',
+                ),
+              ),
             ],
           ),
         ),
       ),
 
       actions: [
+        ElevatedButton.icon(
+          onPressed: () async {
+            final result =
+            await FilePicker.platform.pickFiles(
+              type: FileType.image,
+            );
+
+            if (result != null) {
+              imagePath =
+                  result.files.single.path;
+            }
+          },
+          icon: const Icon(Icons.image),
+          label: const Text('Pick Image'),
+        ),
         TextButton(
           onPressed: () {
             Navigator.pop(context);

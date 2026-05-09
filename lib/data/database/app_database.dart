@@ -97,7 +97,25 @@ class AppDatabase extends _$AppDatabase {
       ) {
     return into(expenses).insert(data);
   }
+
+  Stream<List<Customer>> watchCustomers() {
+    return select(customers).watch();
+  }
+
+  Future updateCustomer(
+      Customer customer,
+      ) {
+    return update(customers)
+        .replace(customer);
+  }
+
+  Future deleteCustomer(int id) {
+    return (delete(customers)
+      ..where((tbl) => tbl.id.equals(id)))
+        .go();
+  }
 }
+
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
@@ -114,3 +132,4 @@ LazyDatabase _openConnection() {
     return NativeDatabase(file);
   });
 }
+

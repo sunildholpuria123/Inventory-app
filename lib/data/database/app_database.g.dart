@@ -1357,8 +1357,40 @@ class $CustomersTable extends Customers
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _creditBalanceMeta = const VerificationMeta(
+    'creditBalance',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, name, phone, email, address];
+  late final GeneratedColumn<double> creditBalance = GeneratedColumn<double>(
+    'credit_balance',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    phone,
+    email,
+    address,
+    creditBalance,
+    createdAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1402,6 +1434,21 @@ class $CustomersTable extends Customers
         address.isAcceptableOrUnknown(data['address']!, _addressMeta),
       );
     }
+    if (data.containsKey('credit_balance')) {
+      context.handle(
+        _creditBalanceMeta,
+        creditBalance.isAcceptableOrUnknown(
+          data['credit_balance']!,
+          _creditBalanceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
     return context;
   }
 
@@ -1431,6 +1478,14 @@ class $CustomersTable extends Customers
         DriftSqlType.string,
         data['${effectivePrefix}address'],
       ),
+      creditBalance: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}credit_balance'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
     );
   }
 
@@ -1446,12 +1501,16 @@ class Customer extends DataClass implements Insertable<Customer> {
   final String phone;
   final String? email;
   final String? address;
+  final double creditBalance;
+  final DateTime createdAt;
   const Customer({
     required this.id,
     required this.name,
     required this.phone,
     this.email,
     this.address,
+    required this.creditBalance,
+    required this.createdAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1465,6 +1524,8 @@ class Customer extends DataClass implements Insertable<Customer> {
     if (!nullToAbsent || address != null) {
       map['address'] = Variable<String>(address);
     }
+    map['credit_balance'] = Variable<double>(creditBalance);
+    map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
 
@@ -1479,6 +1540,8 @@ class Customer extends DataClass implements Insertable<Customer> {
       address: address == null && nullToAbsent
           ? const Value.absent()
           : Value(address),
+      creditBalance: Value(creditBalance),
+      createdAt: Value(createdAt),
     );
   }
 
@@ -1493,6 +1556,8 @@ class Customer extends DataClass implements Insertable<Customer> {
       phone: serializer.fromJson<String>(json['phone']),
       email: serializer.fromJson<String?>(json['email']),
       address: serializer.fromJson<String?>(json['address']),
+      creditBalance: serializer.fromJson<double>(json['creditBalance']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
   @override
@@ -1504,6 +1569,8 @@ class Customer extends DataClass implements Insertable<Customer> {
       'phone': serializer.toJson<String>(phone),
       'email': serializer.toJson<String?>(email),
       'address': serializer.toJson<String?>(address),
+      'creditBalance': serializer.toJson<double>(creditBalance),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
@@ -1513,12 +1580,16 @@ class Customer extends DataClass implements Insertable<Customer> {
     String? phone,
     Value<String?> email = const Value.absent(),
     Value<String?> address = const Value.absent(),
+    double? creditBalance,
+    DateTime? createdAt,
   }) => Customer(
     id: id ?? this.id,
     name: name ?? this.name,
     phone: phone ?? this.phone,
     email: email.present ? email.value : this.email,
     address: address.present ? address.value : this.address,
+    creditBalance: creditBalance ?? this.creditBalance,
+    createdAt: createdAt ?? this.createdAt,
   );
   Customer copyWithCompanion(CustomersCompanion data) {
     return Customer(
@@ -1527,6 +1598,10 @@ class Customer extends DataClass implements Insertable<Customer> {
       phone: data.phone.present ? data.phone.value : this.phone,
       email: data.email.present ? data.email.value : this.email,
       address: data.address.present ? data.address.value : this.address,
+      creditBalance: data.creditBalance.present
+          ? data.creditBalance.value
+          : this.creditBalance,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
 
@@ -1537,13 +1612,16 @@ class Customer extends DataClass implements Insertable<Customer> {
           ..write('name: $name, ')
           ..write('phone: $phone, ')
           ..write('email: $email, ')
-          ..write('address: $address')
+          ..write('address: $address, ')
+          ..write('creditBalance: $creditBalance, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, phone, email, address);
+  int get hashCode =>
+      Object.hash(id, name, phone, email, address, creditBalance, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1552,7 +1630,9 @@ class Customer extends DataClass implements Insertable<Customer> {
           other.name == this.name &&
           other.phone == this.phone &&
           other.email == this.email &&
-          other.address == this.address);
+          other.address == this.address &&
+          other.creditBalance == this.creditBalance &&
+          other.createdAt == this.createdAt);
 }
 
 class CustomersCompanion extends UpdateCompanion<Customer> {
@@ -1561,12 +1641,16 @@ class CustomersCompanion extends UpdateCompanion<Customer> {
   final Value<String> phone;
   final Value<String?> email;
   final Value<String?> address;
+  final Value<double> creditBalance;
+  final Value<DateTime> createdAt;
   const CustomersCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.phone = const Value.absent(),
     this.email = const Value.absent(),
     this.address = const Value.absent(),
+    this.creditBalance = const Value.absent(),
+    this.createdAt = const Value.absent(),
   });
   CustomersCompanion.insert({
     this.id = const Value.absent(),
@@ -1574,6 +1658,8 @@ class CustomersCompanion extends UpdateCompanion<Customer> {
     required String phone,
     this.email = const Value.absent(),
     this.address = const Value.absent(),
+    this.creditBalance = const Value.absent(),
+    this.createdAt = const Value.absent(),
   }) : name = Value(name),
        phone = Value(phone);
   static Insertable<Customer> custom({
@@ -1582,6 +1668,8 @@ class CustomersCompanion extends UpdateCompanion<Customer> {
     Expression<String>? phone,
     Expression<String>? email,
     Expression<String>? address,
+    Expression<double>? creditBalance,
+    Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1589,6 +1677,8 @@ class CustomersCompanion extends UpdateCompanion<Customer> {
       if (phone != null) 'phone': phone,
       if (email != null) 'email': email,
       if (address != null) 'address': address,
+      if (creditBalance != null) 'credit_balance': creditBalance,
+      if (createdAt != null) 'created_at': createdAt,
     });
   }
 
@@ -1598,6 +1688,8 @@ class CustomersCompanion extends UpdateCompanion<Customer> {
     Value<String>? phone,
     Value<String?>? email,
     Value<String?>? address,
+    Value<double>? creditBalance,
+    Value<DateTime>? createdAt,
   }) {
     return CustomersCompanion(
       id: id ?? this.id,
@@ -1605,6 +1697,8 @@ class CustomersCompanion extends UpdateCompanion<Customer> {
       phone: phone ?? this.phone,
       email: email ?? this.email,
       address: address ?? this.address,
+      creditBalance: creditBalance ?? this.creditBalance,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -1626,6 +1720,12 @@ class CustomersCompanion extends UpdateCompanion<Customer> {
     if (address.present) {
       map['address'] = Variable<String>(address.value);
     }
+    if (creditBalance.present) {
+      map['credit_balance'] = Variable<double>(creditBalance.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
     return map;
   }
 
@@ -1636,7 +1736,9 @@ class CustomersCompanion extends UpdateCompanion<Customer> {
           ..write('name: $name, ')
           ..write('phone: $phone, ')
           ..write('email: $email, ')
-          ..write('address: $address')
+          ..write('address: $address, ')
+          ..write('creditBalance: $creditBalance, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
@@ -1699,8 +1801,40 @@ class $SuppliersTable extends Suppliers
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _creditBalanceMeta = const VerificationMeta(
+    'creditBalance',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, name, phone, email, address];
+  late final GeneratedColumn<double> creditBalance = GeneratedColumn<double>(
+    'credit_balance',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    phone,
+    email,
+    address,
+    creditBalance,
+    createdAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1744,6 +1878,21 @@ class $SuppliersTable extends Suppliers
         address.isAcceptableOrUnknown(data['address']!, _addressMeta),
       );
     }
+    if (data.containsKey('credit_balance')) {
+      context.handle(
+        _creditBalanceMeta,
+        creditBalance.isAcceptableOrUnknown(
+          data['credit_balance']!,
+          _creditBalanceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
     return context;
   }
 
@@ -1773,6 +1922,14 @@ class $SuppliersTable extends Suppliers
         DriftSqlType.string,
         data['${effectivePrefix}address'],
       ),
+      creditBalance: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}credit_balance'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
     );
   }
 
@@ -1788,12 +1945,16 @@ class Supplier extends DataClass implements Insertable<Supplier> {
   final String phone;
   final String? email;
   final String? address;
+  final double creditBalance;
+  final DateTime createdAt;
   const Supplier({
     required this.id,
     required this.name,
     required this.phone,
     this.email,
     this.address,
+    required this.creditBalance,
+    required this.createdAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1807,6 +1968,8 @@ class Supplier extends DataClass implements Insertable<Supplier> {
     if (!nullToAbsent || address != null) {
       map['address'] = Variable<String>(address);
     }
+    map['credit_balance'] = Variable<double>(creditBalance);
+    map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
 
@@ -1821,6 +1984,8 @@ class Supplier extends DataClass implements Insertable<Supplier> {
       address: address == null && nullToAbsent
           ? const Value.absent()
           : Value(address),
+      creditBalance: Value(creditBalance),
+      createdAt: Value(createdAt),
     );
   }
 
@@ -1835,6 +2000,8 @@ class Supplier extends DataClass implements Insertable<Supplier> {
       phone: serializer.fromJson<String>(json['phone']),
       email: serializer.fromJson<String?>(json['email']),
       address: serializer.fromJson<String?>(json['address']),
+      creditBalance: serializer.fromJson<double>(json['creditBalance']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
   @override
@@ -1846,6 +2013,8 @@ class Supplier extends DataClass implements Insertable<Supplier> {
       'phone': serializer.toJson<String>(phone),
       'email': serializer.toJson<String?>(email),
       'address': serializer.toJson<String?>(address),
+      'creditBalance': serializer.toJson<double>(creditBalance),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
@@ -1855,12 +2024,16 @@ class Supplier extends DataClass implements Insertable<Supplier> {
     String? phone,
     Value<String?> email = const Value.absent(),
     Value<String?> address = const Value.absent(),
+    double? creditBalance,
+    DateTime? createdAt,
   }) => Supplier(
     id: id ?? this.id,
     name: name ?? this.name,
     phone: phone ?? this.phone,
     email: email.present ? email.value : this.email,
     address: address.present ? address.value : this.address,
+    creditBalance: creditBalance ?? this.creditBalance,
+    createdAt: createdAt ?? this.createdAt,
   );
   Supplier copyWithCompanion(SuppliersCompanion data) {
     return Supplier(
@@ -1869,6 +2042,10 @@ class Supplier extends DataClass implements Insertable<Supplier> {
       phone: data.phone.present ? data.phone.value : this.phone,
       email: data.email.present ? data.email.value : this.email,
       address: data.address.present ? data.address.value : this.address,
+      creditBalance: data.creditBalance.present
+          ? data.creditBalance.value
+          : this.creditBalance,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
 
@@ -1879,13 +2056,16 @@ class Supplier extends DataClass implements Insertable<Supplier> {
           ..write('name: $name, ')
           ..write('phone: $phone, ')
           ..write('email: $email, ')
-          ..write('address: $address')
+          ..write('address: $address, ')
+          ..write('creditBalance: $creditBalance, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, phone, email, address);
+  int get hashCode =>
+      Object.hash(id, name, phone, email, address, creditBalance, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1894,7 +2074,9 @@ class Supplier extends DataClass implements Insertable<Supplier> {
           other.name == this.name &&
           other.phone == this.phone &&
           other.email == this.email &&
-          other.address == this.address);
+          other.address == this.address &&
+          other.creditBalance == this.creditBalance &&
+          other.createdAt == this.createdAt);
 }
 
 class SuppliersCompanion extends UpdateCompanion<Supplier> {
@@ -1903,12 +2085,16 @@ class SuppliersCompanion extends UpdateCompanion<Supplier> {
   final Value<String> phone;
   final Value<String?> email;
   final Value<String?> address;
+  final Value<double> creditBalance;
+  final Value<DateTime> createdAt;
   const SuppliersCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.phone = const Value.absent(),
     this.email = const Value.absent(),
     this.address = const Value.absent(),
+    this.creditBalance = const Value.absent(),
+    this.createdAt = const Value.absent(),
   });
   SuppliersCompanion.insert({
     this.id = const Value.absent(),
@@ -1916,6 +2102,8 @@ class SuppliersCompanion extends UpdateCompanion<Supplier> {
     required String phone,
     this.email = const Value.absent(),
     this.address = const Value.absent(),
+    this.creditBalance = const Value.absent(),
+    this.createdAt = const Value.absent(),
   }) : name = Value(name),
        phone = Value(phone);
   static Insertable<Supplier> custom({
@@ -1924,6 +2112,8 @@ class SuppliersCompanion extends UpdateCompanion<Supplier> {
     Expression<String>? phone,
     Expression<String>? email,
     Expression<String>? address,
+    Expression<double>? creditBalance,
+    Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1931,6 +2121,8 @@ class SuppliersCompanion extends UpdateCompanion<Supplier> {
       if (phone != null) 'phone': phone,
       if (email != null) 'email': email,
       if (address != null) 'address': address,
+      if (creditBalance != null) 'credit_balance': creditBalance,
+      if (createdAt != null) 'created_at': createdAt,
     });
   }
 
@@ -1940,6 +2132,8 @@ class SuppliersCompanion extends UpdateCompanion<Supplier> {
     Value<String>? phone,
     Value<String?>? email,
     Value<String?>? address,
+    Value<double>? creditBalance,
+    Value<DateTime>? createdAt,
   }) {
     return SuppliersCompanion(
       id: id ?? this.id,
@@ -1947,6 +2141,8 @@ class SuppliersCompanion extends UpdateCompanion<Supplier> {
       phone: phone ?? this.phone,
       email: email ?? this.email,
       address: address ?? this.address,
+      creditBalance: creditBalance ?? this.creditBalance,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -1968,6 +2164,12 @@ class SuppliersCompanion extends UpdateCompanion<Supplier> {
     if (address.present) {
       map['address'] = Variable<String>(address.value);
     }
+    if (creditBalance.present) {
+      map['credit_balance'] = Variable<double>(creditBalance.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
     return map;
   }
 
@@ -1978,7 +2180,9 @@ class SuppliersCompanion extends UpdateCompanion<Supplier> {
           ..write('name: $name, ')
           ..write('phone: $phone, ')
           ..write('email: $email, ')
-          ..write('address: $address')
+          ..write('address: $address, ')
+          ..write('creditBalance: $creditBalance, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
@@ -4664,6 +4868,8 @@ typedef $$CustomersTableCreateCompanionBuilder =
       required String phone,
       Value<String?> email,
       Value<String?> address,
+      Value<double> creditBalance,
+      Value<DateTime> createdAt,
     });
 typedef $$CustomersTableUpdateCompanionBuilder =
     CustomersCompanion Function({
@@ -4672,6 +4878,8 @@ typedef $$CustomersTableUpdateCompanionBuilder =
       Value<String> phone,
       Value<String?> email,
       Value<String?> address,
+      Value<double> creditBalance,
+      Value<DateTime> createdAt,
     });
 
 class $$CustomersTableFilterComposer
@@ -4705,6 +4913,16 @@ class $$CustomersTableFilterComposer
 
   ColumnFilters<String> get address => $composableBuilder(
     column: $table.address,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get creditBalance => $composableBuilder(
+    column: $table.creditBalance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -4742,6 +4960,16 @@ class $$CustomersTableOrderingComposer
     column: $table.address,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<double> get creditBalance => $composableBuilder(
+    column: $table.creditBalance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CustomersTableAnnotationComposer
@@ -4767,6 +4995,14 @@ class $$CustomersTableAnnotationComposer
 
   GeneratedColumn<String> get address =>
       $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumn<double> get creditBalance => $composableBuilder(
+    column: $table.creditBalance,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
 }
 
 class $$CustomersTableTableManager
@@ -4802,12 +5038,16 @@ class $$CustomersTableTableManager
                 Value<String> phone = const Value.absent(),
                 Value<String?> email = const Value.absent(),
                 Value<String?> address = const Value.absent(),
+                Value<double> creditBalance = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
               }) => CustomersCompanion(
                 id: id,
                 name: name,
                 phone: phone,
                 email: email,
                 address: address,
+                creditBalance: creditBalance,
+                createdAt: createdAt,
               ),
           createCompanionCallback:
               ({
@@ -4816,12 +5056,16 @@ class $$CustomersTableTableManager
                 required String phone,
                 Value<String?> email = const Value.absent(),
                 Value<String?> address = const Value.absent(),
+                Value<double> creditBalance = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
               }) => CustomersCompanion.insert(
                 id: id,
                 name: name,
                 phone: phone,
                 email: email,
                 address: address,
+                creditBalance: creditBalance,
+                createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -4852,6 +5096,8 @@ typedef $$SuppliersTableCreateCompanionBuilder =
       required String phone,
       Value<String?> email,
       Value<String?> address,
+      Value<double> creditBalance,
+      Value<DateTime> createdAt,
     });
 typedef $$SuppliersTableUpdateCompanionBuilder =
     SuppliersCompanion Function({
@@ -4860,6 +5106,8 @@ typedef $$SuppliersTableUpdateCompanionBuilder =
       Value<String> phone,
       Value<String?> email,
       Value<String?> address,
+      Value<double> creditBalance,
+      Value<DateTime> createdAt,
     });
 
 class $$SuppliersTableFilterComposer
@@ -4893,6 +5141,16 @@ class $$SuppliersTableFilterComposer
 
   ColumnFilters<String> get address => $composableBuilder(
     column: $table.address,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get creditBalance => $composableBuilder(
+    column: $table.creditBalance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -4930,6 +5188,16 @@ class $$SuppliersTableOrderingComposer
     column: $table.address,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<double> get creditBalance => $composableBuilder(
+    column: $table.creditBalance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SuppliersTableAnnotationComposer
@@ -4955,6 +5223,14 @@ class $$SuppliersTableAnnotationComposer
 
   GeneratedColumn<String> get address =>
       $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumn<double> get creditBalance => $composableBuilder(
+    column: $table.creditBalance,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
 }
 
 class $$SuppliersTableTableManager
@@ -4990,12 +5266,16 @@ class $$SuppliersTableTableManager
                 Value<String> phone = const Value.absent(),
                 Value<String?> email = const Value.absent(),
                 Value<String?> address = const Value.absent(),
+                Value<double> creditBalance = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
               }) => SuppliersCompanion(
                 id: id,
                 name: name,
                 phone: phone,
                 email: email,
                 address: address,
+                creditBalance: creditBalance,
+                createdAt: createdAt,
               ),
           createCompanionCallback:
               ({
@@ -5004,12 +5284,16 @@ class $$SuppliersTableTableManager
                 required String phone,
                 Value<String?> email = const Value.absent(),
                 Value<String?> address = const Value.absent(),
+                Value<double> creditBalance = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
               }) => SuppliersCompanion.insert(
                 id: id,
                 name: name,
                 phone: phone,
                 email: email,
                 address: address,
+                creditBalance: creditBalance,
+                createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'core/theme/app_theme.dart';
-import 'presentation/dashboard/dashboard_screen.dart';
+import 'core/provider/theme_provider.dart';
+import 'core/services/notification_service.dart';
+
+import 'presentation/auth/screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await NotificationService.init();
+
   await windowManager.ensureInitialized();
 
-  WindowOptions windowOptions = const WindowOptions(
+  const windowOptions = WindowOptions(
     size: Size(1400, 900),
-    center: true,
     minimumSize: Size(1200, 700),
+    center: true,
     title: 'Inventory ERP',
   );
 
@@ -32,16 +36,37 @@ void main() async {
   );
 }
 
-class InventoryApp extends StatelessWidget {
-  const InventoryApp({super.key});
+class InventoryApp extends ConsumerWidget {
+  const InventoryApp({
+    super.key,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+      BuildContext context,
+      WidgetRef ref,
+      ) {
+    final themeMode = ref.watch(
+      themeModeProvider,
+    );
+
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Inventory ERP',
-      theme: AppTheme.lightTheme,
-      home: const DashboardScreen(),
+      debugShowCheckedModeBanner:
+      false,
+
+      themeMode: themeMode,
+
+      theme: ThemeData(
+        useMaterial3: false,
+        colorSchemeSeed:
+        Colors.indigo,
+      ),
+
+      darkTheme: ThemeData.dark(
+        useMaterial3: true,
+      ),
+
+      home: const SplashScreen(),
     );
   }
 }
