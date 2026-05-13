@@ -1,51 +1,118 @@
-import '../../../data/database/app_database.dart' hide PurchaseItem;
-import '../../purchases/models/purchase_item.dart';
+import 'package:drift/drift.dart' show Value, OrderingTerm, OrderingMode;
+
+import '../../../data/database/app_database.dart' show AppDatabase, PurchasesCompanion, PurchaseItemsCompanion, Purchase;
 
 class PurchaseRepository {
   final AppDatabase db;
 
   PurchaseRepository(this.db);
 
-  Future<void> savePurchase({
-    required int supplierId,
-    required List<PurchaseItem> items,
+  /// SAVE PURCHASE
+  Future<int> savePurchase({
+    required String supplierName,
+    required String supplierPhone,
     required double total,
+    String? pdfPath,
   }) async {
-    await db.transaction(() async {
-      final purchaseId =
-      await db.into(db.purchases).insert(
-        PurchasesCompanion.insert(
-          supplierId: supplierId,
-          total: total,
+    final purchaseNo =
+        'PUR-${DateTime.now().millisecondsSinceEpoch}';
+
+    final purchaseId =
+    await db.into(
+      db.purchases,
+    ).insert(
+      PurchasesCompanion.insert(
+        purchaseNo: purchaseNo,
+
+        supplierName:
+        supplierName,
+
+        supplierPhone:
+        Value(
+          supplierPhone,
+        ),
+
+        total: total,
+
+        pdfPath:
+        Value(pdfPath),
+      ),
+    );
+
+    return purchaseId;
+  }
+
+  /// SAVE PURCHASE ITEMS
+  Future<void>
+  savePurchaseItems({
+    required int purchaseId,
+    required List<dynamic> items,
+  }) async {
+    for (final item in items) {
+      await db.into(
+        db.purchaseItems,
+      ).insert(
+        PurchaseItemsCompanion.insert(
+          purchaseId: purchaseId,
+
+          productId:
+          item.product.id,
+
+          productName:
+          item.product.name,
+
+          quantity:
+          item.qty,
+
+          purchasePrice:
+          item.price,
+
+          total:
+          item.total,
         ),
       );
+    }
+  }
 
-      for (final item in items) {
-        await db
-            .into(db.purchaseItems)
-            .insert(
-          PurchaseItemsCompanion
-              .insert(
-            purchaseId:
+  /// PURCHASE HISTORY
+  Future<List<Purchase>>
+  getPurchases() async {
+    return (db.select(
+      db.purchases,
+    )..orderBy([
+          (tbl) => OrderingTerm(
+        expression:
+        tbl.createdAt,
+
+        mode:
+        OrderingMode.desc,
+      ),
+    ]))
+        .get();
+  }
+
+  /// DELETE PURCHASE
+  Future<void> deletePurchase(
+      int purchaseId,
+      ) async {
+    await (db.delete(
+      db.purchaseItems,
+    )..where(
+          (tbl) =>
+          tbl.purchaseId.equals(
             purchaseId,
-            productId:
-            item.product.id,
-            qty: item.qty,
-            price: item.price,
           ),
-        );
+    ))
+        .go();
 
-        final updatedProduct =
-        item.product.copyWith(
-          stockQty:
-          item.product.stockQty +
-              item.qty,
-        );
-
-        await db.updateProduct(
-          updatedProduct,
-        );
-      }
-    });
+    await (db.delete(
+      db.purchases,
+    )..where(
+          (tbl) =>
+          tbl.id.equals(
+            purchaseId,
+          ),
+    ))
+        .go();
   }
 }

@@ -1,100 +1,271 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../products/provider/product_provider.dart'
-    show productRepositoryProvider;
+import '../../products/provider/product_provider.dart';
+
 import '../provider/purchase_provider.dart';
+
+import '../provider/purchase_repository_provider.dart' hide purchaseRepositoryProvider;
+
 import '../widgets/purchase_item_list.dart';
+
 import '../widgets/purchase_product_dropdown.dart';
+
 import '../widgets/purchase_summary.dart';
+
 import '../widgets/supplier_dropdown.dart';
 
-class PurchaseScreen extends ConsumerWidget {
-  const PurchaseScreen({super.key});
+class PurchaseScreen
+    extends ConsumerStatefulWidget {
+  const PurchaseScreen({
+    super.key,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PurchaseScreen>
+  createState() =>
+      _PurchaseScreenState();
+}
+
+class _PurchaseScreenState
+    extends ConsumerState<
+        PurchaseScreen> {
+  bool isSaving = false;
+
+  @override
+  Widget build(
+      BuildContext context,
+      ) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding:
+        const EdgeInsets.all(
+          20,
+        ),
 
         child: Column(
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment:
+              MainAxisAlignment
+                  .spaceBetween,
 
               children: [
                 Text(
                   'Purchase Entry',
-                  style: Theme.of(context).textTheme.headlineMedium,
+
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineMedium,
                 ),
 
                 ElevatedButton.icon(
-                  onPressed: () async {
-                    final supplier = ref.read(selectedSupplierProvider);
+                  onPressed:
+                  isSaving
+                      ? null
+                      : () async {
+                    final supplier =
+                    ref.read(
+                      selectedSupplierProvider,
+                    );
 
-                    final item = ref.read(purchaseItemsProvider);
+                    final items =
+                    ref.read(
+                      purchaseItemsProvider,
+                    );
 
-                    final total = ref.read(purchaseSubtotalProvider);
+                    final total =
+                    ref.read(
+                      purchaseSubtotalProvider,
+                    );
 
-                    if (supplier == null || item.isEmpty) {
+                    /// VALIDATION
+                    if (supplier ==
+                        null) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Select Supplier',
+                          ),
+                        ),
+                      );
+
                       return;
                     }
 
-                    final repo = ref.read(purchaseRepositoryProvider);
-
-                    /// SAVE PURCHASE
-                    await repo.savePurchase(
-                      supplierId: supplier.id,
-
-                      items: item,
-
-                      total: total,
-                    );
-
-                    /// UPDATE PRODUCT STOCK
-                    final productRepo = ref.read(productRepositoryProvider);
-
-                    for (final purchaseItem in item) {
-                      await productRepo.increaseStock(
-                        productId: purchaseItem.product.id,
-
-                        qty: purchaseItem.qty,
+                    if (items
+                        .isEmpty) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Add Products',
+                          ),
+                        ),
                       );
+
+                      return;
                     }
 
-                    /// CLEAR CART
-                    ref.read(purchaseItemsProvider.notifier).state = [];
+                    try {
+                      setState(() {
+                        isSaving =
+                        true;
+                      });
 
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Purchase Saved')),
+                      final repo =
+                      ref.read(
+                        purchaseRepositoryProvider,
                       );
+
+                      /// SAVE PURCHASE
+                      final purchaseId =
+                      await repo.savePurchase(
+                        supplierName:
+                        supplier.name,
+
+                        supplierPhone:
+                        supplier.phone ??
+                            '',
+
+                        total:
+                        total,
+                      );
+
+                      /// SAVE PURCHASE ITEMS
+                      await repo
+                          .savePurchaseItems(
+                        purchaseId:
+                        purchaseId,
+
+                        items:
+                        items,
+                      );
+
+                      /// UPDATE STOCK
+                      final productRepo =
+                      ref.read(
+                        productRepositoryProvider,
+                      );
+
+                      for (final item
+                      in items) {
+                        await productRepo
+                            .increaseStock(
+                          productId:
+                          item.product.id,
+
+                          qty:
+                          item.qty,
+                        );
+                      }
+
+                      /// CLEAR CART
+                      ref
+                          .read(
+                        purchaseItemsProvider.notifier,
+                      )
+                          .state = [];
+
+                      if (context
+                          .mounted) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(
+                          const SnackBar(
+                            content:
+                            Text(
+                              'Purchase Saved Successfully',
+                            ),
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      if (context
+                          .mounted) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(
+                          SnackBar(
+                            content:
+                            Text(
+                              e.toString(),
+                            ),
+                          ),
+                        );
+                      }
+                    } finally {
+                      if (mounted) {
+                        setState(() {
+                          isSaving =
+                          false;
+                        });
+                      }
                     }
                   },
-                  icon: const Icon(Icons.save),
-                  label: const Text('Save Purchase'),
+
+                  icon: isSaving
+                      ? const SizedBox(
+                    width: 18,
+                    height: 18,
+
+                    child:
+                    CircularProgressIndicator(
+                      strokeWidth:
+                      2,
+                    ),
+                  )
+                      : const Icon(
+                    Icons.save,
+                  ),
+
+                  label: Text(
+                    isSaving
+                        ? 'Saving...'
+                        : 'Save Purchase',
+                  ),
                 ),
               ],
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(
+              height: 20,
+            ),
 
             const Row(
               children: [
-                Expanded(child: SupplierDropdown()),
+                Expanded(
+                  child:
+                  SupplierDropdown(),
+                ),
 
-                SizedBox(width: 20),
+                SizedBox(
+                  width: 20,
+                ),
 
-                Expanded(child: PurchaseProductDropdown()),
+                Expanded(
+                  child:
+                  PurchaseProductDropdown(),
+                ),
               ],
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(
+              height: 20,
+            ),
 
-            const Expanded(child: PurchaseItemList()),
+            const Expanded(
+              child:
+              PurchaseItemList(),
+            ),
 
-            const SizedBox(height: 20),
+            const SizedBox(
+              height: 20,
+            ),
 
             const PurchaseSummary(),
           ],

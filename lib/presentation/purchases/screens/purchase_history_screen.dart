@@ -1,70 +1,112 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../provider/purchase_repository_provider.dart';
+
 class PurchaseHistoryScreen
-    extends StatelessWidget {
+    extends ConsumerWidget {
   const PurchaseHistoryScreen({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+  Widget build(
+      BuildContext context,
+      WidgetRef ref,
+      ) {
+    final repo = ref.watch(
+      purchaseRepositoryProvider,
+    );
 
-        child: Card(
-          child: DataTable(
-            columns: const [
-              DataColumn(
-                label: Text('ID'),
-              ),
-              DataColumn(
-                label:
-                Text('Supplier'),
-              ),
-              DataColumn(
-                label: Text('Date'),
-              ),
-              DataColumn(
-                label: Text('Total'),
-              ),
-            ],
+    return FutureBuilder(
+      future: repo.getPurchases(),
 
-            rows: List.generate(
-              10,
-                  (index) {
-                return DataRow(
-                  cells: [
-                    DataCell(
-                      Text(
-                        '#$index',
-                      ),
+      builder: (
+          context,
+          snapshot,
+          ) {
+        if (!snapshot.hasData) {
+          return const Center(
+            child:
+            CircularProgressIndicator(),
+          );
+        }
+
+        final purchases =
+        snapshot.data!;
+
+        if (purchases.isEmpty) {
+          return const Center(
+            child: Text(
+              'No Purchases Found',
+            ),
+          );
+        }
+
+        return ListView.builder(
+          itemCount:
+          purchases.length,
+
+          itemBuilder: (
+              context,
+              index,
+              ) {
+            final purchase =
+            purchases[index];
+
+            return Card(
+              child: ListTile(
+                leading:
+                const CircleAvatar(
+                  child: Icon(
+                    Icons.shopping_cart,
+                  ),
+                ),
+
+                title: Text(
+                  purchase
+                      .supplierName,
+                ),
+
+                subtitle: Text(
+                  purchase
+                      .purchaseNo,
+                ),
+
+                trailing: Row(
+                  mainAxisSize:
+                  MainAxisSize.min,
+
+                  children: [
+                    Text(
+                      '₹${purchase.total.toStringAsFixed(0)}',
                     ),
 
-                    DataCell(
-                      Text(
-                        'Supplier $index',
-                      ),
-                    ),
+                    IconButton(
+                      onPressed:
+                          () async {
+                        await repo
+                            .deletePurchase(
+                          purchase.id,
+                        );
+                      },
 
-                    DataCell(
-                      Text(
-                        '12 Aug 2025',
-                      ),
-                    ),
+                      icon:
+                      const Icon(
+                        Icons.delete,
 
-                    DataCell(
-                      Text(
-                        '₹2500',
+                        color:
+                        Colors.red,
                       ),
                     ),
                   ],
-                );
-              },
-            ),
-          ),
-        ),
-      ),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

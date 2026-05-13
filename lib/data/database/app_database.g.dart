@@ -3152,16 +3152,38 @@ class $PurchasesTable extends Purchases
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
-  static const VerificationMeta _supplierIdMeta = const VerificationMeta(
-    'supplierId',
+  static const VerificationMeta _purchaseNoMeta = const VerificationMeta(
+    'purchaseNo',
   );
   @override
-  late final GeneratedColumn<int> supplierId = GeneratedColumn<int>(
-    'supplier_id',
+  late final GeneratedColumn<String> purchaseNo = GeneratedColumn<String>(
+    'purchase_no',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _supplierNameMeta = const VerificationMeta(
+    'supplierName',
+  );
+  @override
+  late final GeneratedColumn<String> supplierName = GeneratedColumn<String>(
+    'supplier_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _supplierPhoneMeta = const VerificationMeta(
+    'supplierPhone',
+  );
+  @override
+  late final GeneratedColumn<String> supplierPhone = GeneratedColumn<String>(
+    'supplier_phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _totalMeta = const VerificationMeta('total');
   @override
@@ -3171,6 +3193,17 @@ class $PurchasesTable extends Purchases
     false,
     type: DriftSqlType.double,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pdfPathMeta = const VerificationMeta(
+    'pdfPath',
+  );
+  @override
+  late final GeneratedColumn<String> pdfPath = GeneratedColumn<String>(
+    'pdf_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
@@ -3185,7 +3218,15 @@ class $PurchasesTable extends Purchases
     defaultValue: currentDateAndTime,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, supplierId, total, createdAt];
+  List<GeneratedColumn> get $columns => [
+    id,
+    purchaseNo,
+    supplierName,
+    supplierPhone,
+    total,
+    pdfPath,
+    createdAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -3201,13 +3242,33 @@ class $PurchasesTable extends Purchases
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('supplier_id')) {
+    if (data.containsKey('purchase_no')) {
       context.handle(
-        _supplierIdMeta,
-        supplierId.isAcceptableOrUnknown(data['supplier_id']!, _supplierIdMeta),
+        _purchaseNoMeta,
+        purchaseNo.isAcceptableOrUnknown(data['purchase_no']!, _purchaseNoMeta),
       );
     } else if (isInserting) {
-      context.missing(_supplierIdMeta);
+      context.missing(_purchaseNoMeta);
+    }
+    if (data.containsKey('supplier_name')) {
+      context.handle(
+        _supplierNameMeta,
+        supplierName.isAcceptableOrUnknown(
+          data['supplier_name']!,
+          _supplierNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_supplierNameMeta);
+    }
+    if (data.containsKey('supplier_phone')) {
+      context.handle(
+        _supplierPhoneMeta,
+        supplierPhone.isAcceptableOrUnknown(
+          data['supplier_phone']!,
+          _supplierPhoneMeta,
+        ),
+      );
     }
     if (data.containsKey('total')) {
       context.handle(
@@ -3216,6 +3277,12 @@ class $PurchasesTable extends Purchases
       );
     } else if (isInserting) {
       context.missing(_totalMeta);
+    }
+    if (data.containsKey('pdf_path')) {
+      context.handle(
+        _pdfPathMeta,
+        pdfPath.isAcceptableOrUnknown(data['pdf_path']!, _pdfPathMeta),
+      );
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -3236,14 +3303,26 @@ class $PurchasesTable extends Purchases
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      supplierId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}supplier_id'],
+      purchaseNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}purchase_no'],
       )!,
+      supplierName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}supplier_name'],
+      )!,
+      supplierPhone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}supplier_phone'],
+      ),
       total: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}total'],
       )!,
+      pdfPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pdf_path'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -3259,21 +3338,46 @@ class $PurchasesTable extends Purchases
 
 class Purchase extends DataClass implements Insertable<Purchase> {
   final int id;
-  final int supplierId;
+
+  /// PURCHASE NO
+  final String purchaseNo;
+
+  /// SUPPLIER NAME
+  final String supplierName;
+
+  /// PHONE
+  final String? supplierPhone;
+
+  /// TOTAL
   final double total;
+
+  /// PDF PATH
+  final String? pdfPath;
+
+  /// CREATED DATE
   final DateTime createdAt;
   const Purchase({
     required this.id,
-    required this.supplierId,
+    required this.purchaseNo,
+    required this.supplierName,
+    this.supplierPhone,
     required this.total,
+    this.pdfPath,
     required this.createdAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['supplier_id'] = Variable<int>(supplierId);
+    map['purchase_no'] = Variable<String>(purchaseNo);
+    map['supplier_name'] = Variable<String>(supplierName);
+    if (!nullToAbsent || supplierPhone != null) {
+      map['supplier_phone'] = Variable<String>(supplierPhone);
+    }
     map['total'] = Variable<double>(total);
+    if (!nullToAbsent || pdfPath != null) {
+      map['pdf_path'] = Variable<String>(pdfPath);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -3281,8 +3385,15 @@ class Purchase extends DataClass implements Insertable<Purchase> {
   PurchasesCompanion toCompanion(bool nullToAbsent) {
     return PurchasesCompanion(
       id: Value(id),
-      supplierId: Value(supplierId),
+      purchaseNo: Value(purchaseNo),
+      supplierName: Value(supplierName),
+      supplierPhone: supplierPhone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supplierPhone),
       total: Value(total),
+      pdfPath: pdfPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pdfPath),
       createdAt: Value(createdAt),
     );
   }
@@ -3294,8 +3405,11 @@ class Purchase extends DataClass implements Insertable<Purchase> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Purchase(
       id: serializer.fromJson<int>(json['id']),
-      supplierId: serializer.fromJson<int>(json['supplierId']),
+      purchaseNo: serializer.fromJson<String>(json['purchaseNo']),
+      supplierName: serializer.fromJson<String>(json['supplierName']),
+      supplierPhone: serializer.fromJson<String?>(json['supplierPhone']),
       total: serializer.fromJson<double>(json['total']),
+      pdfPath: serializer.fromJson<String?>(json['pdfPath']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -3304,30 +3418,48 @@ class Purchase extends DataClass implements Insertable<Purchase> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'supplierId': serializer.toJson<int>(supplierId),
+      'purchaseNo': serializer.toJson<String>(purchaseNo),
+      'supplierName': serializer.toJson<String>(supplierName),
+      'supplierPhone': serializer.toJson<String?>(supplierPhone),
       'total': serializer.toJson<double>(total),
+      'pdfPath': serializer.toJson<String?>(pdfPath),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
   Purchase copyWith({
     int? id,
-    int? supplierId,
+    String? purchaseNo,
+    String? supplierName,
+    Value<String?> supplierPhone = const Value.absent(),
     double? total,
+    Value<String?> pdfPath = const Value.absent(),
     DateTime? createdAt,
   }) => Purchase(
     id: id ?? this.id,
-    supplierId: supplierId ?? this.supplierId,
+    purchaseNo: purchaseNo ?? this.purchaseNo,
+    supplierName: supplierName ?? this.supplierName,
+    supplierPhone: supplierPhone.present
+        ? supplierPhone.value
+        : this.supplierPhone,
     total: total ?? this.total,
+    pdfPath: pdfPath.present ? pdfPath.value : this.pdfPath,
     createdAt: createdAt ?? this.createdAt,
   );
   Purchase copyWithCompanion(PurchasesCompanion data) {
     return Purchase(
       id: data.id.present ? data.id.value : this.id,
-      supplierId: data.supplierId.present
-          ? data.supplierId.value
-          : this.supplierId,
+      purchaseNo: data.purchaseNo.present
+          ? data.purchaseNo.value
+          : this.purchaseNo,
+      supplierName: data.supplierName.present
+          ? data.supplierName.value
+          : this.supplierName,
+      supplierPhone: data.supplierPhone.present
+          ? data.supplierPhone.value
+          : this.supplierPhone,
       total: data.total.present ? data.total.value : this.total,
+      pdfPath: data.pdfPath.present ? data.pdfPath.value : this.pdfPath,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -3336,67 +3468,103 @@ class Purchase extends DataClass implements Insertable<Purchase> {
   String toString() {
     return (StringBuffer('Purchase(')
           ..write('id: $id, ')
-          ..write('supplierId: $supplierId, ')
+          ..write('purchaseNo: $purchaseNo, ')
+          ..write('supplierName: $supplierName, ')
+          ..write('supplierPhone: $supplierPhone, ')
           ..write('total: $total, ')
+          ..write('pdfPath: $pdfPath, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, supplierId, total, createdAt);
+  int get hashCode => Object.hash(
+    id,
+    purchaseNo,
+    supplierName,
+    supplierPhone,
+    total,
+    pdfPath,
+    createdAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Purchase &&
           other.id == this.id &&
-          other.supplierId == this.supplierId &&
+          other.purchaseNo == this.purchaseNo &&
+          other.supplierName == this.supplierName &&
+          other.supplierPhone == this.supplierPhone &&
           other.total == this.total &&
+          other.pdfPath == this.pdfPath &&
           other.createdAt == this.createdAt);
 }
 
 class PurchasesCompanion extends UpdateCompanion<Purchase> {
   final Value<int> id;
-  final Value<int> supplierId;
+  final Value<String> purchaseNo;
+  final Value<String> supplierName;
+  final Value<String?> supplierPhone;
   final Value<double> total;
+  final Value<String?> pdfPath;
   final Value<DateTime> createdAt;
   const PurchasesCompanion({
     this.id = const Value.absent(),
-    this.supplierId = const Value.absent(),
+    this.purchaseNo = const Value.absent(),
+    this.supplierName = const Value.absent(),
+    this.supplierPhone = const Value.absent(),
     this.total = const Value.absent(),
+    this.pdfPath = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   PurchasesCompanion.insert({
     this.id = const Value.absent(),
-    required int supplierId,
+    required String purchaseNo,
+    required String supplierName,
+    this.supplierPhone = const Value.absent(),
     required double total,
+    this.pdfPath = const Value.absent(),
     this.createdAt = const Value.absent(),
-  }) : supplierId = Value(supplierId),
+  }) : purchaseNo = Value(purchaseNo),
+       supplierName = Value(supplierName),
        total = Value(total);
   static Insertable<Purchase> custom({
     Expression<int>? id,
-    Expression<int>? supplierId,
+    Expression<String>? purchaseNo,
+    Expression<String>? supplierName,
+    Expression<String>? supplierPhone,
     Expression<double>? total,
+    Expression<String>? pdfPath,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (supplierId != null) 'supplier_id': supplierId,
+      if (purchaseNo != null) 'purchase_no': purchaseNo,
+      if (supplierName != null) 'supplier_name': supplierName,
+      if (supplierPhone != null) 'supplier_phone': supplierPhone,
       if (total != null) 'total': total,
+      if (pdfPath != null) 'pdf_path': pdfPath,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
 
   PurchasesCompanion copyWith({
     Value<int>? id,
-    Value<int>? supplierId,
+    Value<String>? purchaseNo,
+    Value<String>? supplierName,
+    Value<String?>? supplierPhone,
     Value<double>? total,
+    Value<String?>? pdfPath,
     Value<DateTime>? createdAt,
   }) {
     return PurchasesCompanion(
       id: id ?? this.id,
-      supplierId: supplierId ?? this.supplierId,
+      purchaseNo: purchaseNo ?? this.purchaseNo,
+      supplierName: supplierName ?? this.supplierName,
+      supplierPhone: supplierPhone ?? this.supplierPhone,
       total: total ?? this.total,
+      pdfPath: pdfPath ?? this.pdfPath,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -3407,11 +3575,20 @@ class PurchasesCompanion extends UpdateCompanion<Purchase> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (supplierId.present) {
-      map['supplier_id'] = Variable<int>(supplierId.value);
+    if (purchaseNo.present) {
+      map['purchase_no'] = Variable<String>(purchaseNo.value);
+    }
+    if (supplierName.present) {
+      map['supplier_name'] = Variable<String>(supplierName.value);
+    }
+    if (supplierPhone.present) {
+      map['supplier_phone'] = Variable<String>(supplierPhone.value);
     }
     if (total.present) {
       map['total'] = Variable<double>(total.value);
+    }
+    if (pdfPath.present) {
+      map['pdf_path'] = Variable<String>(pdfPath.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -3423,8 +3600,11 @@ class PurchasesCompanion extends UpdateCompanion<Purchase> {
   String toString() {
     return (StringBuffer('PurchasesCompanion(')
           ..write('id: $id, ')
-          ..write('supplierId: $supplierId, ')
+          ..write('purchaseNo: $purchaseNo, ')
+          ..write('supplierName: $supplierName, ')
+          ..write('supplierPhone: $supplierPhone, ')
           ..write('total: $total, ')
+          ..write('pdfPath: $pdfPath, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -3472,26 +3652,71 @@ class $PurchaseItemsTable extends PurchaseItems
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _qtyMeta = const VerificationMeta('qty');
+  static const VerificationMeta _productNameMeta = const VerificationMeta(
+    'productName',
+  );
   @override
-  late final GeneratedColumn<int> qty = GeneratedColumn<int>(
-    'qty',
+  late final GeneratedColumn<String> productName = GeneratedColumn<String>(
+    'product_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _quantityMeta = const VerificationMeta(
+    'quantity',
+  );
+  @override
+  late final GeneratedColumn<int> quantity = GeneratedColumn<int>(
+    'quantity',
     aliasedName,
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _priceMeta = const VerificationMeta('price');
+  static const VerificationMeta _purchasePriceMeta = const VerificationMeta(
+    'purchasePrice',
+  );
   @override
-  late final GeneratedColumn<double> price = GeneratedColumn<double>(
-    'price',
+  late final GeneratedColumn<double> purchasePrice = GeneratedColumn<double>(
+    'purchase_price',
     aliasedName,
     false,
     type: DriftSqlType.double,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _totalMeta = const VerificationMeta('total');
   @override
-  List<GeneratedColumn> get $columns => [id, purchaseId, productId, qty, price];
+  late final GeneratedColumn<double> total = GeneratedColumn<double>(
+    'total',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    purchaseId,
+    productId,
+    productName,
+    quantity,
+    purchasePrice,
+    total,
+    createdAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -3523,21 +3748,49 @@ class $PurchaseItemsTable extends PurchaseItems
     } else if (isInserting) {
       context.missing(_productIdMeta);
     }
-    if (data.containsKey('qty')) {
+    if (data.containsKey('product_name')) {
       context.handle(
-        _qtyMeta,
-        qty.isAcceptableOrUnknown(data['qty']!, _qtyMeta),
+        _productNameMeta,
+        productName.isAcceptableOrUnknown(
+          data['product_name']!,
+          _productNameMeta,
+        ),
       );
     } else if (isInserting) {
-      context.missing(_qtyMeta);
+      context.missing(_productNameMeta);
     }
-    if (data.containsKey('price')) {
+    if (data.containsKey('quantity')) {
       context.handle(
-        _priceMeta,
-        price.isAcceptableOrUnknown(data['price']!, _priceMeta),
+        _quantityMeta,
+        quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta),
       );
     } else if (isInserting) {
-      context.missing(_priceMeta);
+      context.missing(_quantityMeta);
+    }
+    if (data.containsKey('purchase_price')) {
+      context.handle(
+        _purchasePriceMeta,
+        purchasePrice.isAcceptableOrUnknown(
+          data['purchase_price']!,
+          _purchasePriceMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_purchasePriceMeta);
+    }
+    if (data.containsKey('total')) {
+      context.handle(
+        _totalMeta,
+        total.isAcceptableOrUnknown(data['total']!, _totalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_totalMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
     }
     return context;
   }
@@ -3560,13 +3813,25 @@ class $PurchaseItemsTable extends PurchaseItems
         DriftSqlType.int,
         data['${effectivePrefix}product_id'],
       )!,
-      qty: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}qty'],
+      productName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}product_name'],
       )!,
-      price: attachedDatabase.typeMapping.read(
+      quantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}quantity'],
+      )!,
+      purchasePrice: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
-        data['${effectivePrefix}price'],
+        data['${effectivePrefix}purchase_price'],
+      )!,
+      total: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}total'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
       )!,
     );
   }
@@ -3579,16 +3844,36 @@ class $PurchaseItemsTable extends PurchaseItems
 
 class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
   final int id;
+
+  /// PURCHASE ID
   final int purchaseId;
+
+  /// PRODUCT ID
   final int productId;
-  final int qty;
-  final double price;
+
+  /// PRODUCT NAME SNAPSHOT
+  final String productName;
+
+  /// QUANTITY
+  final int quantity;
+
+  /// PURCHASE PRICE
+  final double purchasePrice;
+
+  /// TOTAL
+  final double total;
+
+  /// CREATED DATE
+  final DateTime createdAt;
   const PurchaseItem({
     required this.id,
     required this.purchaseId,
     required this.productId,
-    required this.qty,
-    required this.price,
+    required this.productName,
+    required this.quantity,
+    required this.purchasePrice,
+    required this.total,
+    required this.createdAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3596,8 +3881,11 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
     map['id'] = Variable<int>(id);
     map['purchase_id'] = Variable<int>(purchaseId);
     map['product_id'] = Variable<int>(productId);
-    map['qty'] = Variable<int>(qty);
-    map['price'] = Variable<double>(price);
+    map['product_name'] = Variable<String>(productName);
+    map['quantity'] = Variable<int>(quantity);
+    map['purchase_price'] = Variable<double>(purchasePrice);
+    map['total'] = Variable<double>(total);
+    map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
 
@@ -3606,8 +3894,11 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
       id: Value(id),
       purchaseId: Value(purchaseId),
       productId: Value(productId),
-      qty: Value(qty),
-      price: Value(price),
+      productName: Value(productName),
+      quantity: Value(quantity),
+      purchasePrice: Value(purchasePrice),
+      total: Value(total),
+      createdAt: Value(createdAt),
     );
   }
 
@@ -3620,8 +3911,11 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
       id: serializer.fromJson<int>(json['id']),
       purchaseId: serializer.fromJson<int>(json['purchaseId']),
       productId: serializer.fromJson<int>(json['productId']),
-      qty: serializer.fromJson<int>(json['qty']),
-      price: serializer.fromJson<double>(json['price']),
+      productName: serializer.fromJson<String>(json['productName']),
+      quantity: serializer.fromJson<int>(json['quantity']),
+      purchasePrice: serializer.fromJson<double>(json['purchasePrice']),
+      total: serializer.fromJson<double>(json['total']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
   @override
@@ -3631,8 +3925,11 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
       'id': serializer.toJson<int>(id),
       'purchaseId': serializer.toJson<int>(purchaseId),
       'productId': serializer.toJson<int>(productId),
-      'qty': serializer.toJson<int>(qty),
-      'price': serializer.toJson<double>(price),
+      'productName': serializer.toJson<String>(productName),
+      'quantity': serializer.toJson<int>(quantity),
+      'purchasePrice': serializer.toJson<double>(purchasePrice),
+      'total': serializer.toJson<double>(total),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
@@ -3640,14 +3937,20 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
     int? id,
     int? purchaseId,
     int? productId,
-    int? qty,
-    double? price,
+    String? productName,
+    int? quantity,
+    double? purchasePrice,
+    double? total,
+    DateTime? createdAt,
   }) => PurchaseItem(
     id: id ?? this.id,
     purchaseId: purchaseId ?? this.purchaseId,
     productId: productId ?? this.productId,
-    qty: qty ?? this.qty,
-    price: price ?? this.price,
+    productName: productName ?? this.productName,
+    quantity: quantity ?? this.quantity,
+    purchasePrice: purchasePrice ?? this.purchasePrice,
+    total: total ?? this.total,
+    createdAt: createdAt ?? this.createdAt,
   );
   PurchaseItem copyWithCompanion(PurchaseItemsCompanion data) {
     return PurchaseItem(
@@ -3656,8 +3959,15 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
           ? data.purchaseId.value
           : this.purchaseId,
       productId: data.productId.present ? data.productId.value : this.productId,
-      qty: data.qty.present ? data.qty.value : this.qty,
-      price: data.price.present ? data.price.value : this.price,
+      productName: data.productName.present
+          ? data.productName.value
+          : this.productName,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+      purchasePrice: data.purchasePrice.present
+          ? data.purchasePrice.value
+          : this.purchasePrice,
+      total: data.total.present ? data.total.value : this.total,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
 
@@ -3667,14 +3977,26 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
           ..write('id: $id, ')
           ..write('purchaseId: $purchaseId, ')
           ..write('productId: $productId, ')
-          ..write('qty: $qty, ')
-          ..write('price: $price')
+          ..write('productName: $productName, ')
+          ..write('quantity: $quantity, ')
+          ..write('purchasePrice: $purchasePrice, ')
+          ..write('total: $total, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, purchaseId, productId, qty, price);
+  int get hashCode => Object.hash(
+    id,
+    purchaseId,
+    productId,
+    productName,
+    quantity,
+    purchasePrice,
+    total,
+    createdAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3682,46 +4004,66 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
           other.id == this.id &&
           other.purchaseId == this.purchaseId &&
           other.productId == this.productId &&
-          other.qty == this.qty &&
-          other.price == this.price);
+          other.productName == this.productName &&
+          other.quantity == this.quantity &&
+          other.purchasePrice == this.purchasePrice &&
+          other.total == this.total &&
+          other.createdAt == this.createdAt);
 }
 
 class PurchaseItemsCompanion extends UpdateCompanion<PurchaseItem> {
   final Value<int> id;
   final Value<int> purchaseId;
   final Value<int> productId;
-  final Value<int> qty;
-  final Value<double> price;
+  final Value<String> productName;
+  final Value<int> quantity;
+  final Value<double> purchasePrice;
+  final Value<double> total;
+  final Value<DateTime> createdAt;
   const PurchaseItemsCompanion({
     this.id = const Value.absent(),
     this.purchaseId = const Value.absent(),
     this.productId = const Value.absent(),
-    this.qty = const Value.absent(),
-    this.price = const Value.absent(),
+    this.productName = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.purchasePrice = const Value.absent(),
+    this.total = const Value.absent(),
+    this.createdAt = const Value.absent(),
   });
   PurchaseItemsCompanion.insert({
     this.id = const Value.absent(),
     required int purchaseId,
     required int productId,
-    required int qty,
-    required double price,
+    required String productName,
+    required int quantity,
+    required double purchasePrice,
+    required double total,
+    this.createdAt = const Value.absent(),
   }) : purchaseId = Value(purchaseId),
        productId = Value(productId),
-       qty = Value(qty),
-       price = Value(price);
+       productName = Value(productName),
+       quantity = Value(quantity),
+       purchasePrice = Value(purchasePrice),
+       total = Value(total);
   static Insertable<PurchaseItem> custom({
     Expression<int>? id,
     Expression<int>? purchaseId,
     Expression<int>? productId,
-    Expression<int>? qty,
-    Expression<double>? price,
+    Expression<String>? productName,
+    Expression<int>? quantity,
+    Expression<double>? purchasePrice,
+    Expression<double>? total,
+    Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (purchaseId != null) 'purchase_id': purchaseId,
       if (productId != null) 'product_id': productId,
-      if (qty != null) 'qty': qty,
-      if (price != null) 'price': price,
+      if (productName != null) 'product_name': productName,
+      if (quantity != null) 'quantity': quantity,
+      if (purchasePrice != null) 'purchase_price': purchasePrice,
+      if (total != null) 'total': total,
+      if (createdAt != null) 'created_at': createdAt,
     });
   }
 
@@ -3729,15 +4071,21 @@ class PurchaseItemsCompanion extends UpdateCompanion<PurchaseItem> {
     Value<int>? id,
     Value<int>? purchaseId,
     Value<int>? productId,
-    Value<int>? qty,
-    Value<double>? price,
+    Value<String>? productName,
+    Value<int>? quantity,
+    Value<double>? purchasePrice,
+    Value<double>? total,
+    Value<DateTime>? createdAt,
   }) {
     return PurchaseItemsCompanion(
       id: id ?? this.id,
       purchaseId: purchaseId ?? this.purchaseId,
       productId: productId ?? this.productId,
-      qty: qty ?? this.qty,
-      price: price ?? this.price,
+      productName: productName ?? this.productName,
+      quantity: quantity ?? this.quantity,
+      purchasePrice: purchasePrice ?? this.purchasePrice,
+      total: total ?? this.total,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -3753,11 +4101,20 @@ class PurchaseItemsCompanion extends UpdateCompanion<PurchaseItem> {
     if (productId.present) {
       map['product_id'] = Variable<int>(productId.value);
     }
-    if (qty.present) {
-      map['qty'] = Variable<int>(qty.value);
+    if (productName.present) {
+      map['product_name'] = Variable<String>(productName.value);
     }
-    if (price.present) {
-      map['price'] = Variable<double>(price.value);
+    if (quantity.present) {
+      map['quantity'] = Variable<int>(quantity.value);
+    }
+    if (purchasePrice.present) {
+      map['purchase_price'] = Variable<double>(purchasePrice.value);
+    }
+    if (total.present) {
+      map['total'] = Variable<double>(total.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     return map;
   }
@@ -3768,8 +4125,11 @@ class PurchaseItemsCompanion extends UpdateCompanion<PurchaseItem> {
           ..write('id: $id, ')
           ..write('purchaseId: $purchaseId, ')
           ..write('productId: $productId, ')
-          ..write('qty: $qty, ')
-          ..write('price: $price')
+          ..write('productName: $productName, ')
+          ..write('quantity: $quantity, ')
+          ..write('purchasePrice: $purchasePrice, ')
+          ..write('total: $total, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
@@ -7021,15 +7381,21 @@ typedef $$SaleItemsTableProcessedTableManager =
 typedef $$PurchasesTableCreateCompanionBuilder =
     PurchasesCompanion Function({
       Value<int> id,
-      required int supplierId,
+      required String purchaseNo,
+      required String supplierName,
+      Value<String?> supplierPhone,
       required double total,
+      Value<String?> pdfPath,
       Value<DateTime> createdAt,
     });
 typedef $$PurchasesTableUpdateCompanionBuilder =
     PurchasesCompanion Function({
       Value<int> id,
-      Value<int> supplierId,
+      Value<String> purchaseNo,
+      Value<String> supplierName,
+      Value<String?> supplierPhone,
       Value<double> total,
+      Value<String?> pdfPath,
       Value<DateTime> createdAt,
     });
 
@@ -7047,13 +7413,28 @@ class $$PurchasesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get supplierId => $composableBuilder(
-    column: $table.supplierId,
+  ColumnFilters<String> get purchaseNo => $composableBuilder(
+    column: $table.purchaseNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get supplierName => $composableBuilder(
+    column: $table.supplierName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get supplierPhone => $composableBuilder(
+    column: $table.supplierPhone,
     builder: (column) => ColumnFilters(column),
   );
 
   ColumnFilters<double> get total => $composableBuilder(
     column: $table.total,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pdfPath => $composableBuilder(
+    column: $table.pdfPath,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7077,13 +7458,28 @@ class $$PurchasesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get supplierId => $composableBuilder(
-    column: $table.supplierId,
+  ColumnOrderings<String> get purchaseNo => $composableBuilder(
+    column: $table.purchaseNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get supplierName => $composableBuilder(
+    column: $table.supplierName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get supplierPhone => $composableBuilder(
+    column: $table.supplierPhone,
     builder: (column) => ColumnOrderings(column),
   );
 
   ColumnOrderings<double> get total => $composableBuilder(
     column: $table.total,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pdfPath => $composableBuilder(
+    column: $table.pdfPath,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -7105,13 +7501,26 @@ class $$PurchasesTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<int> get supplierId => $composableBuilder(
-    column: $table.supplierId,
+  GeneratedColumn<String> get purchaseNo => $composableBuilder(
+    column: $table.purchaseNo,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get supplierName => $composableBuilder(
+    column: $table.supplierName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get supplierPhone => $composableBuilder(
+    column: $table.supplierPhone,
     builder: (column) => column,
   );
 
   GeneratedColumn<double> get total =>
       $composableBuilder(column: $table.total, builder: (column) => column);
+
+  GeneratedColumn<String> get pdfPath =>
+      $composableBuilder(column: $table.pdfPath, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -7146,25 +7555,37 @@ class $$PurchasesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                Value<int> supplierId = const Value.absent(),
+                Value<String> purchaseNo = const Value.absent(),
+                Value<String> supplierName = const Value.absent(),
+                Value<String?> supplierPhone = const Value.absent(),
                 Value<double> total = const Value.absent(),
+                Value<String?> pdfPath = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => PurchasesCompanion(
                 id: id,
-                supplierId: supplierId,
+                purchaseNo: purchaseNo,
+                supplierName: supplierName,
+                supplierPhone: supplierPhone,
                 total: total,
+                pdfPath: pdfPath,
                 createdAt: createdAt,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                required int supplierId,
+                required String purchaseNo,
+                required String supplierName,
+                Value<String?> supplierPhone = const Value.absent(),
                 required double total,
+                Value<String?> pdfPath = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => PurchasesCompanion.insert(
                 id: id,
-                supplierId: supplierId,
+                purchaseNo: purchaseNo,
+                supplierName: supplierName,
+                supplierPhone: supplierPhone,
                 total: total,
+                pdfPath: pdfPath,
                 createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0
@@ -7194,16 +7615,22 @@ typedef $$PurchaseItemsTableCreateCompanionBuilder =
       Value<int> id,
       required int purchaseId,
       required int productId,
-      required int qty,
-      required double price,
+      required String productName,
+      required int quantity,
+      required double purchasePrice,
+      required double total,
+      Value<DateTime> createdAt,
     });
 typedef $$PurchaseItemsTableUpdateCompanionBuilder =
     PurchaseItemsCompanion Function({
       Value<int> id,
       Value<int> purchaseId,
       Value<int> productId,
-      Value<int> qty,
-      Value<double> price,
+      Value<String> productName,
+      Value<int> quantity,
+      Value<double> purchasePrice,
+      Value<double> total,
+      Value<DateTime> createdAt,
     });
 
 class $$PurchaseItemsTableFilterComposer
@@ -7230,13 +7657,28 @@ class $$PurchaseItemsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get qty => $composableBuilder(
-    column: $table.qty,
+  ColumnFilters<String> get productName => $composableBuilder(
+    column: $table.productName,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<double> get price => $composableBuilder(
-    column: $table.price,
+  ColumnFilters<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get purchasePrice => $composableBuilder(
+    column: $table.purchasePrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -7265,13 +7707,28 @@ class $$PurchaseItemsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get qty => $composableBuilder(
-    column: $table.qty,
+  ColumnOrderings<String> get productName => $composableBuilder(
+    column: $table.productName,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<double> get price => $composableBuilder(
-    column: $table.price,
+  ColumnOrderings<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get purchasePrice => $composableBuilder(
+    column: $table.purchasePrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -7296,11 +7753,24 @@ class $$PurchaseItemsTableAnnotationComposer
   GeneratedColumn<int> get productId =>
       $composableBuilder(column: $table.productId, builder: (column) => column);
 
-  GeneratedColumn<int> get qty =>
-      $composableBuilder(column: $table.qty, builder: (column) => column);
+  GeneratedColumn<String> get productName => $composableBuilder(
+    column: $table.productName,
+    builder: (column) => column,
+  );
 
-  GeneratedColumn<double> get price =>
-      $composableBuilder(column: $table.price, builder: (column) => column);
+  GeneratedColumn<int> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  GeneratedColumn<double> get purchasePrice => $composableBuilder(
+    column: $table.purchasePrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get total =>
+      $composableBuilder(column: $table.total, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
 }
 
 class $$PurchaseItemsTableTableManager
@@ -7337,28 +7807,40 @@ class $$PurchaseItemsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<int> purchaseId = const Value.absent(),
                 Value<int> productId = const Value.absent(),
-                Value<int> qty = const Value.absent(),
-                Value<double> price = const Value.absent(),
+                Value<String> productName = const Value.absent(),
+                Value<int> quantity = const Value.absent(),
+                Value<double> purchasePrice = const Value.absent(),
+                Value<double> total = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
               }) => PurchaseItemsCompanion(
                 id: id,
                 purchaseId: purchaseId,
                 productId: productId,
-                qty: qty,
-                price: price,
+                productName: productName,
+                quantity: quantity,
+                purchasePrice: purchasePrice,
+                total: total,
+                createdAt: createdAt,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required int purchaseId,
                 required int productId,
-                required int qty,
-                required double price,
+                required String productName,
+                required int quantity,
+                required double purchasePrice,
+                required double total,
+                Value<DateTime> createdAt = const Value.absent(),
               }) => PurchaseItemsCompanion.insert(
                 id: id,
                 purchaseId: purchaseId,
                 productId: productId,
-                qty: qty,
-                price: price,
+                productName: productName,
+                quantity: quantity,
+                purchasePrice: purchasePrice,
+                total: total,
+                createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
