@@ -50,22 +50,37 @@ class _AddCustomerDialogState
             MainAxisSize.min,
             children: [
               TextFormField(
-                controller:
-                nameController,
-                decoration:
-                const InputDecoration(
-                  labelText:
-                  'Customer Name',
+                controller: nameController,
+
+                validator: (value) {
+                  if (value == null ||
+                      value.trim().isEmpty) {
+                    return 'Enter customer name';
+                  }
+
+                  return null;
+                },
+
+                decoration: const InputDecoration(
+                  labelText: 'Customer Name',
                 ),
               ),
 
               const SizedBox(height: 15),
 
               TextFormField(
-                controller:
-                phoneController,
-                decoration:
-                const InputDecoration(
+                controller: phoneController,
+
+                validator: (value) {
+                  if (value == null ||
+                      value.trim().isEmpty) {
+                    return 'Enter phone number';
+                  }
+
+                  return null;
+                },
+
+                decoration: const InputDecoration(
                   labelText: 'Phone',
                 ),
               ),
@@ -109,19 +124,29 @@ class _AddCustomerDialogState
 
         ElevatedButton(
           onPressed: () async {
+            if (!formKey.currentState!
+                .validate()) {
+              return;
+            }
             final repo = ref.read(
               customerRepositoryProvider,
             );
 
             await repo.addCustomer(
-              name:
-              nameController.text,
-              phone:
-              phoneController.text,
-              email:
-              emailController.text,
-              address:
-              addressController.text,
+              name: nameController.text.trim(),
+              phone: phoneController.text.trim(),
+
+              email: emailController.text
+                  .trim()
+                  .isEmpty
+                  ? null
+                  : emailController.text.trim(),
+
+              address: addressController.text
+                  .trim()
+                  .isEmpty
+                  ? null
+                  : addressController.text.trim(),
             );
 
             if (mounted) {

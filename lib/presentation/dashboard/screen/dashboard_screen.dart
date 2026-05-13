@@ -7,6 +7,7 @@ import '../../products/screens/product_list_screen.dart';
 import '../../purchases/screens/purchase_screen.dart';
 import '../../reports/screens/reports_screen.dart';
 import '../../sales/screens/create_invoice_screen.dart';
+import '../../sales/screens/sales_home_screen.dart';
 import '../../settings/screens/settings_screen.dart';
 import '../../suppliers/screens/supplier_screen.dart';
 import '../../widgets/app_sidebar.dart';
@@ -43,7 +44,7 @@ class DashboardScreen
                   DashboardHome(),
                   ProductListScreen(),
                   CustomerListScreen(),
-                  CreateInvoiceScreen(),
+                  SalesHomeScreen(),
                   PurchaseScreen(),
                   ExpenseScreen(),
                   ReportsScreen(),

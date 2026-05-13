@@ -1,16 +1,21 @@
+import '../../../data/database/app_database.dart';
+
 class InvoiceItemModel {
-  final String name;
+  final Product product;
 
   final int qty;
 
   final double price;
 
-  final double subtotal;
-
   InvoiceItemModel({
-    required this.name,
+    required this.product,
     required this.qty,
     required this.price,
-    required this.subtotal,
   });
+
+  double get total =>
+      qty * price;
+
+  String get productName =>
+      product.name;
 }

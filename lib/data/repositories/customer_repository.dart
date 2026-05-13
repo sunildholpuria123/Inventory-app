@@ -22,9 +22,17 @@ class CustomerRepository {
         name: name,
         phone: phone,
 
-        email: Value(email),
+        email: Value(
+          email?.isEmpty == true
+              ? null
+              : email,
+        ),
 
-        address: Value(address),
+        address: Value(
+          address?.isEmpty == true
+              ? null
+              : address,
+        ),
       ),
     );
   }

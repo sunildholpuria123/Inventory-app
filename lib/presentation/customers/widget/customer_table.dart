@@ -9,7 +9,7 @@ class CustomerTable
     extends ConsumerWidget {
   final List<Customer> customers;
 
-  const CustomerTable({
+  const   CustomerTable({
     super.key,
     required this.customers,
   });
@@ -23,8 +23,8 @@ class CustomerTable
       child: SingleChildScrollView(
         child: DataTable(
           dataRowMinHeight: 60,
+          dataRowMaxHeight: 60,
           headingRowHeight: 60,
-
           columns: const [
             DataColumn(
               label: Text('Name'),
@@ -62,13 +62,14 @@ class CustomerTable
 
                 DataCell(
                   Text(
-                    '₹${customer.creditBalance}',
+                    '₹${customer.creditBalance ?? 0}',
+
                     style: TextStyle(
-                      color: customer
-                          .creditBalance >
-                          0
+                      color:
+                      (customer.creditBalance ?? 0) > 0
                           ? Colors.red
                           : Colors.green,
+
                       fontWeight:
                       FontWeight.bold,
                     ),
@@ -77,6 +78,7 @@ class CustomerTable
 
                 DataCell(
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
                         onPressed: () {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/provider/theme_provider.dart';
+import '../../../data/providers/database_provider.dart';
 import '../provider/settings_provider.dart';
 
 class SettingsScreen
@@ -270,6 +271,25 @@ class SettingsScreen
 
                         child: const Text(
                           'Restore',
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      leading:
+                      const Icon(Icons.delete_forever),
+                      title:
+                      const Text('Reset Database'),
+                      trailing: ElevatedButton(
+                        onPressed: () async {
+                          final db = ref.read(
+                            databaseProvider,
+                          );
+
+                          await db.clearDatabase();
+                        },
+
+                        child: const Text(
+                          'Reset',
                         ),
                       ),
                     ),

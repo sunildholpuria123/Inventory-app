@@ -1,3 +1,5 @@
+import 'package:drift/drift.dart';
+
 import '../../presentation/sales/model/invoice_item.dart';
 import '../database/app_database.dart';
 
@@ -24,49 +26,43 @@ class SalesRepository {
   }
 
   Future<void> saveInvoice({
-    required int customerId,
-    required List<InvoiceItem> items,
-    required double total,
+    required String customerName,
+    required String customerPhone,
+    required double subtotal,
+    required double tax,
+    required double discount,
+    required double grandTotal,
+    required String paymentMethod,
+    required String pdfPath,
   }) async {
-    await db.transaction(() async {
-      final saleId =
-      await db.createSale(
-        SalesCompanion.insert(
-          customerId: customerId,
-          invoiceNo:
-          'INV-${DateTime.now().millisecondsSinceEpoch}',
-          total: total,
-          discount: 0,
-          tax: 0,
-          grandTotal: total,
-          paymentStatus: 'PAID',
-        ),
-      );
+    final invoiceNo =
+        'INV-${DateTime.now().year}'
+        '${DateTime.now().month.toString().padLeft(2, '0')}'
+        '${DateTime.now().day.toString().padLeft(2, '0')}-'
+        '${DateTime.now().millisecondsSinceEpoch}';
 
-      for (final item in items) {
-        await db.insertSaleItem(
-          SaleItemsCompanion.insert(
-            saleId: saleId,
-            productId:
-            item.product.id,
-            qty: item.qty,
-            price: item.price,
-            subtotal:
-            item.subtotal,
+    await db
+        .into(db.invoices)
+        .insert(
+          InvoicesCompanion.insert(
+            invoiceNo: invoiceNo,
+
+            customerName: customerName,
+
+            customerPhone: customerPhone,
+
+            subtotal: subtotal,
+
+            tax: tax,
+
+            discount: Value(discount),
+
+            grandTotal: grandTotal,
+
+            paymentMethod: Value(paymentMethod),
+
+            pdfPath: Value(pdfPath),
           ),
         );
-
-        final updatedProduct =
-        item.product.copyWith(
-          stockQty:
-          item.product.stockQty -
-              item.qty,
-        );
-
-        await db.updateProduct(
-          updatedProduct,
-        );
-      }
-    });
   }
 }

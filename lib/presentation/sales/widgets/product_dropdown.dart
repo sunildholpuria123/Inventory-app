@@ -1,28 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 import '../../products/provider/product_provider.dart';
+
 import '../model/invoice_item.dart';
+
 import '../provider/sales_provider.dart';
 
 class ProductDropdown
-    extends ConsumerWidget {
+    extends ConsumerStatefulWidget {
   const ProductDropdown({
     super.key,
   });
 
   @override
+  ConsumerState<ProductDropdown>
+  createState() =>
+      _ProductDropdownState();
+}
+
+class _ProductDropdownState
+    extends ConsumerState<
+        ProductDropdown> {
+  int? selectedProductId;
+
+  @override
   Widget build(
       BuildContext context,
-      WidgetRef ref,
       ) {
-    final products =
-    ref.watch(productsProvider);
+    final products = ref.watch(
+      productsProvider,
+    );
 
     return products.when(
       data: (items) {
-        return DropdownButtonFormField(
+        return DropdownButtonFormField<
+            int>(
+          value: selectedProductId,
+
           decoration:
           const InputDecoration(
             labelText:
@@ -30,8 +45,9 @@ class ProductDropdown
           ),
 
           items: items.map((product) {
-            return DropdownMenuItem(
-              value: product,
+            return DropdownMenuItem<
+                int>(
+              value: product.id,
 
               child: Text(
                 product.name,
@@ -40,9 +56,22 @@ class ProductDropdown
           }).toList(),
 
           onChanged: (value) {
-            if (value == null) return;
+            if (value == null) {
+              return;
+            }
 
-            final current = ref.read(
+            setState(() {
+              selectedProductId =
+                  value;
+            });
+
+            final selectedProduct =
+            items.firstWhere(
+                  (e) => e.id == value,
+            );
+
+            final current =
+            ref.read(
               invoiceItemsProvider,
             );
 
@@ -53,11 +82,16 @@ class ProductDropdown
             )
                 .state = [
               ...current,
+
               InvoiceItem(
-                product: value,
+                product:
+                selectedProduct,
+
                 qty: 1,
+
                 price:
-                value.sellingPrice,
+                selectedProduct
+                    .sellingPrice,
               ),
             ];
           },

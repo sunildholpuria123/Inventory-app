@@ -4164,6 +4164,712 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
   }
 }
 
+class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $InvoicesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _invoiceNoMeta = const VerificationMeta(
+    'invoiceNo',
+  );
+  @override
+  late final GeneratedColumn<String> invoiceNo = GeneratedColumn<String>(
+    'invoice_no',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _customerNameMeta = const VerificationMeta(
+    'customerName',
+  );
+  @override
+  late final GeneratedColumn<String> customerName = GeneratedColumn<String>(
+    'customer_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _customerPhoneMeta = const VerificationMeta(
+    'customerPhone',
+  );
+  @override
+  late final GeneratedColumn<String> customerPhone = GeneratedColumn<String>(
+    'customer_phone',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _subtotalMeta = const VerificationMeta(
+    'subtotal',
+  );
+  @override
+  late final GeneratedColumn<double> subtotal = GeneratedColumn<double>(
+    'subtotal',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _taxMeta = const VerificationMeta('tax');
+  @override
+  late final GeneratedColumn<double> tax = GeneratedColumn<double>(
+    'tax',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _discountMeta = const VerificationMeta(
+    'discount',
+  );
+  @override
+  late final GeneratedColumn<double> discount = GeneratedColumn<double>(
+    'discount',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _grandTotalMeta = const VerificationMeta(
+    'grandTotal',
+  );
+  @override
+  late final GeneratedColumn<double> grandTotal = GeneratedColumn<double>(
+    'grand_total',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _paymentMethodMeta = const VerificationMeta(
+    'paymentMethod',
+  );
+  @override
+  late final GeneratedColumn<String> paymentMethod = GeneratedColumn<String>(
+    'payment_method',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('CASH'),
+  );
+  static const VerificationMeta _paymentStatusMeta = const VerificationMeta(
+    'paymentStatus',
+  );
+  @override
+  late final GeneratedColumn<String> paymentStatus = GeneratedColumn<String>(
+    'payment_status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('PAID'),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _pdfPathMeta = const VerificationMeta(
+    'pdfPath',
+  );
+  @override
+  late final GeneratedColumn<String> pdfPath = GeneratedColumn<String>(
+    'pdf_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    invoiceNo,
+    customerName,
+    customerPhone,
+    subtotal,
+    tax,
+    discount,
+    grandTotal,
+    paymentMethod,
+    paymentStatus,
+    createdAt,
+    pdfPath,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'invoices';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Invoice> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('invoice_no')) {
+      context.handle(
+        _invoiceNoMeta,
+        invoiceNo.isAcceptableOrUnknown(data['invoice_no']!, _invoiceNoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_invoiceNoMeta);
+    }
+    if (data.containsKey('customer_name')) {
+      context.handle(
+        _customerNameMeta,
+        customerName.isAcceptableOrUnknown(
+          data['customer_name']!,
+          _customerNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_customerNameMeta);
+    }
+    if (data.containsKey('customer_phone')) {
+      context.handle(
+        _customerPhoneMeta,
+        customerPhone.isAcceptableOrUnknown(
+          data['customer_phone']!,
+          _customerPhoneMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_customerPhoneMeta);
+    }
+    if (data.containsKey('subtotal')) {
+      context.handle(
+        _subtotalMeta,
+        subtotal.isAcceptableOrUnknown(data['subtotal']!, _subtotalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_subtotalMeta);
+    }
+    if (data.containsKey('tax')) {
+      context.handle(
+        _taxMeta,
+        tax.isAcceptableOrUnknown(data['tax']!, _taxMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_taxMeta);
+    }
+    if (data.containsKey('discount')) {
+      context.handle(
+        _discountMeta,
+        discount.isAcceptableOrUnknown(data['discount']!, _discountMeta),
+      );
+    }
+    if (data.containsKey('grand_total')) {
+      context.handle(
+        _grandTotalMeta,
+        grandTotal.isAcceptableOrUnknown(data['grand_total']!, _grandTotalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_grandTotalMeta);
+    }
+    if (data.containsKey('payment_method')) {
+      context.handle(
+        _paymentMethodMeta,
+        paymentMethod.isAcceptableOrUnknown(
+          data['payment_method']!,
+          _paymentMethodMeta,
+        ),
+      );
+    }
+    if (data.containsKey('payment_status')) {
+      context.handle(
+        _paymentStatusMeta,
+        paymentStatus.isAcceptableOrUnknown(
+          data['payment_status']!,
+          _paymentStatusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('pdf_path')) {
+      context.handle(
+        _pdfPathMeta,
+        pdfPath.isAcceptableOrUnknown(data['pdf_path']!, _pdfPathMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Invoice map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Invoice(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      invoiceNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}invoice_no'],
+      )!,
+      customerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}customer_name'],
+      )!,
+      customerPhone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}customer_phone'],
+      )!,
+      subtotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}subtotal'],
+      )!,
+      tax: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}tax'],
+      )!,
+      discount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}discount'],
+      )!,
+      grandTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}grand_total'],
+      )!,
+      paymentMethod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payment_method'],
+      )!,
+      paymentStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payment_status'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      pdfPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pdf_path'],
+      ),
+    );
+  }
+
+  @override
+  $InvoicesTable createAlias(String alias) {
+    return $InvoicesTable(attachedDatabase, alias);
+  }
+}
+
+class Invoice extends DataClass implements Insertable<Invoice> {
+  final int id;
+  final String invoiceNo;
+  final String customerName;
+  final String customerPhone;
+  final double subtotal;
+  final double tax;
+  final double discount;
+  final double grandTotal;
+  final String paymentMethod;
+  final String paymentStatus;
+  final DateTime createdAt;
+  final String? pdfPath;
+  const Invoice({
+    required this.id,
+    required this.invoiceNo,
+    required this.customerName,
+    required this.customerPhone,
+    required this.subtotal,
+    required this.tax,
+    required this.discount,
+    required this.grandTotal,
+    required this.paymentMethod,
+    required this.paymentStatus,
+    required this.createdAt,
+    this.pdfPath,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['invoice_no'] = Variable<String>(invoiceNo);
+    map['customer_name'] = Variable<String>(customerName);
+    map['customer_phone'] = Variable<String>(customerPhone);
+    map['subtotal'] = Variable<double>(subtotal);
+    map['tax'] = Variable<double>(tax);
+    map['discount'] = Variable<double>(discount);
+    map['grand_total'] = Variable<double>(grandTotal);
+    map['payment_method'] = Variable<String>(paymentMethod);
+    map['payment_status'] = Variable<String>(paymentStatus);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || pdfPath != null) {
+      map['pdf_path'] = Variable<String>(pdfPath);
+    }
+    return map;
+  }
+
+  InvoicesCompanion toCompanion(bool nullToAbsent) {
+    return InvoicesCompanion(
+      id: Value(id),
+      invoiceNo: Value(invoiceNo),
+      customerName: Value(customerName),
+      customerPhone: Value(customerPhone),
+      subtotal: Value(subtotal),
+      tax: Value(tax),
+      discount: Value(discount),
+      grandTotal: Value(grandTotal),
+      paymentMethod: Value(paymentMethod),
+      paymentStatus: Value(paymentStatus),
+      createdAt: Value(createdAt),
+      pdfPath: pdfPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pdfPath),
+    );
+  }
+
+  factory Invoice.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Invoice(
+      id: serializer.fromJson<int>(json['id']),
+      invoiceNo: serializer.fromJson<String>(json['invoiceNo']),
+      customerName: serializer.fromJson<String>(json['customerName']),
+      customerPhone: serializer.fromJson<String>(json['customerPhone']),
+      subtotal: serializer.fromJson<double>(json['subtotal']),
+      tax: serializer.fromJson<double>(json['tax']),
+      discount: serializer.fromJson<double>(json['discount']),
+      grandTotal: serializer.fromJson<double>(json['grandTotal']),
+      paymentMethod: serializer.fromJson<String>(json['paymentMethod']),
+      paymentStatus: serializer.fromJson<String>(json['paymentStatus']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      pdfPath: serializer.fromJson<String?>(json['pdfPath']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'invoiceNo': serializer.toJson<String>(invoiceNo),
+      'customerName': serializer.toJson<String>(customerName),
+      'customerPhone': serializer.toJson<String>(customerPhone),
+      'subtotal': serializer.toJson<double>(subtotal),
+      'tax': serializer.toJson<double>(tax),
+      'discount': serializer.toJson<double>(discount),
+      'grandTotal': serializer.toJson<double>(grandTotal),
+      'paymentMethod': serializer.toJson<String>(paymentMethod),
+      'paymentStatus': serializer.toJson<String>(paymentStatus),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'pdfPath': serializer.toJson<String?>(pdfPath),
+    };
+  }
+
+  Invoice copyWith({
+    int? id,
+    String? invoiceNo,
+    String? customerName,
+    String? customerPhone,
+    double? subtotal,
+    double? tax,
+    double? discount,
+    double? grandTotal,
+    String? paymentMethod,
+    String? paymentStatus,
+    DateTime? createdAt,
+    Value<String?> pdfPath = const Value.absent(),
+  }) => Invoice(
+    id: id ?? this.id,
+    invoiceNo: invoiceNo ?? this.invoiceNo,
+    customerName: customerName ?? this.customerName,
+    customerPhone: customerPhone ?? this.customerPhone,
+    subtotal: subtotal ?? this.subtotal,
+    tax: tax ?? this.tax,
+    discount: discount ?? this.discount,
+    grandTotal: grandTotal ?? this.grandTotal,
+    paymentMethod: paymentMethod ?? this.paymentMethod,
+    paymentStatus: paymentStatus ?? this.paymentStatus,
+    createdAt: createdAt ?? this.createdAt,
+    pdfPath: pdfPath.present ? pdfPath.value : this.pdfPath,
+  );
+  Invoice copyWithCompanion(InvoicesCompanion data) {
+    return Invoice(
+      id: data.id.present ? data.id.value : this.id,
+      invoiceNo: data.invoiceNo.present ? data.invoiceNo.value : this.invoiceNo,
+      customerName: data.customerName.present
+          ? data.customerName.value
+          : this.customerName,
+      customerPhone: data.customerPhone.present
+          ? data.customerPhone.value
+          : this.customerPhone,
+      subtotal: data.subtotal.present ? data.subtotal.value : this.subtotal,
+      tax: data.tax.present ? data.tax.value : this.tax,
+      discount: data.discount.present ? data.discount.value : this.discount,
+      grandTotal: data.grandTotal.present
+          ? data.grandTotal.value
+          : this.grandTotal,
+      paymentMethod: data.paymentMethod.present
+          ? data.paymentMethod.value
+          : this.paymentMethod,
+      paymentStatus: data.paymentStatus.present
+          ? data.paymentStatus.value
+          : this.paymentStatus,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      pdfPath: data.pdfPath.present ? data.pdfPath.value : this.pdfPath,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Invoice(')
+          ..write('id: $id, ')
+          ..write('invoiceNo: $invoiceNo, ')
+          ..write('customerName: $customerName, ')
+          ..write('customerPhone: $customerPhone, ')
+          ..write('subtotal: $subtotal, ')
+          ..write('tax: $tax, ')
+          ..write('discount: $discount, ')
+          ..write('grandTotal: $grandTotal, ')
+          ..write('paymentMethod: $paymentMethod, ')
+          ..write('paymentStatus: $paymentStatus, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('pdfPath: $pdfPath')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    invoiceNo,
+    customerName,
+    customerPhone,
+    subtotal,
+    tax,
+    discount,
+    grandTotal,
+    paymentMethod,
+    paymentStatus,
+    createdAt,
+    pdfPath,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Invoice &&
+          other.id == this.id &&
+          other.invoiceNo == this.invoiceNo &&
+          other.customerName == this.customerName &&
+          other.customerPhone == this.customerPhone &&
+          other.subtotal == this.subtotal &&
+          other.tax == this.tax &&
+          other.discount == this.discount &&
+          other.grandTotal == this.grandTotal &&
+          other.paymentMethod == this.paymentMethod &&
+          other.paymentStatus == this.paymentStatus &&
+          other.createdAt == this.createdAt &&
+          other.pdfPath == this.pdfPath);
+}
+
+class InvoicesCompanion extends UpdateCompanion<Invoice> {
+  final Value<int> id;
+  final Value<String> invoiceNo;
+  final Value<String> customerName;
+  final Value<String> customerPhone;
+  final Value<double> subtotal;
+  final Value<double> tax;
+  final Value<double> discount;
+  final Value<double> grandTotal;
+  final Value<String> paymentMethod;
+  final Value<String> paymentStatus;
+  final Value<DateTime> createdAt;
+  final Value<String?> pdfPath;
+  const InvoicesCompanion({
+    this.id = const Value.absent(),
+    this.invoiceNo = const Value.absent(),
+    this.customerName = const Value.absent(),
+    this.customerPhone = const Value.absent(),
+    this.subtotal = const Value.absent(),
+    this.tax = const Value.absent(),
+    this.discount = const Value.absent(),
+    this.grandTotal = const Value.absent(),
+    this.paymentMethod = const Value.absent(),
+    this.paymentStatus = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.pdfPath = const Value.absent(),
+  });
+  InvoicesCompanion.insert({
+    this.id = const Value.absent(),
+    required String invoiceNo,
+    required String customerName,
+    required String customerPhone,
+    required double subtotal,
+    required double tax,
+    this.discount = const Value.absent(),
+    required double grandTotal,
+    this.paymentMethod = const Value.absent(),
+    this.paymentStatus = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.pdfPath = const Value.absent(),
+  }) : invoiceNo = Value(invoiceNo),
+       customerName = Value(customerName),
+       customerPhone = Value(customerPhone),
+       subtotal = Value(subtotal),
+       tax = Value(tax),
+       grandTotal = Value(grandTotal);
+  static Insertable<Invoice> custom({
+    Expression<int>? id,
+    Expression<String>? invoiceNo,
+    Expression<String>? customerName,
+    Expression<String>? customerPhone,
+    Expression<double>? subtotal,
+    Expression<double>? tax,
+    Expression<double>? discount,
+    Expression<double>? grandTotal,
+    Expression<String>? paymentMethod,
+    Expression<String>? paymentStatus,
+    Expression<DateTime>? createdAt,
+    Expression<String>? pdfPath,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (invoiceNo != null) 'invoice_no': invoiceNo,
+      if (customerName != null) 'customer_name': customerName,
+      if (customerPhone != null) 'customer_phone': customerPhone,
+      if (subtotal != null) 'subtotal': subtotal,
+      if (tax != null) 'tax': tax,
+      if (discount != null) 'discount': discount,
+      if (grandTotal != null) 'grand_total': grandTotal,
+      if (paymentMethod != null) 'payment_method': paymentMethod,
+      if (paymentStatus != null) 'payment_status': paymentStatus,
+      if (createdAt != null) 'created_at': createdAt,
+      if (pdfPath != null) 'pdf_path': pdfPath,
+    });
+  }
+
+  InvoicesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? invoiceNo,
+    Value<String>? customerName,
+    Value<String>? customerPhone,
+    Value<double>? subtotal,
+    Value<double>? tax,
+    Value<double>? discount,
+    Value<double>? grandTotal,
+    Value<String>? paymentMethod,
+    Value<String>? paymentStatus,
+    Value<DateTime>? createdAt,
+    Value<String?>? pdfPath,
+  }) {
+    return InvoicesCompanion(
+      id: id ?? this.id,
+      invoiceNo: invoiceNo ?? this.invoiceNo,
+      customerName: customerName ?? this.customerName,
+      customerPhone: customerPhone ?? this.customerPhone,
+      subtotal: subtotal ?? this.subtotal,
+      tax: tax ?? this.tax,
+      discount: discount ?? this.discount,
+      grandTotal: grandTotal ?? this.grandTotal,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      paymentStatus: paymentStatus ?? this.paymentStatus,
+      createdAt: createdAt ?? this.createdAt,
+      pdfPath: pdfPath ?? this.pdfPath,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (invoiceNo.present) {
+      map['invoice_no'] = Variable<String>(invoiceNo.value);
+    }
+    if (customerName.present) {
+      map['customer_name'] = Variable<String>(customerName.value);
+    }
+    if (customerPhone.present) {
+      map['customer_phone'] = Variable<String>(customerPhone.value);
+    }
+    if (subtotal.present) {
+      map['subtotal'] = Variable<double>(subtotal.value);
+    }
+    if (tax.present) {
+      map['tax'] = Variable<double>(tax.value);
+    }
+    if (discount.present) {
+      map['discount'] = Variable<double>(discount.value);
+    }
+    if (grandTotal.present) {
+      map['grand_total'] = Variable<double>(grandTotal.value);
+    }
+    if (paymentMethod.present) {
+      map['payment_method'] = Variable<String>(paymentMethod.value);
+    }
+    if (paymentStatus.present) {
+      map['payment_status'] = Variable<String>(paymentStatus.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (pdfPath.present) {
+      map['pdf_path'] = Variable<String>(pdfPath.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InvoicesCompanion(')
+          ..write('id: $id, ')
+          ..write('invoiceNo: $invoiceNo, ')
+          ..write('customerName: $customerName, ')
+          ..write('customerPhone: $customerPhone, ')
+          ..write('subtotal: $subtotal, ')
+          ..write('tax: $tax, ')
+          ..write('discount: $discount, ')
+          ..write('grandTotal: $grandTotal, ')
+          ..write('paymentMethod: $paymentMethod, ')
+          ..write('paymentStatus: $paymentStatus, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('pdfPath: $pdfPath')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4177,6 +4883,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $PurchasesTable purchases = $PurchasesTable(this);
   late final $PurchaseItemsTable purchaseItems = $PurchaseItemsTable(this);
   late final $ExpensesTable expenses = $ExpensesTable(this);
+  late final $InvoicesTable invoices = $InvoicesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4192,6 +4899,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     purchases,
     purchaseItems,
     expenses,
+    invoices,
   ];
 }
 
@@ -6367,6 +7075,337 @@ typedef $$ExpensesTableProcessedTableManager =
       Expense,
       PrefetchHooks Function()
     >;
+typedef $$InvoicesTableCreateCompanionBuilder =
+    InvoicesCompanion Function({
+      Value<int> id,
+      required String invoiceNo,
+      required String customerName,
+      required String customerPhone,
+      required double subtotal,
+      required double tax,
+      Value<double> discount,
+      required double grandTotal,
+      Value<String> paymentMethod,
+      Value<String> paymentStatus,
+      Value<DateTime> createdAt,
+      Value<String?> pdfPath,
+    });
+typedef $$InvoicesTableUpdateCompanionBuilder =
+    InvoicesCompanion Function({
+      Value<int> id,
+      Value<String> invoiceNo,
+      Value<String> customerName,
+      Value<String> customerPhone,
+      Value<double> subtotal,
+      Value<double> tax,
+      Value<double> discount,
+      Value<double> grandTotal,
+      Value<String> paymentMethod,
+      Value<String> paymentStatus,
+      Value<DateTime> createdAt,
+      Value<String?> pdfPath,
+    });
+
+class $$InvoicesTableFilterComposer
+    extends Composer<_$AppDatabase, $InvoicesTable> {
+  $$InvoicesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get invoiceNo => $composableBuilder(
+    column: $table.invoiceNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customerPhone => $composableBuilder(
+    column: $table.customerPhone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get subtotal => $composableBuilder(
+    column: $table.subtotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get tax => $composableBuilder(
+    column: $table.tax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get discount => $composableBuilder(
+    column: $table.discount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get grandTotal => $composableBuilder(
+    column: $table.grandTotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get paymentMethod => $composableBuilder(
+    column: $table.paymentMethod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get paymentStatus => $composableBuilder(
+    column: $table.paymentStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pdfPath => $composableBuilder(
+    column: $table.pdfPath,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$InvoicesTableOrderingComposer
+    extends Composer<_$AppDatabase, $InvoicesTable> {
+  $$InvoicesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get invoiceNo => $composableBuilder(
+    column: $table.invoiceNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customerPhone => $composableBuilder(
+    column: $table.customerPhone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get subtotal => $composableBuilder(
+    column: $table.subtotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get tax => $composableBuilder(
+    column: $table.tax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get discount => $composableBuilder(
+    column: $table.discount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get grandTotal => $composableBuilder(
+    column: $table.grandTotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get paymentMethod => $composableBuilder(
+    column: $table.paymentMethod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get paymentStatus => $composableBuilder(
+    column: $table.paymentStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pdfPath => $composableBuilder(
+    column: $table.pdfPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$InvoicesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $InvoicesTable> {
+  $$InvoicesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get invoiceNo =>
+      $composableBuilder(column: $table.invoiceNo, builder: (column) => column);
+
+  GeneratedColumn<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get customerPhone => $composableBuilder(
+    column: $table.customerPhone,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get subtotal =>
+      $composableBuilder(column: $table.subtotal, builder: (column) => column);
+
+  GeneratedColumn<double> get tax =>
+      $composableBuilder(column: $table.tax, builder: (column) => column);
+
+  GeneratedColumn<double> get discount =>
+      $composableBuilder(column: $table.discount, builder: (column) => column);
+
+  GeneratedColumn<double> get grandTotal => $composableBuilder(
+    column: $table.grandTotal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get paymentMethod => $composableBuilder(
+    column: $table.paymentMethod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get paymentStatus => $composableBuilder(
+    column: $table.paymentStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get pdfPath =>
+      $composableBuilder(column: $table.pdfPath, builder: (column) => column);
+}
+
+class $$InvoicesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $InvoicesTable,
+          Invoice,
+          $$InvoicesTableFilterComposer,
+          $$InvoicesTableOrderingComposer,
+          $$InvoicesTableAnnotationComposer,
+          $$InvoicesTableCreateCompanionBuilder,
+          $$InvoicesTableUpdateCompanionBuilder,
+          (Invoice, BaseReferences<_$AppDatabase, $InvoicesTable, Invoice>),
+          Invoice,
+          PrefetchHooks Function()
+        > {
+  $$InvoicesTableTableManager(_$AppDatabase db, $InvoicesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$InvoicesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$InvoicesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$InvoicesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> invoiceNo = const Value.absent(),
+                Value<String> customerName = const Value.absent(),
+                Value<String> customerPhone = const Value.absent(),
+                Value<double> subtotal = const Value.absent(),
+                Value<double> tax = const Value.absent(),
+                Value<double> discount = const Value.absent(),
+                Value<double> grandTotal = const Value.absent(),
+                Value<String> paymentMethod = const Value.absent(),
+                Value<String> paymentStatus = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> pdfPath = const Value.absent(),
+              }) => InvoicesCompanion(
+                id: id,
+                invoiceNo: invoiceNo,
+                customerName: customerName,
+                customerPhone: customerPhone,
+                subtotal: subtotal,
+                tax: tax,
+                discount: discount,
+                grandTotal: grandTotal,
+                paymentMethod: paymentMethod,
+                paymentStatus: paymentStatus,
+                createdAt: createdAt,
+                pdfPath: pdfPath,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String invoiceNo,
+                required String customerName,
+                required String customerPhone,
+                required double subtotal,
+                required double tax,
+                Value<double> discount = const Value.absent(),
+                required double grandTotal,
+                Value<String> paymentMethod = const Value.absent(),
+                Value<String> paymentStatus = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> pdfPath = const Value.absent(),
+              }) => InvoicesCompanion.insert(
+                id: id,
+                invoiceNo: invoiceNo,
+                customerName: customerName,
+                customerPhone: customerPhone,
+                subtotal: subtotal,
+                tax: tax,
+                discount: discount,
+                grandTotal: grandTotal,
+                paymentMethod: paymentMethod,
+                paymentStatus: paymentStatus,
+                createdAt: createdAt,
+                pdfPath: pdfPath,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$InvoicesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $InvoicesTable,
+      Invoice,
+      $$InvoicesTableFilterComposer,
+      $$InvoicesTableOrderingComposer,
+      $$InvoicesTableAnnotationComposer,
+      $$InvoicesTableCreateCompanionBuilder,
+      $$InvoicesTableUpdateCompanionBuilder,
+      (Invoice, BaseReferences<_$AppDatabase, $InvoicesTable, Invoice>),
+      Invoice,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6391,4 +7430,6 @@ class $AppDatabaseManager {
       $$PurchaseItemsTableTableManager(_db, _db.purchaseItems);
   $$ExpensesTableTableManager get expenses =>
       $$ExpensesTableTableManager(_db, _db.expenses);
+  $$InvoicesTableTableManager get invoices =>
+      $$InvoicesTableTableManager(_db, _db.invoices);
 }

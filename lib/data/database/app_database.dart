@@ -5,6 +5,7 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import 'tables/invoices_table.dart';
 import 'tables/users_table.dart';
 import 'tables/categories_table.dart';
 import 'tables/products_table.dart';
@@ -30,6 +31,7 @@ part 'app_database.g.dart';
     Purchases,
     PurchaseItems,
     Expenses,
+    Invoices
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -66,15 +68,17 @@ class AppDatabase extends _$AppDatabase {
 
   // CUSTOMERS
 
-  Future<List<Customer>> getAllCustomers() {
-    return select(customers).get();
-  }
-
   Future<int> insertCustomer(
       CustomersCompanion data,
       ) {
     return into(customers).insert(data);
   }
+
+  Future<List<Customer>> getAllCustomers() {
+    return select(customers).get();
+  }
+
+
 
   // SALES
 
@@ -114,6 +118,17 @@ class AppDatabase extends _$AppDatabase {
       ..where((tbl) => tbl.id.equals(id)))
         .go();
   }
+
+  Future<void> clearDatabase() async {
+    await batch((batch) {
+      batch.deleteAll(products);
+      batch.deleteAll(customers);
+      // batch.deleteAll(invoices);
+      batch.deleteAll(expenses);
+      batch.deleteAll(suppliers);
+      batch.deleteAll(purchases);
+    });
+  }
 }
 
 
@@ -128,6 +143,7 @@ LazyDatabase _openConnection() {
         'inventory.sqlite',
       ),
     );
+    print(file.path);
 
     return NativeDatabase(file);
   });

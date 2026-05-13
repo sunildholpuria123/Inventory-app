@@ -7,9 +7,6 @@ class Invoices extends Table {
   TextColumn get invoiceNo =>
       text()();
 
-  IntColumn get customerId =>
-      integer()();
-
   TextColumn get customerName =>
       text()();
 
@@ -23,13 +20,28 @@ class Invoices extends Table {
       real()();
 
   RealColumn get discount =>
-      real()();
+      real().withDefault(
+        const Constant(0),
+      )();
 
   RealColumn get grandTotal =>
       real()();
+
+  TextColumn get paymentMethod =>
+      text().withDefault(
+        const Constant('CASH'),
+      )();
+
+  TextColumn get paymentStatus =>
+      text().withDefault(
+        const Constant('PAID'),
+      )();
 
   DateTimeColumn get createdAt =>
       dateTime().withDefault(
         currentDateAndTime,
       )();
+
+  TextColumn get pdfPath =>
+      text().nullable()();
 }

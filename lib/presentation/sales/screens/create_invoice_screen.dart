@@ -8,17 +8,13 @@ import '../widgets/invoice_product_list.dart';
 import '../widgets/invoice_summary.dart';
 import '../widgets/product_dropdown.dart';
 import 'invoice_pdf_service.dart';
-class CreateInvoiceScreen
-    extends ConsumerWidget {
-  const CreateInvoiceScreen({
-    super.key,
-  });
+
+class CreateInvoiceScreen extends ConsumerWidget {
+  const CreateInvoiceScreen({super.key});
 
   @override
-  Widget build(
-      BuildContext context,
-      WidgetRef ref,
-      ) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    String paymentMethod = 'CASH';
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -26,77 +22,58 @@ class CreateInvoiceScreen
         child: Column(
           children: [
             Row(
-              mainAxisAlignment:
-              MainAxisAlignment
-                  .spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Create Invoice',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineMedium,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
 
                 ElevatedButton.icon(
                   onPressed: () async {
-                    final customer = ref.read(
-                      selectedCustomerProvider,
-                    );
+                    final customer = ref.read(selectedCustomerProvider);
 
-                    final items = ref.read(
-                      invoiceItemsProvider,
-                    );
+                    final items = ref.read(invoiceItemsProvider);
 
-                    final total = ref.read(
-                      grandTotalProvider,
-                    );
+                    final total = ref.read(grandTotalProvider);
 
-                    // Validate customer
+                    final subtotal = ref.read(subtotalProvider);
+
+                    final tax = ref.read(taxProvider);
+
+                    final discount = ref.read(discountProvider);
+
+                    /// VALIDATE CUSTOMER
                     if (customer == null) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Select customer',
-                          ),
-                        ),
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Select customer')),
                       );
 
                       return;
                     }
 
-                    // Validate products
+                    /// VALIDATE PRODUCTS
                     if (items.isEmpty) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Add products',
-                          ),
-                        ),
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Add products')),
                       );
 
                       return;
                     }
 
-                    // Save invoice in database
-                    final repo = ref.read(
-                      salesRepositoryProvider,
-                    );
+                    /// GENERATE INVOICE NUMBER
+                    final invoiceNo =
+                        'INV-${DateTime.now().year}'
+                        '${DateTime.now().month.toString().padLeft(2, '0')}'
+                        '${DateTime.now().day.toString().padLeft(2, '0')}-'
+                        '${DateTime.now().millisecondsSinceEpoch}';
 
-                    await repo.saveInvoice(
-                      customerId: customer.id,
-                      items: items,
-                      total: total,
-                    );
+                    /// PDF SERVICE
+                    final pdfService = InvoicePdfService();
 
-                    // Generate PDF
-                    final pdfService =
-                    InvoicePdfService();
-
-                    await pdfService.generateInvoice(
-                      invoiceNo:
-                      'INV-${DateTime.now().millisecondsSinceEpoch}',
+                    /// GENERATE PDF FIRST
+                    final pdfPath = await pdfService.generateInvoice(
+                      invoiceNo: invoiceNo,
 
                       customerName: customer.name,
 
@@ -105,80 +82,98 @@ class CreateInvoiceScreen
                       items: items
                           .map(
                             (e) => InvoiceItemModel(
-                          name: e.product.name,
-                          qty: e.qty,
-                          price: e.price,
-                          subtotal: e.subtotal,
-                        ),F
-                      )
+                              product: e.product,
+                              qty: e.qty,
+                              price: e.price,
+                            ),
+                          )
                           .toList(),
 
-                      subtotal: ref.read(
-                        subtotalProvider,
-                      ),
+                      subtotal: subtotal,
 
-                      tax: ref.read(
-                        taxProvider,
-                      ),
+                      tax: tax,
 
-                      discount: ref.read(
-                        discountProvider,
-                      ),
+                      discount: discount,
 
                       grandTotal: total,
+
+                      paymentMethod: paymentMethod,
                     );
 
-                    // Clear cart
-                    ref
-                        .read(
-                      invoiceItemsProvider.notifier,
-                    )
-                        .state = [];
+                    /// SAVE INVOICE IN DATABASE
+                    final repo = ref.read(salesRepositoryProvider);
 
-                    // Success message
+                    await repo.saveInvoice(
+                      customerName: customer.name,
+                      customerPhone: customer.phone,
+                      subtotal: subtotal,
+                      tax: tax,
+                      discount: discount,
+                      grandTotal: total,
+                      paymentMethod: paymentMethod,
+                      pdfPath: pdfPath,
+                    );
+
+                    /// CLEAR CART
+                    ref.read(invoiceItemsProvider.notifier).state = [];
+
+                    /// SUCCESS MESSAGE
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text(
-                            'Invoice Saved Successfully',
-                          ),
+                          content: Text('Invoice Saved Successfully'),
                         ),
                       );
                     }
                   },
-                  icon: const Icon(
-                    Icons.save,
-                  ),
-                  label: const Text(
-                    'Save Invoice',
-                  ),
+                  icon: const Icon(Icons.save),
+                  label: const Text('Save Invoice'),
                 ),
               ],
             ),
 
             const SizedBox(height: 20),
 
-            const Row(
+            Row(
               children: [
-                Expanded(
-                  child:
-                  CustomerDropdown(),
-                ),
+                const Expanded(child: CustomerDropdown()),
 
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
 
+                const Expanded(child: ProductDropdown()),
+                const SizedBox(width: 20),
                 Expanded(
-                  child: ProductDropdown(),
+                  child: DropdownButtonFormField<String>(
+                    value: paymentMethod,
+
+                    decoration: const InputDecoration(
+                      labelText: 'Payment Method',
+                    ),
+
+                    items: const [
+                      DropdownMenuItem(value: 'CASH', child: Text('Cash')),
+
+                      DropdownMenuItem(value: 'UPI', child: Text('UPI')),
+
+                      DropdownMenuItem(value: 'CARD', child: Text('Card')),
+
+                      DropdownMenuItem(
+                        value: 'BANK',
+                        child: Text('Bank Transfer'),
+                      ),
+                    ],
+
+                    onChanged: (value) {
+                      paymentMethod = value!;
+                    },
+                  ),
                 ),
               ],
             ),
 
             const SizedBox(height: 20),
 
-            const Expanded(
-              child: InvoiceProductList(),
-            ),
+            const Expanded(child: InvoiceProductList()),
 
             const SizedBox(height: 20),
 

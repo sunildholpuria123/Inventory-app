@@ -29,139 +29,142 @@ class AppSidebar
         0xff111827,
       ),
 
-      child: Column(
-        children: [
-          const SizedBox(height: 40),
+      child: SafeArea(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const SizedBox(height: 40),
 
-          const Icon(
-            Icons.inventory_2,
-            size: 70,
-            color: Colors.white,
-          ),
-
-          const SizedBox(height: 15),
-
-          const Text(
-            'Inventory ERP',
-            style: TextStyle(
+            const Icon(
+              Icons.inventory_2,
+              size: 70,
               color: Colors.white,
-              fontSize: 24,
-              fontWeight:
-              FontWeight.bold,
             ),
-          ),
 
-          const SizedBox(height: 40),
+            const SizedBox(height: 15),
 
-          buildItem(
-            ref,
-            icon: Icons.dashboard,
-            title: 'Dashboard',
-            index: 0,
-            selected: selected,
-          ),
+            const Text(
+              'Inventory ERP',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight:
+                FontWeight.bold,
+              ),
+            ),
 
-          buildItem(
-            ref,
-            icon:
-            Icons.inventory_2,
-            title: 'Products',
-            index: 1,
-            selected: selected,
-          ),
+            const SizedBox(height: 40),
 
-          buildItem(
-            ref,
-            icon: Icons.people,
-            title: 'Customers',
-            index: 2,
-            selected: selected,
-          ),
+            buildItem(
+              ref,
+              icon: Icons.dashboard,
+              title: 'Dashboard',
+              index: 0,
+              selected: selected,
+            ),
 
-          buildItem(
-            ref,
-            icon:
-            Icons.receipt_long,
-            title: 'Sales',
-            index: 3,
-            selected: selected,
-          ),
+            buildItem(
+              ref,
+              icon:
+              Icons.inventory_2,
+              title: 'Products',
+              index: 1,
+              selected: selected,
+            ),
 
-          buildItem(
-            ref,
-            icon:
-            Icons.shopping_cart,
-            title: 'Purchases',
-            index: 4,
-            selected: selected,
-          ),
+            buildItem(
+              ref,
+              icon: Icons.people,
+              title: 'Customers',
+              index: 2,
+              selected: selected,
+            ),
 
-          buildItem(
-            ref,
-            icon:
-            Icons.money_off,
-            title: 'Expenses',
-            index: 5,
-            selected: selected,
-          ),
+            buildItem(
+              ref,
+              icon:
+              Icons.receipt_long,
+              title: 'Sales',
+              index: 3,
+              selected: selected,
+            ),
 
-          buildItem(
-            ref,
-            icon: Icons.bar_chart,
-            title: 'Reports',
-            index: 6,
-            selected: selected,
-          ),
+            buildItem(
+              ref,
+              icon:
+              Icons.shopping_cart,
+              title: 'Purchases',
+              index: 4,
+              selected: selected,
+            ),
 
-          buildItem(
-            ref,
-            icon: Icons.settings,
-            title: 'Settings',
-            index: 7,
-            selected: selected,
-          ),
-          buildItem(
-            ref,
-            icon: Icons.local_shipping,
-            title: 'Suppliers',
-            index: 8,
-            selected: selected,
-          ),
-          const Spacer(),
-          buildItem(
-            ref,
-            icon: Icons.logout,
-            title: 'Logout',
-            index: -1,
-            selected: selected,
-            onTap: () async {
-              final repo = AuthRepository(
-                AppDatabase(),
-              );
+            buildItem(
+              ref,
+              icon:
+              Icons.money_off,
+              title: 'Expenses',
+              index: 5,
+              selected: selected,
+            ),
 
-              await repo.logout();
+            buildItem(
+              ref,
+              icon: Icons.bar_chart,
+              title: 'Reports',
+              index: 6,
+              selected: selected,
+            ),
 
-              if (context.mounted) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/',
-                      (route) => false,
+            buildItem(
+              ref,
+              icon: Icons.settings,
+              title: 'Settings',
+              index: 7,
+              selected: selected,
+            ),
+            buildItem(
+              ref,
+              icon: Icons.local_shipping,
+              title: 'Suppliers',
+              index: 8,
+              selected: selected,
+            ),
+            const Spacer(),
+            buildItem(
+              ref,
+              icon: Icons.logout,
+              title: 'Logout',
+              index: -1,
+              selected: selected,
+              onTap: () async {
+                final repo = AuthRepository(
+                  AppDatabase(),
                 );
-              }
-            },
-          ),
-          buildItem(
-            ref,
-            icon: Icons.close,
-            title: 'Exit',
-            index: -2,
-            selected: selected,
-            onTap: () async {
-              await windowManager.close();
-            },
-          ),
 
-        ],
+                await repo.logout();
+
+                if (context.mounted) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/',
+                        (route) => false,
+                  );
+                }
+              },
+            ),
+            buildItem(
+              ref,
+              icon: Icons.close,
+              title: 'Exit',
+              index: -2,
+              selected: selected,
+              onTap: () async {
+                await windowManager.close();
+              },
+            ),
+
+          ],
+        ),
       ),
     );
   }
