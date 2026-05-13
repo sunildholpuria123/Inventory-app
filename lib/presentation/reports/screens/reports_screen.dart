@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/profit_chart.dart';
-import '../widgets/report_export_service.dart';
-import '../widgets/report_filter.dart';
-import '../widgets/report_kpi_cards.dart';
-import '../widgets/sales_chart.dart';
+import '../widgets/monthly_sales_chart.dart';
+
+import '../widgets/reports_summary_cards.dart';
+
+import '../widgets/top_products_widget.dart';
+
+import '../widgets/report_date_filter_widget.dart';
 
 class ReportsScreen
     extends StatelessWidget {
@@ -13,75 +15,58 @@ class ReportsScreen
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+      BuildContext context,
+      ) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      body: SingleChildScrollView(
+        padding:
+        const EdgeInsets.all(
+          20,
+        ),
 
         child: Column(
+          crossAxisAlignment:
+          CrossAxisAlignment
+              .start,
+
           children: [
-            Row(
-              mainAxisAlignment:
-              MainAxisAlignment
-                  .spaceBetween,
+            Text(
+              'Reports & Analytics',
 
-              children: [
-                Text(
-                  'Reports & Analytics',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineMedium,
-                ),
-
-                const ReportFilter(),
-              ],
+              style:
+              Theme.of(context)
+                  .textTheme
+                  .headlineMedium,
             ),
 
-            const SizedBox(height: 20),
-
-            const ReportKpiCards(),
-
-            const SizedBox(height: 20),
-
-            Expanded(
-              child: Row(
-                children: [
-                  const Expanded(
-                    flex: 2,
-                    child: SalesChart(),
-                  ),
-
-                  const SizedBox(width: 20),
-
-                  Expanded(
-                    child: Column(
-                      children: const [
-                        Expanded(
-                          child:
-                          ProfitChart(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            ElevatedButton.icon(
-              onPressed: () async {
-                final service =
-                ReportExportService();
-
-                await service.exportReport();
-              },
-
-              icon:
-              const Icon(Icons.download),
-
-              label: const Text(
-                'Export Report',
-              ),
+            const SizedBox(
+              height: 20,
             ),
 
+            /// DATE FILTER
+            const ReportDateFilterWidget(),
+
+            const SizedBox(
+              height: 20,
+            ),
+
+            /// SUMMARY CARDS
+            const ReportsSummaryCards(),
+
+            const SizedBox(
+              height: 20,
+            ),
+
+            /// MONTHLY SALES CHART
+            const MonthlySalesChart(),
+
+            const SizedBox(
+              height: 20,
+            ),
+
+            /// TOP PRODUCTS
+            const TopProductsWidget(),
           ],
         ),
       ),

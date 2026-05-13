@@ -1,29 +1,63 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final selectedReportFilterProvider =
-StateProvider<String>(
-      (ref) => 'Monthly',
+import '../../../data/repositories/reports_repository.dart';
+
+import '../../dashboard/provider/dashboard_provider.dart';
+
+final reportsRepositoryProvider =
+Provider<ReportsRepository>(
+      (ref) {
+    final db = ref.watch(
+      databaseProvider,
+    );
+
+    return ReportsRepository(
+      db,
+    );
+  },
 );
 
-final totalSalesProvider =
-Provider<double>((ref) {
-  return 150000;
-});
-
-final totalExpenseProvider =
-Provider<double>((ref) {
-  return 50000;
-});
-
-final totalProfitProvider =
-Provider<double>((ref) {
-  final sales = ref.watch(
-    totalSalesProvider,
+/// MONTHLY SALES
+final monthlySalesProvider =
+FutureProvider((ref) async {
+  final repo = ref.watch(
+    reportsRepositoryProvider,
   );
 
-  final expenses = ref.watch(
-    totalExpenseProvider,
+  return repo.getMonthlySales();
+});
+
+/// TOP PRODUCTS
+final topProductsProvider =
+FutureProvider((ref) async {
+  final repo = ref.watch(
+    reportsRepositoryProvider,
   );
 
-  return sales - expenses;
+  return repo.getTopProducts();
 });
+
+/// PROFIT
+final profitProvider =
+FutureProvider<double>(
+      (ref) async {
+    final repo = ref.watch(
+      reportsRepositoryProvider,
+    );
+
+    return repo.getProfit();
+  },
+);
+
+/// INVENTORY VALUE
+final inventoryValueProvider =
+FutureProvider<double>(
+      (ref) async {
+    final repo = ref.watch(
+      reportsRepositoryProvider,
+    );
+
+    return repo
+        .getInventoryValue();
+  },
+);
