@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/widgets/report_export_buttons.dart' show ReportExportButtons;
 import '../widgets/monthly_sales_chart.dart';
 
 import '../widgets/reports_summary_cards.dart';
@@ -67,6 +68,11 @@ class ReportsScreen
 
             /// TOP PRODUCTS
             const TopProductsWidget(),
+            const SizedBox(
+              height: 20,
+            ),
+
+            const ReportExportButtons(),
           ],
         ),
       ),
