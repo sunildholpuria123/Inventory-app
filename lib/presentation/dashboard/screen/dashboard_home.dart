@@ -5,13 +5,8 @@ import '../widget/low_stock_widget.dart';
 import '../widget/recent_sales_widget.dart';
 import '../widget/sales_overview_chart.dart';
 
-
-
-class DashboardHome
-    extends StatelessWidget {
-  const DashboardHome({
-    super.key,
-  });
+class DashboardHome extends StatelessWidget {
+  const DashboardHome({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,24 +16,15 @@ class DashboardHome
       child: Column(
         children: [
           Row(
-            mainAxisAlignment:
-            MainAxisAlignment
-                .spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
             children: [
               Text(
                 'Dashboard',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
 
-              CircleAvatar(
-                radius: 24,
-                child: Icon(
-                  Icons.person,
-                ),
-              ),
+              CircleAvatar(radius: 24, child: Icon(Icons.person)),
             ],
           ),
 
@@ -51,28 +37,18 @@ class DashboardHome
           Expanded(
             child: Row(
               children: [
-                const Expanded(
-                  flex: 2,
-                  child:
-                  SalesOverviewChart(),
-                ),
+                const Expanded(flex: 2, child: SalesOverviewChart()),
 
                 const SizedBox(width: 20),
 
                 Expanded(
                   child: Column(
                     children: const [
-                      Expanded(
-                        child:
-                        RecentSalesWidget(),
-                      ),
+                      Expanded(child: RecentSalesWidget()),
 
                       SizedBox(height: 20),
 
-                      Expanded(
-                        child:
-                        LowStockWidget(),
-                      ),
+                      Expanded(child: LowStockWidget()),
                     ],
                   ),
                 ),

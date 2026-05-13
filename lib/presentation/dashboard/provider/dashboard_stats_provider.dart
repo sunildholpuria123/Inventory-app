@@ -1,0 +1,90 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../data/repositories/dashboard_repository.dart';
+
+import 'dashboard_provider.dart';
+
+final dashboardRepositoryProvider =
+Provider<DashboardRepository>(
+      (ref) {
+    final db = ref.watch(
+      databaseProvider,
+    );
+
+    return DashboardRepository(
+      db,
+    );
+  },
+);
+
+/// REVENUE
+final revenueProvider =
+FutureProvider<double>(
+      (ref) async {
+    final repo = ref.watch(
+      dashboardRepositoryProvider,
+    );
+
+    return repo.getTotalRevenue();
+  },
+);
+
+/// PRODUCTS
+final totalProductsProvider =
+FutureProvider<int>(
+      (ref) async {
+    final repo = ref.watch(
+      dashboardRepositoryProvider,
+    );
+
+    return repo.getTotalProducts();
+  },
+);
+
+/// CUSTOMERS
+final totalCustomersProvider =
+FutureProvider<int>(
+      (ref) async {
+    final repo = ref.watch(
+      dashboardRepositoryProvider,
+    );
+
+    return repo.getTotalCustomers();
+  },
+);
+
+/// SALES
+final totalSalesProvider =
+FutureProvider<int>(
+      (ref) async {
+    final repo = ref.watch(
+      dashboardRepositoryProvider,
+    );
+
+    return repo.getTotalSales();
+  },
+);
+
+/// LOW STOCK
+final lowStockProvider =
+FutureProvider(
+      (ref) async {
+    final repo = ref.watch(
+      dashboardRepositoryProvider,
+    );
+
+    return repo.getLowStockProducts();
+  },
+);
+
+/// RECENT SALES
+final recentSalesProvider =
+FutureProvider(
+      (ref) async {
+    final repo = ref.watch(
+      dashboardRepositoryProvider,
+    );
+
+    return repo.getRecentInvoices();
+  },
+);

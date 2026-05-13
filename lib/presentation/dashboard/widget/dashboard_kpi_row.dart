@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../reports/provider/report_provider.dart' hide totalSalesProvider;
-import '../provider/dashboard_provider.dart';
+import '../provider/dashboard_stats_provider.dart';
 
 class DashboardKpiRow extends ConsumerWidget {
   const DashboardKpiRow({super.key});
@@ -11,93 +11,81 @@ class DashboardKpiRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final revenue = ref.watch(revenueProvider);
 
-    final totalProducts = ref.watch(totalProductsProvider);
+    final products = ref.watch(totalProductsProvider);
 
-    final totalCustomers = ref.watch(totalCustomersProvider);
+    final customers = ref.watch(totalCustomersProvider);
 
-    final totalSales = ref.watch(totalSalesProvider);
+    final sales = ref.watch(totalSalesProvider);
 
     return Row(
       children: [
-        /// REVENUE
         Expanded(
-          child: revenue.when(
-            data: (value) {
-              return DashboardKpiCard(
-                title: 'Revenue',
+          child: DashboardKpiCard(
+            title: 'Revenue',
 
-                value: '₹${value.toStringAsFixed(2)}',
+            value: revenue.when(
+              data: (value) => '₹${value.toStringAsFixed(0)}',
 
-                icon: Icons.currency_rupee,
-              );
-            },
+              loading: () => '...',
 
-            loading: () => const DashboardLoadingCard(),
+              error: (_, __) => '0',
+            ),
 
-            error: (e, _) => DashboardErrorCard(error: e.toString()),
+            icon: Icons.currency_rupee,
           ),
         ),
 
         const SizedBox(width: 20),
 
-        /// PRODUCTS
         Expanded(
-          child: totalProducts.when(
-            data: (value) {
-              return DashboardKpiCard(
-                title: 'Products',
+          child: DashboardKpiCard(
+            title: 'Products',
 
-                value: value.toString(),
+            value: products.when(
+              data: (value) => value.toString(),
 
-                icon: Icons.inventory_2,
-              );
-            },
+              loading: () => '...',
 
-            loading: () => const DashboardLoadingCard(),
+              error: (_, __) => '0',
+            ),
 
-            error: (e, _) => DashboardErrorCard(error: e.toString()),
+            icon: Icons.inventory_2,
           ),
         ),
 
         const SizedBox(width: 20),
 
-        /// CUSTOMERS
         Expanded(
-          child: totalCustomers.when(
-            data: (value) {
-              return DashboardKpiCard(
-                title: 'Customers',
+          child: DashboardKpiCard(
+            title: 'Customers',
 
-                value: value.toString(),
+            value: customers.when(
+              data: (value) => value.toString(),
 
-                icon: Icons.people,
-              );
-            },
+              loading: () => '...',
 
-            loading: () => const DashboardLoadingCard(),
+              error: (_, __) => '0',
+            ),
 
-            error: (e, _) => DashboardErrorCard(error: e.toString()),
+            icon: Icons.people,
           ),
         ),
 
         const SizedBox(width: 20),
 
-        /// SALES
         Expanded(
-          child: totalSales.when(
-            data: (value) {
-              return DashboardKpiCard(
-                title: 'Orders',
+          child: DashboardKpiCard(
+            title: 'Sales',
 
-                value: value.toString(),
+            value: sales.when(
+              data: (value) => value.toString(),
 
-                icon: Icons.shopping_cart,
-              );
-            },
+              loading: () => '...',
 
-            loading: () => const DashboardLoadingCard(),
+              error: (_, __) => '0',
+            ),
 
-            error: (e, _) => DashboardErrorCard(error: e.toString()),
+            icon: Icons.shopping_cart,
           ),
         ),
       ],
@@ -122,89 +110,37 @@ class DashboardKpiCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 3,
-
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 4,
 
       child: Padding(
         padding: const EdgeInsets.all(20),
 
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 28,
-
-              backgroundColor: Colors.indigo.withOpacity(0.1),
-
-              child: Icon(icon, color: Colors.indigo),
-            ),
+            CircleAvatar(radius: 28, child: Icon(icon)),
 
             const SizedBox(width: 20),
 
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
 
-                children: [
-                  Text(title, style: TextStyle(color: Colors.grey[700])),
+              children: [
+                Text(title),
 
-                  const SizedBox(height: 5),
+                const SizedBox(height: 5),
 
-                  Text(
-                    value,
+                Text(
+                  value,
 
-                    overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 24,
 
-                    style: const TextStyle(
-                      fontSize: 24,
-
-                      fontWeight: FontWeight.bold,
-                    ),
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class DashboardLoadingCard extends StatelessWidget {
-  const DashboardLoadingCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Card(
-      child: SizedBox(
-        height: 110,
-
-        child: Center(child: CircularProgressIndicator()),
-      ),
-    );
-  }
-}
-
-class DashboardErrorCard extends StatelessWidget {
-  final String error;
-
-  const DashboardErrorCard({super.key, required this.error});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: SizedBox(
-        height: 110,
-
-        child: Center(
-          child: Text(
-            error,
-
-            textAlign: TextAlign.center,
-
-            style: const TextStyle(color: Colors.red),
-          ),
         ),
       ),
     );

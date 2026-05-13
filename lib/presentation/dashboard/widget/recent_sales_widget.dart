@@ -1,62 +1,68 @@
 import 'package:flutter/material.dart';
 
-class RecentSalesWidget
-    extends StatelessWidget {
-  const RecentSalesWidget({
-    super.key,
-  });
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../provider/dashboard_stats_provider.dart';
+
+class RecentSalesWidget extends ConsumerWidget {
+  const RecentSalesWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sales = ref.watch(recentSalesProvider);
+
     return Card(
       child: Padding(
-        padding:
-        const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
 
         child: Column(
-          crossAxisAlignment:
-          CrossAxisAlignment
-              .start,
+          crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
             const Text(
               'Recent Sales',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight:
-                FontWeight.bold,
-              ),
+
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 20),
 
-            Expanded(
-              child: ListView.builder(
-                itemCount: 5,
+            sales.when(
+              data: (items) {
+                if (items.isEmpty) {
+                  return const Text('No Sales Found');
+                }
 
-                itemBuilder:
-                    (context, index) {
-                  return ListTile(
-                    leading:
-                    const CircleAvatar(
-                      child:
-                      Icon(Icons.receipt),
-                    ),
+                return ListView.builder(
+                  shrinkWrap: true,
 
-                    title: Text(
-                      'Invoice #100$index',
-                    ),
+                  physics: const NeverScrollableScrollPhysics(),
 
-                    subtitle: const Text(
-                      'Customer Name',
-                    ),
+                  itemCount: items.length,
 
-                    trailing: const Text(
-                      '₹5000',
-                    ),
-                  );
-                },
-              ),
+                  itemBuilder: (context, index) {
+                    final sale = items[index];
+
+                    return ListTile(
+                      leading: const CircleAvatar(child: Icon(Icons.receipt)),
+
+                      title: Text(sale.customerName),
+
+                      subtitle: Text(sale.invoiceNo),
+
+                      trailing: Text(
+                        '₹${sale.grandTotal.toStringAsFixed(0)}',
+
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  },
+                );
+              },
+
+              loading: () => const CircularProgressIndicator(),
+
+              error: (e, _) => Text(e.toString()),
             ),
           ],
         ),
