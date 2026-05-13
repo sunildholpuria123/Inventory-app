@@ -129,6 +129,13 @@ class AppSidebar
               index: 8,
               selected: selected,
             ),
+            buildItem(
+              ref,
+              icon: Icons.backup,
+              title: 'Backup',
+              index: 9,
+              selected: selected,
+            ),
             const Spacer(),
             buildItem(
               ref,

@@ -5,12 +5,15 @@ import 'package:window_manager/window_manager.dart';
 import 'core/provider/theme_provider.dart';
 import 'core/services/notification_service.dart';
 
+import 'data/repositories/backup_repository.dart' show BackupRepository;
 import 'presentation/auth/screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await NotificationService.init();
+  await autoBackup();
+
 
   await windowManager.ensureInitialized();
 
@@ -34,6 +37,11 @@ void main() async {
       child: InventoryApp(),
     ),
   );
+}
+Future<void> autoBackup() async {
+  final repo = BackupRepository();
+
+  await repo.backupToGoogle();
 }
 
 class InventoryApp extends ConsumerWidget {

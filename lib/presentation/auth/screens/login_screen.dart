@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/services/auto_backup_service.dart' show AutoBackupService;
 import '../../dashboard/screen/dashboard_screen.dart';
 import '../provider/auth_provider.dart';
 
@@ -159,6 +160,8 @@ class _LoginScreenState
                               const DashboardScreen(),
                             ),
                           );
+                          await AutoBackupService
+                              .autoBackup();
                         }
                       },
 
