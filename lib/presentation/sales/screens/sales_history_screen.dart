@@ -1,139 +1,207 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/sales_analytics_card.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../provider/sales_history_provider.dart';
+
+import '../provider/sales_repository_provider.dart';
+
+import '../widgets/invoice_details_dialog.dart' show InvoiceDetailsDialog;
 
 class SalesHistoryScreen
-    extends StatelessWidget {
+    extends ConsumerWidget {
   const SalesHistoryScreen({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+      BuildContext context,
+      WidgetRef ref,
+      ) {
+    final invoices =
+    ref.watch(
+      salesHistoryProvider,
+    );
+
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding:
+        const EdgeInsets.all(
+          20,
+        ),
 
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment:
-              MainAxisAlignment
-                  .spaceBetween,
-              children: [
-                Text(
-                  'Sales History',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineMedium,
-                ),
+            TextField(
+              decoration:
+              const InputDecoration(
+                prefixIcon:
+                Icon(Icons.search),
 
-                SizedBox(
-                  width: 300,
+                hintText:
+                'Search Invoice...',
+              ),
 
-                  child: TextField(
-                    decoration:
-                    const InputDecoration(
-                      hintText:
-                      'Search Invoice',
-                      prefixIcon:
-                      Icon(Icons.search),
-                    ),
-                  ),
-                ),
-              ],
+              onChanged: (value) {
+                ref
+                    .read(
+                  salesSearchProvider
+                      .notifier,
+                )
+                    .state = value;
+              },
             ),
 
-            const SizedBox(height: 20),
-            const Row(
-              children: [
-                SalesAnalyticsCard(
-                  title: 'Today Sales',
-                  value: '₹25,000',
-                ),
-
-                SizedBox(width: 20),
-
-                SalesAnalyticsCard(
-                  title: 'Invoices',
-                  value: '15',
-                ),
-
-                SizedBox(width: 20),
-
-                SalesAnalyticsCard(
-                  title: 'Pending',
-                  value: '₹5,000',
-                ),
-              ],
+            const SizedBox(
+              height: 20,
             ),
+
             Expanded(
-              child: Card(
-                child: DataTable(
-                  columns: const [
-                    DataColumn(
-                      label:
-                      Text('Invoice'),
-                    ),
-                    DataColumn(
-                      label:
-                      Text('Customer'),
-                    ),
-                    DataColumn(
-                      label:
-                      Text('Date'),
-                    ),
-                    DataColumn(
-                      label:
-                      Text('Total'),
-                    ),
-                    DataColumn(
-                      label:
-                      Text('Status'),
-                    ),
-                  ],
+              child: invoices.when(
+                data: (items) {
+                  if (items
+                      .isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No Sales Found',
+                      ),
+                    );
+                  }
 
-                  rows: List.generate(
-                    10,
-                        (index) {
-                      return DataRow(
-                        cells: [
-                          DataCell(
-                            Text(
-                              'INV-100$index',
+                  return ListView.builder(
+                    itemCount:
+                    items.length,
+
+                    itemBuilder: (
+                        context,
+                        index,
+                        ) {
+                      final invoice =
+                      items[index];
+
+                      return Card(
+                        child: ListTile(
+                          leading:
+                          const CircleAvatar(
+                            child: Icon(
+                              Icons.receipt,
                             ),
                           ),
 
-                          DataCell(
-                            Text(
-                              'Customer $index',
-                            ),
+                          title: Text(
+                            invoice
+                                .customerName,
                           ),
 
-                          DataCell(
-                            Text(
-                              '12 Aug 2025',
-                            ),
-                          ),
+                          subtitle:
+                          Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment
+                                .start,
 
-                          DataCell(
-                            Text(
-                              '₹5000',
-                            ),
-                          ),
-
-                          DataCell(
-                            Chip(
-                              label: Text(
-                                'PAID',
+                            children: [
+                              Text(
+                                invoice
+                                    .invoiceNo,
                               ),
+
+                              Text(
+                                invoice
+                                    .createdAt
+                                    .toString(),
+                              ),
+                            ],
+                          ),
+
+                          trailing:
+                          SizedBox(
+                            width: 220,
+
+                            child: Row(
+                              children: [
+                                Text(
+                                  '₹${invoice.grandTotal.toStringAsFixed(0)}',
+                                ),
+
+                                IconButton(
+                                  onPressed:
+                                      () {
+                                    showDialog(
+                                      context:
+                                      context,
+
+                                      builder:
+                                          (_) =>
+                                          InvoiceDetailsDialog(
+                                            invoice:
+                                            invoice,
+                                          ),
+                                    );
+                                  },
+
+                                  icon:
+                                  const Icon(
+                                    Icons
+                                        .visibility,
+                                  ),
+                                ),
+
+                                IconButton(
+                                  onPressed:
+                                      () async {
+                                    final repo =
+                                    ref.read(
+                                      salesRepositoryProvider,
+                                    );
+
+                                    await repo
+                                        .restoreStockFromInvoice(
+                                      invoice
+                                          .id,
+                                    );
+
+                                    await repo
+                                        .deleteInvoice(
+                                      invoice
+                                          .id,
+                                    );
+
+                                    ref.refresh(
+                                      salesHistoryProvider,
+                                    );
+                                  },
+
+                                  icon:
+                                  const Icon(
+                                    Icons
+                                        .delete,
+
+                                    color:
+                                    Colors.red,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       );
                     },
-                  ),
+                  );
+                },
+
+                loading: () =>
+                const Center(
+                  child:
+                  CircularProgressIndicator(),
                 ),
+
+                error: (e, _) =>
+                    Center(
+                      child: Text(
+                        e.toString(),
+                      ),
+                    ),
               ),
             ),
           ],

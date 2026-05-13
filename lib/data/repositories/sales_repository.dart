@@ -66,4 +66,81 @@ class SalesRepository {
 
     return invoiceId;
   }
+
+  /// GET INVOICES
+  Future<List<Invoice>> getInvoices({String search = ''}) async {
+    final query = db.select(db.invoices);
+
+    if (search.isNotEmpty) {
+      query.where(
+        (tbl) =>
+            tbl.customerName.like('%$search%') |
+            tbl.invoiceNo.like('%$search%'),
+      );
+    }
+
+    query.orderBy([
+      (tbl) => OrderingTerm(expression: tbl.createdAt, mode: OrderingMode.desc),
+    ]);
+
+    return query.get();
+  }
+
+  /// DELETE INVOICE
+  Future<void> deleteInvoice(int invoiceId) async {
+    /// DELETE ITEMS
+    await (db.delete(
+      db.invoiceItems,
+    )..where((tbl) => tbl.invoiceId.equals(invoiceId))).go();
+
+    /// DELETE INVOICE
+    await (db.delete(
+      db.invoices,
+    )..where((tbl) => tbl.id.equals(invoiceId))).go();
+  }
+
+  Future<void> restoreStockFromInvoice(
+      int invoiceId,
+      ) async {
+    final items =
+    await (db.select(
+      db.invoiceItems,
+    )..where(
+          (tbl) =>
+          tbl.invoiceId.equals(
+            invoiceId,
+          ),
+    ))
+        .get();
+
+    for (final item in items) {
+      final product =
+      await (db.select(
+        db.products,
+      )..where(
+            (tbl) =>
+            tbl.id.equals(
+              item.productId,
+            ),
+      ))
+          .getSingle();
+
+      await (db.update(
+        db.products,
+      )..where(
+            (tbl) =>
+            tbl.id.equals(
+              item.productId,
+            ),
+      ))
+          .write(
+        ProductsCompanion(
+          stockQty: Value(
+            product.stockQty +
+                item.quantity,
+          ),
+        ),
+      );
+    }
+  }
 }
