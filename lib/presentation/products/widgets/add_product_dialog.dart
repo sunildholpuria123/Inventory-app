@@ -1,38 +1,61 @@
-import 'package:file_picker/file_picker.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../provider/product_provider.dart';
 
-class AddProductDialog
-    extends ConsumerStatefulWidget {
+import '../../../core/services/product_image_service.dart';
+
+class AddProductDialog extends ConsumerStatefulWidget {
   const AddProductDialog({super.key});
 
   @override
-  ConsumerState<AddProductDialog>
-  createState() =>
-      _AddProductDialogState();
+  ConsumerState<AddProductDialog> createState() => _AddProductDialogState();
 }
 
-class _AddProductDialogState
-    extends ConsumerState<AddProductDialog> {
+class _AddProductDialogState extends ConsumerState<AddProductDialog> {
   String? imagePath;
-  final nameController =
-  TextEditingController();
 
-  final purchaseController =
-  TextEditingController();
+  final nameController = TextEditingController();
 
-  final sellingController =
-  TextEditingController();
+  final purchaseController = TextEditingController();
 
-  final stockController =
-  TextEditingController();
+  final sellingController = TextEditingController();
+
+  final stockController = TextEditingController();
+
+  final barcodeController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
 
-  final barcodeController =
-  TextEditingController();
+  bool isSaving = false;
+
+  /// PICK + SAVE IMAGE
+  Future<void> pickImage() async {
+    final path = await ProductImageService.pickAndSaveImage();
+
+    if (path != null) {
+      setState(() {
+        imagePath = path;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+
+    purchaseController.dispose();
+
+    sellingController.dispose();
+
+    stockController.dispose();
+
+    barcodeController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,150 +63,216 @@ class _AddProductDialogState
       title: const Text('Add Product'),
 
       content: SizedBox(
-        width: 400,
+        width: 450,
 
-        child: Form(
-          key: formKey,
+        child: SingleChildScrollView(
+          child: Form(
+            key: formKey,
 
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
 
-            children: [
-              TextFormField(
-                controller: nameController,
+              children: [
+                /// IMAGE PICKER
+                Center(
+                  child: GestureDetector(
+                    onTap: pickImage,
 
-                decoration:
-                const InputDecoration(
-                  labelText: 'Product Name',
+                    child: Container(
+                      width: 120,
+                      height: 120,
+
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+
+                      child: imagePath == null
+                          ? const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+
+                              children: [
+                                Icon(Icons.add_a_photo, size: 40),
+
+                                SizedBox(height: 8),
+
+                                Text('Pick Image'),
+                              ],
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+
+                              child: Image.file(
+                                File(imagePath!),
+
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                    ),
+                  ),
                 ),
 
-                validator: (value) {
-                  if (value == null ||
-                      value.isEmpty) {
-                    return 'Enter product name';
-                  }
+                const SizedBox(height: 20),
 
-                  return null;
-                },
-              ),
+                /// PRODUCT NAME
+                TextFormField(
+                  controller: nameController,
 
-              const SizedBox(height: 15),
+                  decoration: const InputDecoration(labelText: 'Product Name'),
 
-              TextFormField(
-                controller:
-                purchaseController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Enter product name';
+                    }
 
-                keyboardType:
-                TextInputType.number,
-
-                decoration:
-                const InputDecoration(
-                  labelText:
-                  'Purchase Price',
+                    return null;
+                  },
                 ),
-              ),
 
-              const SizedBox(height: 15),
+                const SizedBox(height: 15),
 
-              TextFormField(
-                controller:
-                sellingController,
+                /// PURCHASE PRICE
+                TextFormField(
+                  controller: purchaseController,
 
-                keyboardType:
-                TextInputType.number,
+                  keyboardType: TextInputType.number,
 
-                decoration:
-                const InputDecoration(
-                  labelText:
-                  'Selling Price',
+                  decoration: const InputDecoration(
+                    labelText: 'Purchase Price',
+                  ),
+
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter purchase price';
+                    }
+
+                    return null;
+                  },
                 ),
-              ),
 
-              const SizedBox(height: 15),
+                const SizedBox(height: 15),
 
-              TextFormField(
-                controller: stockController,
+                /// SELLING PRICE
+                TextFormField(
+                  controller: sellingController,
 
-                keyboardType:
-                TextInputType.number,
+                  keyboardType: TextInputType.number,
 
-                decoration:
-                const InputDecoration(
-                  labelText:
-                  'Stock Quantity',
+                  decoration: const InputDecoration(labelText: 'Selling Price'),
+
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter selling price';
+                    }
+
+                    return null;
+                  },
                 ),
-              ),
 
-              const SizedBox(height: 15),
+                const SizedBox(height: 15),
 
-              TextFormField(
-                controller: barcodeController,
-                decoration: const InputDecoration(
-                  labelText: 'Barcode',
+                /// STOCK
+                TextFormField(
+                  controller: stockController,
+
+                  keyboardType: TextInputType.number,
+
+                  decoration: const InputDecoration(
+                    labelText: 'Stock Quantity',
+                  ),
+
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter stock quantity';
+                    }
+
+                    return null;
+                  },
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 15),
+
+                /// BARCODE
+                TextFormField(
+                  controller: barcodeController,
+
+                  decoration: const InputDecoration(labelText: 'Barcode'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
 
       actions: [
-        ElevatedButton.icon(
-          onPressed: () async {
-            final result =
-            await FilePicker.platform.pickFiles(
-              type: FileType.image,
-            );
-
-            if (result != null) {
-              imagePath =
-                  result.files.single.path;
-            }
-          },
-          icon: const Icon(Icons.image),
-          label: const Text('Pick Image'),
-        ),
         TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: isSaving
+              ? null
+              : () {
+                  Navigator.pop(context);
+                },
+
           child: const Text('Cancel'),
         ),
 
         ElevatedButton(
-          onPressed: () async {
-            if (!formKey.currentState!
-                .validate()) {
-              return;
-            }
+          onPressed: isSaving
+              ? null
+              : () async {
+                  if (!formKey.currentState!.validate()) {
+                    return;
+                  }
 
-            final repo = ref.read(
-              productRepositoryProvider,
-            );
+                  try {
+                    setState(() {
+                      isSaving = true;
+                    });
 
-            await repo.addProduct(
-              name: nameController.text,
+                    final repo = ref.read(productRepositoryProvider);
 
-              purchasePrice:
-              double.parse(
-                purchaseController.text,
-              ),
+                    await repo.addProduct(
+                      name: nameController.text.trim(),
 
-              sellingPrice:
-              double.parse(
-                sellingController.text,
-              ),
+                      purchasePrice: double.parse(purchaseController.text),
 
-              stockQty: int.parse(
-                stockController.text,
-              ),
-            );
+                      sellingPrice: double.parse(sellingController.text),
 
-            if (mounted) {
-              Navigator.pop(context);
-            }
-          },
-          child: const Text('Save'),
+                      stockQty: int.parse(stockController.text),
+
+                      imagePath: imagePath,
+                    );
+
+                    if (mounted) {
+                      Navigator.pop(context);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Product Added Successfully'),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(e.toString())));
+                  } finally {
+                    if (mounted) {
+                      setState(() {
+                        isSaving = false;
+                      });
+                    }
+                  }
+                },
+
+          child: isSaving
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text('Save'),
         ),
       ],
     );

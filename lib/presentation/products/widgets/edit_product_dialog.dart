@@ -1,60 +1,84 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/services/product_image_service.dart';
 import '../../../data/database/app_database.dart';
 import '../provider/product_provider.dart';
 
-class EditProductDialog
-    extends ConsumerStatefulWidget {
+class EditProductDialog extends ConsumerStatefulWidget {
   final Product product;
 
-  const EditProductDialog({
-    super.key,
-    required this.product,
-  });
+  const EditProductDialog({super.key, required this.product});
 
   @override
-  ConsumerState<EditProductDialog>
-  createState() =>
-      _EditProductDialogState();
+  ConsumerState<EditProductDialog> createState() => _EditProductDialogState();
 }
 
-class _EditProductDialogState
-    extends ConsumerState<EditProductDialog> {
-  late TextEditingController nameController;
+class _EditProductDialogState extends ConsumerState<EditProductDialog> {
+  final formKey = GlobalKey<FormState>();
 
-  late TextEditingController purchaseController;
+  late final TextEditingController nameController;
 
-  late TextEditingController sellingController;
+  late final TextEditingController purchaseController;
 
-  late TextEditingController stockController;
+  late final TextEditingController sellingController;
+
+  late final TextEditingController stockController;
+
+  String? selectedImagePath;
+
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
 
-    nameController =
-        TextEditingController(
-          text: widget.product.name,
-        );
+    nameController = TextEditingController(text: widget.product.name);
 
-    purchaseController =
-        TextEditingController(
-          text: widget.product.purchasePrice
-              .toString(),
-        );
+    purchaseController = TextEditingController(
+      text: widget.product.purchasePrice.toString(),
+    );
 
-    sellingController =
-        TextEditingController(
-          text: widget.product.sellingPrice
-              .toString(),
-        );
+    sellingController = TextEditingController(
+      text: widget.product.sellingPrice.toString(),
+    );
 
-    stockController =
-        TextEditingController(
-          text:
-          widget.product.stockQty.toString(),
-        );
+    stockController = TextEditingController(
+      text: widget.product.stockQty.toString(),
+    );
+
+    selectedImagePath = widget.product.imagePath;
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+
+    purchaseController.dispose();
+
+    sellingController.dispose();
+
+    stockController.dispose();
+
+    super.dispose();
+  }
+
+  /// PICK IMAGE
+  Future<void> pickImage() async {
+    final path = await ProductImageService.pickAndSaveImage();
+
+    if (path != null) {
+      /// DELETE OLD IMAGE
+      if (selectedImagePath != null && selectedImagePath != path) {
+        await ProductImageService.deleteImage(selectedImagePath);
+      }
+
+      setState(() {
+        selectedImagePath = path;
+      });
+    }
   }
 
   @override
@@ -63,54 +87,150 @@ class _EditProductDialogState
       title: const Text('Edit Product'),
 
       content: SizedBox(
-        width: 400,
+        width: 450,
 
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              decoration:
-              const InputDecoration(
-                labelText: 'Product Name',
-              ),
+        child: Form(
+          key: formKey,
+
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+
+              children: [
+                /// IMAGE
+                Center(
+                  child: GestureDetector(
+                    onTap: pickImage,
+
+                    child: Container(
+                      width: 130,
+                      height: 130,
+
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+
+                      child: selectedImagePath == null
+                          ? const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+
+                              children: [
+                                Icon(Icons.add_a_photo, size: 40),
+
+                                SizedBox(height: 10),
+
+                                Text('Select Image'),
+                              ],
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+
+                              child: Image.file(
+                                File(selectedImagePath!),
+
+                                fit: BoxFit.cover,
+
+                                errorBuilder: (_, __, ___) {
+                                  return const Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+
+                                    children: [
+                                      Icon(Icons.broken_image, size: 40),
+
+                                      SizedBox(height: 10),
+
+                                      Text('Image Error'),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                /// PRODUCT NAME
+                TextFormField(
+                  controller: nameController,
+
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Enter product name';
+                    }
+
+                    return null;
+                  },
+
+                  decoration: const InputDecoration(labelText: 'Product Name'),
+                ),
+
+                const SizedBox(height: 20),
+
+                /// PURCHASE PRICE
+                TextFormField(
+                  controller: purchaseController,
+
+                  keyboardType: TextInputType.number,
+
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Enter purchase price';
+                    }
+
+                    return null;
+                  },
+
+                  decoration: const InputDecoration(
+                    labelText: 'Purchase Price',
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                /// SELLING PRICE
+                TextFormField(
+                  controller: sellingController,
+
+                  keyboardType: TextInputType.number,
+
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Enter selling price';
+                    }
+
+                    return null;
+                  },
+
+                  decoration: const InputDecoration(labelText: 'Selling Price'),
+                ),
+
+                const SizedBox(height: 20),
+
+                /// STOCK
+                TextFormField(
+                  controller: stockController,
+
+                  keyboardType: TextInputType.number,
+
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Enter stock quantity';
+                    }
+
+                    return null;
+                  },
+
+                  decoration: const InputDecoration(
+                    labelText: 'Stock Quantity',
+                  ),
+                ),
+              ],
             ),
-
-            const SizedBox(height: 15),
-
-            TextField(
-              controller:
-              purchaseController,
-              decoration:
-              const InputDecoration(
-                labelText:
-                'Purchase Price',
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            TextField(
-              controller:
-              sellingController,
-              decoration:
-              const InputDecoration(
-                labelText:
-                'Selling Price',
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            TextField(
-              controller: stockController,
-              decoration:
-              const InputDecoration(
-                labelText:
-                'Stock Quantity',
-              ),
-            ),
-          ],
+          ),
         ),
       ),
 
@@ -119,41 +239,69 @@ class _EditProductDialogState
           onPressed: () {
             Navigator.pop(context);
           },
+
           child: const Text('Cancel'),
         ),
 
         ElevatedButton(
-          onPressed: () async {
-            final repo = ref.read(
-              productRepositoryProvider,
-            );
+          onPressed: isLoading
+              ? null
+              : () async {
+                  if (!formKey.currentState!.validate()) {
+                    return;
+                  }
 
-            await repo.updateProductData(
-              product:
-              widget.product.copyWith(
-                name: nameController.text,
+                  setState(() {
+                    isLoading = true;
+                  });
 
-                purchasePrice:
-                double.parse(
-                  purchaseController.text,
-                ),
+                  try {
+                    final repo = ref.read(productRepositoryProvider);
 
-                sellingPrice:
-                double.parse(
-                  sellingController.text,
-                ),
+                    await repo.updateProduct(
+                      id: widget.product.id,
 
-                stockQty: int.parse(
-                  stockController.text,
-                ),
-              ),
-            );
+                      name: nameController.text.trim(),
 
-            if (mounted) {
-              Navigator.pop(context);
-            }
-          },
-          child: const Text('Update'),
+                      purchasePrice: double.parse(purchaseController.text),
+
+                      sellingPrice: double.parse(sellingController.text),
+
+                      stockQty: int.parse(stockController.text),
+
+                      imagePath: selectedImagePath,
+                    );
+
+                    if (context.mounted) {
+                      Navigator.pop(context);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Product Updated Successfully'),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(e.toString())));
+                  } finally {
+                    if (mounted) {
+                      setState(() {
+                        isLoading = false;
+                      });
+                    }
+                  }
+                },
+
+          child: isLoading
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text('Update'),
         ),
       ],
     );

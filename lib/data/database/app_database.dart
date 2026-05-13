@@ -131,6 +131,14 @@ class AppDatabase extends _$AppDatabase {
       batch.deleteAll(purchases);
     });
   }
+
+  /// WATCH ALL PRODUCTS
+  Stream<List<Product>>
+  watchAllProducts() {
+    return select(
+      products,
+    ).watch();
+  }
 }
 
 
