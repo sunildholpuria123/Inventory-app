@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
 
-import '../../presentation/sales/model/invoice_item.dart';
 import '../database/app_database.dart';
 
 class SalesRepository {
@@ -25,7 +24,7 @@ class SalesRepository {
     );
   }
 
-  Future<void> saveInvoice({
+  Future<int> saveInvoice({
     required String customerName,
     required String customerPhone,
     required double subtotal,
@@ -41,7 +40,7 @@ class SalesRepository {
         '${DateTime.now().day.toString().padLeft(2, '0')}-'
         '${DateTime.now().millisecondsSinceEpoch}';
 
-    await db
+    final invoiceId = await db
         .into(db.invoices)
         .insert(
           InvoicesCompanion.insert(
@@ -64,5 +63,7 @@ class SalesRepository {
             pdfPath: Value(pdfPath),
           ),
         );
+
+    return invoiceId;
   }
 }

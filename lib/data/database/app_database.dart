@@ -5,6 +5,7 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import 'tables/invoice_items_table.dart';
 import 'tables/invoices_table.dart';
 import 'tables/users_table.dart';
 import 'tables/categories_table.dart';
@@ -31,7 +32,8 @@ part 'app_database.g.dart';
     Purchases,
     PurchaseItems,
     Expenses,
-    Invoices
+    Invoices,
+    InvoiceItems
   ],
 )
 class AppDatabase extends _$AppDatabase {

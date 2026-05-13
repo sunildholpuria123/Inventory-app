@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/invoice_item_model.dart' show InvoiceItemModel;
+import '../provider/invoice_item_provider.dart';
 import '../provider/sales_provider.dart';
+import '../provider/sales_repository_provider.dart';
 import '../widgets/customer_dropdown.dart';
 import '../widgets/invoice_product_list.dart';
 import '../widgets/invoice_summary.dart';
@@ -31,62 +33,87 @@ class CreateInvoiceScreen extends ConsumerWidget {
 
                 ElevatedButton.icon(
                   onPressed: () async {
-                    final customer = ref.read(selectedCustomerProvider);
+                    final customer = ref.read(
+                      selectedCustomerProvider,
+                    );
 
-                    final items = ref.read(invoiceItemsProvider);
+                    final items = ref.read(
+                      invoiceItemsProvider,
+                    );
 
-                    final total = ref.read(grandTotalProvider);
+                    final subtotal = ref.read(
+                      subtotalProvider,
+                    );
 
-                    final subtotal = ref.read(subtotalProvider);
+                    final tax = ref.read(
+                      taxProvider,
+                    );
 
-                    final tax = ref.read(taxProvider);
+                    final discount = ref.read(
+                      discountProvider,
+                    );
 
-                    final discount = ref.read(discountProvider);
+                    final total = ref.read(
+                      grandTotalProvider,
+                    );
 
-                    /// VALIDATE CUSTOMER
+                    final paymentMethod =
+                    ref.read(
+                      paymentMethodProvider,
+                    );
+
                     if (customer == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Select customer')),
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Select Customer',
+                          ),
+                        ),
                       );
 
                       return;
                     }
 
-                    /// VALIDATE PRODUCTS
                     if (items.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Add products')),
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Add Products',
+                          ),
+                        ),
                       );
 
                       return;
                     }
 
-                    /// GENERATE INVOICE NUMBER
+                    /// INVOICE NUMBER
                     final invoiceNo =
-                        'INV-${DateTime.now().year}'
-                        '${DateTime.now().month.toString().padLeft(2, '0')}'
-                        '${DateTime.now().day.toString().padLeft(2, '0')}-'
-                        '${DateTime.now().millisecondsSinceEpoch}';
+                        'INV-${DateTime.now().millisecondsSinceEpoch}';
 
-                    /// PDF SERVICE
-                    final pdfService = InvoicePdfService();
+                    /// PDF
+                    final pdfService =
+                    InvoicePdfService();
 
-                    /// GENERATE PDF FIRST
-                    final pdfPath = await pdfService.generateInvoice(
+                    final pdfPath =
+                    await pdfService.generateInvoice(
                       invoiceNo: invoiceNo,
 
-                      customerName: customer.name,
+                      customerName:
+                      customer.name,
 
-                      customerPhone: customer.phone,
+                      customerPhone:
+                      customer.phone,
 
                       items: items
                           .map(
                             (e) => InvoiceItemModel(
-                              product: e.product,
-                              qty: e.qty,
-                              price: e.price,
-                            ),
-                          )
+                          product: e.product,
+                          qty: e.qty,
+                          price: e.price,
+                        ),
+                      )
                           .toList(),
 
                       subtotal: subtotal,
@@ -97,36 +124,69 @@ class CreateInvoiceScreen extends ConsumerWidget {
 
                       grandTotal: total,
 
-                      paymentMethod: paymentMethod,
+                      paymentMethod:
+                      paymentMethod,
                     );
 
-                    /// SAVE INVOICE IN DATABASE
-                    final repo = ref.read(salesRepositoryProvider);
+                    /// SAVE INVOICE
+                    final repo = ref.read(
+                      salesRepositoryProvider,
+                    );
 
+                    final invoiceId =
                     await repo.saveInvoice(
-                      customerName: customer.name,
-                      customerPhone: customer.phone,
+                      customerName:
+                      customer.name,
+
+                      customerPhone:
+                      customer.phone,
+
                       subtotal: subtotal,
+
                       tax: tax,
+
                       discount: discount,
+
                       grandTotal: total,
-                      paymentMethod: paymentMethod,
+
+                      paymentMethod:
+                      paymentMethod,
+
                       pdfPath: pdfPath,
                     );
 
-                    /// CLEAR CART
-                    ref.read(invoiceItemsProvider.notifier).state = [];
+                    /// SAVE ITEMS
+                    final invoiceItemRepo =
+                    ref.read(
+                      invoiceItemRepositoryProvider,
+                    );
 
-                    /// SUCCESS MESSAGE
+                    await invoiceItemRepo
+                        .saveInvoiceItems(
+                      invoiceId: invoiceId,
+
+                      items: items,
+                    );
+
+                    /// CLEAR CART
+                    ref
+                        .read(
+                      invoiceItemsProvider
+                          .notifier,
+                    )
+                        .state = [];
+
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
                         const SnackBar(
-                          content: Text('Invoice Saved Successfully'),
+                          content: Text(
+                            'Invoice Saved',
+                          ),
                         ),
                       );
                     }
-                  },
-                  icon: const Icon(Icons.save),
+                  },                  icon: const Icon(Icons.save),
                   label: const Text('Save Invoice'),
                 ),
               ],

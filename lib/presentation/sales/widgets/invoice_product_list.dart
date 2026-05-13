@@ -14,92 +14,47 @@ class InvoiceProductList
       BuildContext context,
       WidgetRef ref,
       ) {
-    final items =
-    ref.watch(invoiceItemsProvider);
+    final items = ref.watch(
+      invoiceItemsProvider,
+    );
 
-    return Card(
-      child: ListView.builder(
-        itemCount: items.length,
+    if (items.isEmpty) {
+      return const Center(
+        child: Text(
+          'No Products Added',
+        ),
+      );
+    }
 
-        itemBuilder: (context, index) {
-          final item = items[index];
+    return ListView.builder(
+      shrinkWrap: true,
 
-          return ListTile(
-            leading: CircleAvatar(
-              child: Text(
-                item.qty.toString(),
-              ),
+      itemCount: items.length,
+
+      itemBuilder: (
+          context,
+          index,
+          ) {
+        final item =
+        items[index];
+
+        return Card(
+          child: ListTile(
+            title: Text(
+              item.product.name,
             ),
 
-            title:
-            Text(item.product.name),
-
             subtitle: Text(
-              '₹${item.price}',
+              'Qty: ${item.qty} × ₹${item.price}',
             ),
 
             trailing: Row(
               mainAxisSize:
               MainAxisSize.min,
+
               children: [
-                IconButton(
-                  onPressed: () {
-                    final updated =
-                    [...items];
-
-                    updated[index] =
-                        item.copyWith(
-                          qty: item.qty > 1
-                              ? item.qty - 1
-                              : 1,
-                        );
-
-                    ref
-                        .read(
-                      invoiceItemsProvider
-                          .notifier,
-                    )
-                        .state = updated;
-                  },
-                  icon: const Icon(
-                    Icons.remove,
-                  ),
-                ),
-
                 Text(
-                  item.qty.toString(),
-                ),
-
-                IconButton(
-                  onPressed: () {
-                    final updated =
-                    [...items];
-
-                    updated[index] =
-                        item.copyWith(
-                          qty: item.qty + 1,
-                        );
-
-                    ref
-                        .read(
-                      invoiceItemsProvider
-                          .notifier,
-                    )
-                        .state = updated;
-                  },
-                  icon: const Icon(
-                    Icons.add,
-                  ),
-                ),
-
-                const SizedBox(width: 20),
-
-                Text(
-                  '₹${item.subtotal.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontWeight:
-                    FontWeight.bold,
-                  ),
+                  '₹${item.total.toStringAsFixed(2)}',
                 ),
 
                 IconButton(
@@ -118,6 +73,7 @@ class InvoiceProductList
                     )
                         .state = updated;
                   },
+
                   icon: const Icon(
                     Icons.delete,
                     color: Colors.red,
@@ -125,9 +81,9 @@ class InvoiceProductList
                 ),
               ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

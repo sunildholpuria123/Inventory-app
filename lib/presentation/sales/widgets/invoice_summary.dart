@@ -4,33 +4,76 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../provider/sales_provider.dart';
 
 class InvoiceSummary
-    extends ConsumerWidget {
+    extends ConsumerStatefulWidget {
   const InvoiceSummary({
     super.key,
   });
 
   @override
+  ConsumerState<InvoiceSummary>
+  createState() =>
+      _InvoiceSummaryState();
+}
+
+class _InvoiceSummaryState
+    extends ConsumerState<
+        InvoiceSummary> {
+  late final TextEditingController
+  discountController;
+
+  late final TextEditingController
+  taxController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    discountController =
+        TextEditingController();
+
+    taxController =
+        TextEditingController(
+          text: '0',
+        );
+  }
+
+  @override
+  void dispose() {
+    discountController.dispose();
+
+    taxController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(
       BuildContext context,
-      WidgetRef ref,
       ) {
-    final subtotal =
-    ref.watch(subtotalProvider);
+    final subtotal = ref.watch(
+      subtotalProvider,
+    );
 
-    final grandTotal =
-    ref.watch(grandTotalProvider);
+    final tax = ref.watch(
+      taxProvider,
+    );
 
-    final discountController =
-    TextEditingController();
-
-    final taxController =
-    TextEditingController();
+    final grandTotal = ref.watch(
+      grandTotalProvider,
+    );
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding:
+        const EdgeInsets.all(
+          20,
+        ),
 
         child: Column(
+          crossAxisAlignment:
+          CrossAxisAlignment
+              .start,
+
           children: [
             Row(
               children: [
@@ -49,7 +92,9 @@ class InvoiceSummary
                       'Discount',
                     ),
 
-                    onChanged: (value) {
+                    onChanged: (
+                        value,
+                        ) {
                       ref
                           .read(
                         discountProvider
@@ -63,7 +108,9 @@ class InvoiceSummary
                   ),
                 ),
 
-                const SizedBox(width: 20),
+                const SizedBox(
+                  width: 20,
+                ),
 
                 Expanded(
                   child: TextField(
@@ -76,13 +123,16 @@ class InvoiceSummary
 
                     decoration:
                     const InputDecoration(
-                      labelText: 'GST',
+                      labelText:
+                      'GST %',
                     ),
 
-                    onChanged: (value) {
+                    onChanged: (
+                        value,
+                        ) {
                       ref
                           .read(
-                        taxProvider
+                        taxPercentProvider
                             .notifier,
                       )
                           .state = double.tryParse(
@@ -95,18 +145,32 @@ class InvoiceSummary
               ],
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(
+              height: 25,
+            ),
 
             buildRow(
               'Subtotal',
               subtotal,
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(
+              height: 10,
+            ),
+
+            buildRow(
+              'GST',
+              tax,
+            ),
+
+            const Divider(
+              height: 30,
+            ),
 
             buildRow(
               'Grand Total',
               grandTotal,
+              bold: true,
             ),
           ],
         ),
@@ -116,20 +180,45 @@ class InvoiceSummary
 
   Widget buildRow(
       String title,
-      double value,
-      ) {
+      double value, {
+        bool bold = false,
+      }) {
     return Row(
       mainAxisAlignment:
-      MainAxisAlignment.spaceBetween,
+      MainAxisAlignment
+          .spaceBetween,
+
       children: [
-        Text(title),
+        Text(
+          title,
+
+          style: TextStyle(
+            fontSize:
+            bold ? 18 : 16,
+
+            fontWeight:
+            bold
+                ? FontWeight
+                .bold
+                : FontWeight
+                .normal,
+          ),
+        ),
 
         Text(
           '₹${value.toStringAsFixed(2)}',
-          style: const TextStyle(
-            fontSize: 18,
+
+          style: TextStyle(
+            fontSize:
+            bold ? 20 : 18,
+
             fontWeight:
             FontWeight.bold,
+
+            color:
+            bold
+                ? Colors.green
+                : null,
           ),
         ),
       ],

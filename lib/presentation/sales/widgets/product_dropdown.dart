@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../products/provider/product_provider.dart';
-
-import '../model/invoice_item.dart';
-
+import '../model/cart_item.dart';
 import '../provider/sales_provider.dart';
 
 class ProductDropdown
@@ -22,21 +20,22 @@ class ProductDropdown
 class _ProductDropdownState
     extends ConsumerState<
         ProductDropdown> {
-  int? selectedProductId;
+  dynamic selectedProduct;
 
   @override
   Widget build(
       BuildContext context,
       ) {
-    final products = ref.watch(
+    final products =
+    ref.watch(
       productsProvider,
     );
 
     return products.when(
       data: (items) {
         return DropdownButtonFormField<
-            int>(
-          value: selectedProductId,
+            dynamic>(
+          value: null,
 
           decoration:
           const InputDecoration(
@@ -44,9 +43,9 @@ class _ProductDropdownState
             'Add Product',
           ),
 
-          items: items.map((product) {
-            return DropdownMenuItem<
-                int>(
+          items:
+          items.map((product) {
+            return DropdownMenuItem(
               value: product.id,
 
               child: Text(
@@ -60,20 +59,38 @@ class _ProductDropdownState
               return;
             }
 
-            setState(() {
-              selectedProductId =
-                  value;
-            });
-
-            final selectedProduct =
+            final product =
             items.firstWhere(
-                  (e) => e.id == value,
+                  (e) =>
+              e.id == value,
             );
 
             final current =
             ref.read(
               invoiceItemsProvider,
             );
+
+            /// PREVENT DUPLICATE
+            final alreadyExists =
+            current.any(
+                  (e) =>
+              e.product.id ==
+                  product.id,
+            );
+
+            if (alreadyExists) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Product already added',
+                  ),
+                ),
+              );
+
+              return;
+            }
 
             ref
                 .read(
@@ -83,17 +100,19 @@ class _ProductDropdownState
                 .state = [
               ...current,
 
-              InvoiceItem(
-                product:
-                selectedProduct,
-
+              CartItem(
+                product: product,
                 qty: 1,
-
                 price:
-                selectedProduct
+                product
                     .sellingPrice,
               ),
             ];
+
+            setState(() {
+              selectedProduct =
+              null;
+            });
           },
         );
       },
