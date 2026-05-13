@@ -65,6 +65,21 @@ class _ProductDropdownState
               e.id == value,
             );
 
+            /// OUT OF STOCK CHECK
+            if (product.stockQty <= 0) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Out of stock',
+                  ),
+                ),
+              );
+
+              return;
+            }
+
             final current =
             ref.read(
               invoiceItemsProvider,
