@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../data/database/app_database.dart';
 import '../provider/dashboard_stats_provider.dart';
 
 class RecentSalesWidget extends ConsumerWidget {

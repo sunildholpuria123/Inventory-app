@@ -27,206 +27,210 @@ class ProductTable
       child: SingleChildScrollView(
         scrollDirection:
         Axis.horizontal,
+        child: SingleChildScrollView(
+          scrollDirection:
+          Axis.horizontal,
 
-        child: DataTable(
-          dataRowMinHeight: 70,
-          dataRowMaxHeight: 70,
+          child: DataTable(
+            dataRowMinHeight: 70,
+            dataRowMaxHeight: 70,
 
-          headingRowHeight: 60,
+            headingRowHeight: 60,
 
-          columnSpacing: 25,
+            columnSpacing: 25,
 
-          horizontalMargin: 20,
+            horizontalMargin: 20,
 
-          columns: const [
-            DataColumn(
-              label: Text('Image'),
-            ),
-
-            DataColumn(
-              label: Text('ID'),
-            ),
-
-            DataColumn(
-              label: Text('Name'),
-            ),
-
-            DataColumn(
-              label: Text('Stock'),
-            ),
-
-            DataColumn(
-              label: Text(
-                'Purchase',
+            columns: const [
+              DataColumn(
+                label: Text('Image'),
               ),
-            ),
 
-            DataColumn(
-              label: Text(
-                'Selling',
+              DataColumn(
+                label: Text('ID'),
               ),
-            ),
 
-            DataColumn(
-              label: Text(
-                'Actions',
+              DataColumn(
+                label: Text('Name'),
               ),
-            ),
-          ],
 
-          rows: products.map(
-                (product) {
-              return DataRow(
-                cells: [
-                  /// IMAGE
-                  DataCell(
-                    product.imagePath ==
-                        null
-                        ? const CircleAvatar(
-                      child: Icon(
-                        Icons.image,
-                      ),
-                    )
-                        : ClipRRect(
-                      borderRadius:
-                      BorderRadius.circular(
-                        8,
-                      ),
+              DataColumn(
+                label: Text('Stock'),
+              ),
 
-                      child: Image.file(
-                        File(
-                          product
-                              .imagePath!,
+              DataColumn(
+                label: Text(
+                  'Purchase',
+                ),
+              ),
+
+              DataColumn(
+                label: Text(
+                  'Selling',
+                ),
+              ),
+
+              DataColumn(
+                label: Text(
+                  'Actions',
+                ),
+              ),
+            ],
+
+            rows: products.map(
+                  (product) {
+                return DataRow(
+                  cells: [
+                    /// IMAGE
+                    DataCell(
+                      product.imagePath ==
+                          null
+                          ? const CircleAvatar(
+                        child: Icon(
+                          Icons.image,
+                        ),
+                      )
+                          : ClipRRect(
+                        borderRadius:
+                        BorderRadius.circular(
+                          8,
                         ),
 
-                        width: 50,
-                        height: 50,
+                        child: Image.file(
+                          File(
+                            product
+                                .imagePath!,
+                          ),
 
-                        fit: BoxFit.cover,
+                          width: 50,
+                          height: 50,
 
-                        errorBuilder:
-                            (
-                            _,
-                            __,
-                            ___,
-                            ) {
-                          return const CircleAvatar(
-                            child: Icon(
-                              Icons
-                                  .broken_image,
+                          fit: BoxFit.cover,
+
+                          errorBuilder:
+                              (
+                              _,
+                              __,
+                              ___,
+                              ) {
+                            return const CircleAvatar(
+                              child: Icon(
+                                Icons
+                                    .broken_image,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+
+                    /// ID
+                    DataCell(
+                      Text(
+                        product.id
+                            .toString(),
+                      ),
+                    ),
+
+                    /// NAME
+                    DataCell(
+                      Text(product.name),
+                    ),
+
+                    /// STOCK
+                    DataCell(
+                      Text(
+                        product.stockQty
+                            .toString(),
+
+                        style: TextStyle(
+                          color:
+                          product.stockQty <=
+                              5
+                              ? Colors.red
+                              : Colors
+                              .green,
+
+                          fontWeight:
+                          FontWeight
+                              .bold,
+                        ),
+                      ),
+                    ),
+
+                    /// PURCHASE PRICE
+                    DataCell(
+                      Text(
+                        '₹${product.purchasePrice}',
+                      ),
+                    ),
+
+                    /// SELLING PRICE
+                    DataCell(
+                      Text(
+                        '₹${product.sellingPrice}',
+                      ),
+                    ),
+
+                    /// ACTIONS
+                    DataCell(
+                      Row(
+                        mainAxisSize:
+                        MainAxisSize.min,
+
+                        children: [
+                          /// EDIT
+                          IconButton(
+                            onPressed: () {
+                              showDialog(
+                                context:
+                                context,
+
+                                builder:
+                                    (_) =>
+                                    EditProductDialog(
+                                      product:
+                                      product,
+                                    ),
+                              );
+                            },
+
+                            icon:
+                            const Icon(
+                              Icons.edit,
                             ),
-                          );
-                        },
+                          ),
+
+                          /// DELETE
+                          IconButton(
+                            onPressed:
+                                () async {
+                              final repo =
+                              ref.read(
+                                productRepositoryProvider,
+                              );
+
+                              await repo
+                                  .deleteProduct(
+                                product,
+                              );
+                            },
+
+                            icon:
+                            const Icon(
+                              Icons.delete,
+                              color:
+                              Colors.red,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-
-                  /// ID
-                  DataCell(
-                    Text(
-                      product.id
-                          .toString(),
-                    ),
-                  ),
-
-                  /// NAME
-                  DataCell(
-                    Text(product.name),
-                  ),
-
-                  /// STOCK
-                  DataCell(
-                    Text(
-                      product.stockQty
-                          .toString(),
-
-                      style: TextStyle(
-                        color:
-                        product.stockQty <=
-                            5
-                            ? Colors.red
-                            : Colors
-                            .green,
-
-                        fontWeight:
-                        FontWeight
-                            .bold,
-                      ),
-                    ),
-                  ),
-
-                  /// PURCHASE PRICE
-                  DataCell(
-                    Text(
-                      '₹${product.purchasePrice}',
-                    ),
-                  ),
-
-                  /// SELLING PRICE
-                  DataCell(
-                    Text(
-                      '₹${product.sellingPrice}',
-                    ),
-                  ),
-
-                  /// ACTIONS
-                  DataCell(
-                    Row(
-                      mainAxisSize:
-                      MainAxisSize.min,
-
-                      children: [
-                        /// EDIT
-                        IconButton(
-                          onPressed: () {
-                            showDialog(
-                              context:
-                              context,
-
-                              builder:
-                                  (_) =>
-                                  EditProductDialog(
-                                    product:
-                                    product,
-                                  ),
-                            );
-                          },
-
-                          icon:
-                          const Icon(
-                            Icons.edit,
-                          ),
-                        ),
-
-                        /// DELETE
-                        IconButton(
-                          onPressed:
-                              () async {
-                            final repo =
-                            ref.read(
-                              productRepositoryProvider,
-                            );
-
-                            await repo
-                                .deleteProduct(
-                              product,
-                            );
-                          },
-
-                          icon:
-                          const Icon(
-                            Icons.delete,
-                            color:
-                            Colors.red,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
-          ).toList(),
+                  ],
+                );
+              },
+            ).toList(),
+          ),
         ),
       ),
     );

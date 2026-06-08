@@ -8,89 +8,59 @@ class DashboardRepository {
   DashboardRepository(this.db);
 
   /// TOTAL REVENUE
-  Future<double> getTotalRevenue() async {
-    final result =
-    await db.customSelect(
-      '''
-      SELECT SUM(grand_total)
-      AS total
-      FROM invoices
-      ''',
-    ).getSingle();
-
-    return (result.data['total'] ??
-        0)
-        .toDouble();
+  Stream<double> getTotalRevenue() {
+    return db.customSelect(
+        '''
+    SELECT COALESCE(SUM(grand_total),0) AS total
+    FROM invoices
+    '''
+    ).watch().map(
+          (rows) => (rows.first.data['total'] ?? 0).toDouble(),
+    );
   }
 
   /// TOTAL PRODUCTS
-  Future<int> getTotalProducts() async {
-    final result =
-    await db.customSelect(
-      '''
-      SELECT COUNT(*) AS total
-      FROM products
-      ''',
-    ).getSingle();
-
-    return result.data['total'];
+  Stream<int> getTotalProducts()  {
+    return db.select(db.products)
+        .watch()
+        .map((items) => items.length);
   }
 
   /// TOTAL CUSTOMERS
-  Future<int> getTotalCustomers() async {
-    final result =
-    await db.customSelect(
-      '''
-      SELECT COUNT(*) AS total
-      FROM customers
-      ''',
-    ).getSingle();
-
-    return result.data['total'];
+  Stream<int> getTotalCustomers()  {
+    return db.select(db.customers)
+        .watch()
+        .map((items) => items.length);
   }
 
   /// TOTAL INVOICES
-  Future<int> getTotalSales() async {
-    final result =
-    await db.customSelect(
-      '''
-      SELECT COUNT(*) AS total
-      FROM invoices
-      ''',
-    ).getSingle();
-
-    return result.data['total'];
+  Stream<int> getTotalSales()  {
+    return db.select(db.invoices)
+        .watch()
+        .map((items) => items.length);
   }
 
   /// RECENT INVOICES
-  Future<List<Invoice>>
-  getRecentInvoices() async {
-    return (db.select(
-      db.invoices,
-    )..orderBy([
-          (tbl) => OrderingTerm(
-        expression:
-        tbl.createdAt,
-
-        mode:
-        OrderingMode.desc,
-      ),
-    ])
+  Stream<List<Invoice>>
+  getRecentInvoices() {
+    return (db.select(db.invoices)
+      ..orderBy([
+            (tbl) => OrderingTerm.desc(
+          tbl.createdAt,
+        )
+      ])
       ..limit(5))
-        .get();
+        .watch();
   }
 
   /// LOW STOCK PRODUCTS
-  Future<List<Product>>
-  getLowStockProducts() async {
-    return (db.select(
-      db.products,
-    )..where(
-          (tbl) => tbl.stockQty
-          .isSmallerOrEqualValue(
-        5,
-      ),
+ Stream<List<Product>>
+getLowStockProducts() {
+  return (db.select(db.products)
+    ..where(
+          (tbl) =>
+          tbl.stockQty.isSmallerOrEqualValue(5),
     ))
-        .get();
-  }
+      .watch();
+}
 }

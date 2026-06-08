@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../data/database/app_database.dart' show Invoice, Product;
 import '../../../data/repositories/dashboard_repository.dart';
 
 import 'dashboard_provider.dart';
@@ -19,11 +20,9 @@ Provider<DashboardRepository>(
 
 /// REVENUE
 final revenueProvider =
-FutureProvider<double>(
-      (ref) async {
-    final repo = ref.watch(
-      dashboardRepositoryProvider,
-    );
+StreamProvider<double>((ref) {
+  final repo =
+  ref.watch(dashboardRepositoryProvider);
 
     return repo.getTotalRevenue();
   },
@@ -31,11 +30,9 @@ FutureProvider<double>(
 
 /// PRODUCTS
 final totalProductsProvider =
-FutureProvider<int>(
-      (ref) async {
-    final repo = ref.watch(
-      dashboardRepositoryProvider,
-    );
+StreamProvider<int>((ref) {
+  final repo =
+  ref.watch(dashboardRepositoryProvider);
 
     return repo.getTotalProducts();
   },
@@ -43,11 +40,9 @@ FutureProvider<int>(
 
 /// CUSTOMERS
 final totalCustomersProvider =
-FutureProvider<int>(
-      (ref) async {
-    final repo = ref.watch(
-      dashboardRepositoryProvider,
-    );
+StreamProvider<int>((ref) {
+  final repo =
+  ref.watch(dashboardRepositoryProvider);
 
     return repo.getTotalCustomers();
   },
@@ -55,36 +50,33 @@ FutureProvider<int>(
 
 /// SALES
 final totalSalesProvider =
-FutureProvider<int>(
-      (ref) async {
-    final repo = ref.watch(
-      dashboardRepositoryProvider,
-    );
+StreamProvider<int>((ref) {
+  final repo =
+  ref.watch(dashboardRepositoryProvider);
 
     return repo.getTotalSales();
   },
 );
 
 /// LOW STOCK
-final lowStockProvider =
-FutureProvider(
-      (ref) async {
-    final repo = ref.watch(
-      dashboardRepositoryProvider,
-    );
 
-    return repo.getLowStockProducts();
-  },
-);
+final lowStockProvider =
+StreamProvider<List<Product>>((ref) {
+  final repo =
+  ref.watch(
+    dashboardRepositoryProvider,
+  );
+
+  return repo.getLowStockProducts();
+});
 
 /// RECENT SALES
 final recentSalesProvider =
-FutureProvider(
-      (ref) async {
-    final repo = ref.watch(
-      dashboardRepositoryProvider,
-    );
+StreamProvider<List<Invoice>>((ref) {
+  final repo =
+  ref.watch(
+    dashboardRepositoryProvider,
+  );
 
-    return repo.getRecentInvoices();
-  },
-);
+  return repo.getRecentInvoices();
+});

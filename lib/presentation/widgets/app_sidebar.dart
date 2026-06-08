@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../../core/utils/responsive_helper.dart' show ResponsiveHelper;
 import '../../data/database/app_database.dart';
 import '../auth/repository/auth_repository.dart';
 import '../dashboard/provider/dashboard_provider.dart';
@@ -22,9 +23,13 @@ class AppSidebar
     ref.watch(
       selectedMenuProvider,
     );
-
+    final width = ResponsiveHelper.isTablet(
+      context,
+    )
+        ? 90.0
+        : 260.0;
     return Container(
-      width: 260,
+      width: width,
       color: const Color(
         0xff111827,
       ),
@@ -43,13 +48,16 @@ class AppSidebar
 
             const SizedBox(height: 15),
 
-            const Text(
+            ResponsiveHelper.isTablet(
+              context,
+            )
+                ? const SizedBox()
+                : Text(
               'Inventory ERP',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight:
-                FontWeight.bold,
+              style:
+              const TextStyle(
+                color:
+                Colors.white,
               ),
             ),
 

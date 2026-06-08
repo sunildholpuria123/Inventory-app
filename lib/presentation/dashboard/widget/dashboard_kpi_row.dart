@@ -17,9 +17,12 @@ class DashboardKpiRow extends ConsumerWidget {
 
     final sales = ref.watch(totalSalesProvider);
 
-    return Row(
+    return Wrap(
+      spacing: 20,
+      runSpacing: 20,
       children: [
-        Expanded(
+        SizedBox(
+          width: 280,
           child: DashboardKpiCard(
             title: 'Revenue',
 
@@ -37,7 +40,8 @@ class DashboardKpiRow extends ConsumerWidget {
 
         const SizedBox(width: 20),
 
-        Expanded(
+        SizedBox(
+          width: 280,
           child: DashboardKpiCard(
             title: 'Products',
 
@@ -55,7 +59,8 @@ class DashboardKpiRow extends ConsumerWidget {
 
         const SizedBox(width: 20),
 
-        Expanded(
+        SizedBox(
+          width: 280,
           child: DashboardKpiCard(
             title: 'Customers',
 
@@ -73,7 +78,8 @@ class DashboardKpiRow extends ConsumerWidget {
 
         const SizedBox(width: 20),
 
-        Expanded(
+        SizedBox(
+          width: 280,
           child: DashboardKpiCard(
             title: 'Sales',
 
@@ -115,7 +121,9 @@ class DashboardKpiCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(20),
 
-        child: Row(
+        child: Wrap(
+          spacing: 20,
+          runSpacing: 20,
           children: [
             CircleAvatar(radius: 28, child: Icon(icon)),
 

@@ -14,6 +14,9 @@ class PurchaseItem {
     required this.price,
   });
 
+  /// TOTAL
+  double get total =>
+      qty * price;
   double get subtotal =>
       qty * price;
 
