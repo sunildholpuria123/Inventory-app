@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/database/app_database.dart' show Invoice, Product;
 import '../../../data/repositories/dashboard_repository.dart';
 
+import '../model/monthly_sales.dart' show MonthlySales;
+import '../model/profit_summary.dart' show ProfitSummary;
 import 'dashboard_provider.dart';
 
 final dashboardRepositoryProvider =
@@ -80,3 +82,28 @@ StreamProvider<List<Invoice>>((ref) {
 
   return repo.getRecentInvoices();
 });
+
+final monthlySalesProvider =
+StreamProvider<
+    List<MonthlySales>>(
+      (ref) {
+
+    final repo = ref.watch(
+      dashboardRepositoryProvider,
+    );
+
+    return repo
+        .getMonthlySalesAnalytics();
+  },
+);
+
+final profitSummaryProvider =
+StreamProvider<ProfitSummary>(
+      (ref) {
+    final repo = ref.watch(
+      dashboardRepositoryProvider,
+    );
+
+    return repo.getProfitSummary();
+  },
+);

@@ -8,29 +8,34 @@ import 'core/services/notification_service.dart';
 import 'data/repositories/backup_repository.dart' show BackupRepository;
 import 'presentation/auth/screens/splash_screen.dart';
 
-void main() async {
+import 'dart:io';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await NotificationService.init();
-  await autoBackup();
 
+  if (Platform.isWindows ||
+      Platform.isLinux ||
+      Platform.isMacOS) {
 
-  await windowManager.ensureInitialized();
+    await windowManager.ensureInitialized();
 
-  const windowOptions = WindowOptions(
-    size: Size(1400, 900),
-    minimumSize: Size(1200, 700),
-    center: true,
-    title: 'Inventory ERP',
-  );
+    const windowOptions = WindowOptions(
+      size: Size(1400, 900),
+      minimumSize: Size(1200, 700),
+      center: true,
+      title: 'Inventory ERP',
+    );
 
-  windowManager.waitUntilReadyToShow(
-    windowOptions,
-        () async {
-      await windowManager.show();
-      await windowManager.focus();
-    },
-  );
+    windowManager.waitUntilReadyToShow(
+      windowOptions,
+          () async {
+        await windowManager.show();
+        await windowManager.focus();
+      },
+    );
+  }
 
   runApp(
     const ProviderScope(
@@ -38,11 +43,7 @@ void main() async {
     ),
   );
 }
-Future<void> autoBackup() async {
-  final repo = BackupRepository();
 
-  await repo.backupToGoogle();
-}
 
 class InventoryApp extends ConsumerWidget {
   const InventoryApp({

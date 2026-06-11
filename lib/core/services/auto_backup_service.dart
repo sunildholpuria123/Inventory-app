@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart'
     show SharedPreferences;
 
 import '../../data/repositories/backup_repository.dart' show BackupRepository;
+import 'backup_service.dart' show BackupService;
 
 class AutoBackupService {
   static Future<void> autoBackup() async {
@@ -31,20 +32,43 @@ class AutoBackupService {
     }
   }
 
-  static Future<void> performBackup(SharedPreferences prefs) async {
+  static Future<void> performBackup(
+      SharedPreferences prefs,
+      ) async {
+
     try {
-      final repo = BackupRepository();
 
-      await repo.backupToGoogle();
+      final dbFile =
+      await BackupService
+          .getDatabaseFile();
 
-      await prefs.setString('last_backup', DateTime.now().toIso8601String());
+      if (!await dbFile.exists()) {
+        return;
+      }
 
-      print('Auto backup completed');
+      final repo =
+      BackupRepository();
+
+      if (Platform.isWindows ||
+          Platform.isLinux ||
+          Platform.isMacOS) {
+
+        await repo.backupToGoogle();
+      }
+
+      await prefs.setString(
+        'last_backup',
+        DateTime.now()
+            .toIso8601String(),
+      );
+
     } catch (e) {
-      print('Backup failed: $e');
+
+      print(
+        'Backup failed: $e',
+      );
     }
   }
-
   Future<void> createAutoBackup() async {
     final appDir = await getApplicationDocumentsDirectory();
 

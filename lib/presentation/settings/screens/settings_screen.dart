@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/provider/theme_provider.dart';
 import '../../../data/providers/database_provider.dart';
+import '../../../data/repositories/backup_repository.dart' show BackupRepository;
 import '../provider/settings_provider.dart';
 
 class SettingsScreen
@@ -324,6 +325,46 @@ class SettingsScreen
                   ),
                 ),
               ),
+              ElevatedButton.icon(
+                icon: const Icon(
+                  Icons.backup,
+                ),
+
+                label: const Text(
+                  'Backup Now',
+                ),
+
+                onPressed: () async {
+
+                  try {
+
+                    await BackupRepository()
+                        .backupToGoogle();
+
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Backup Successful',
+                        ),
+                      ),
+                    );
+
+                  } catch (e) {
+
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          e.toString(),
+                        ),
+                      ),
+                    );
+                  }
+                },
+              )
             ],
           ),
         ),

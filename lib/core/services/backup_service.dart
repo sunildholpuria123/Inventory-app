@@ -38,27 +38,52 @@ class BackupService {
     );
   }
 
-  Future<void> backupDatabase() async {
-    final dbPath = await getDatabasePath();
+  Future<File?> backupDatabase() async {
 
-    final dbFile = File(dbPath);
+    final dbPath =
+    await getDatabasePath();
+
+    final dbFile =
+    File(dbPath);
 
     if (!await dbFile.exists()) {
-      return;
+      return null;
     }
 
-    final output = await FilePicker.platform.saveFile(
-      dialogTitle: 'Save Database Backup',
-      fileName: 'inventory_backup.sqlite',
+    if (Platform.isAndroid ||
+        Platform.isIOS) {
+
+      final backupDir =
+      await getBackupDirectory();
+
+      final output = File(
+        p.join(
+          backupDir.path,
+          'inventory_backup.sqlite',
+        ),
+      );
+
+      return dbFile.copy(
+        output.path,
+      );
+    }
+
+    final output =
+    await FilePicker.platform
+        .saveFile(
+      dialogTitle:
+      'Save Database Backup',
+
+      fileName:
+      'inventory_backup.sqlite',
     );
 
     if (output == null) {
-      return;
+      return null;
     }
 
-    await dbFile.copy(output);
+    return dbFile.copy(output);
   }
-
   Future<void> restoreDatabase() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -82,15 +107,31 @@ class BackupService {
 
   /// CREATE ZIP BACKUP
   static Future<File> createBackup() async {
-    final dbFile = await getDatabaseFile();
 
-    final backupDir = await getBackupDirectory();
+    final dbFile =
+    await getDatabaseFile();
 
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    if (!await dbFile.exists()) {
 
-    final zipPath = p.join(backupDir.path, 'backup_$timestamp.zip');
+      throw Exception(
+        'Database not found',
+      );
+    }
 
-    final encoder = ZipFileEncoder();
+    final backupDir =
+    await getBackupDirectory();
+
+    final timestamp =
+        DateTime.now()
+            .millisecondsSinceEpoch;
+
+    final zipPath = p.join(
+      backupDir.path,
+      'backup_$timestamp.zip',
+    );
+
+    final encoder =
+    ZipFileEncoder();
 
     encoder.create(zipPath);
 
@@ -100,7 +141,6 @@ class BackupService {
 
     return File(zipPath);
   }
-
   /// RESTORE BACKUP
   static Future<void> restoreBackup(
       File zipFile,

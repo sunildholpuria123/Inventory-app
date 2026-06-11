@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../customers/screen/customer_list_screen.dart';
-import '../../expenses/screens/expense_screen.dart';
-import '../../products/screens/product_list_screen.dart';
-import '../../purchases/screens/purchase_screen.dart' show PurchaseScreen;
-import '../../reports/screens/reports_screen.dart';
-import '../../sales/screens/sales_home_screen.dart';
-import '../../settings/screens/backup_screen.dart' show BackupScreen;
-import '../../settings/screens/settings_screen.dart';
-import '../../suppliers/screens/supplier_screen.dart';
+import '../../../core/utils/responsive_helper.dart';
+
 import '../../widgets/app_sidebar.dart';
 
+import '../constants/dashboard_pages.dart';
 import '../provider/dashboard_provider.dart';
-import 'dashboard_home.dart';
+import '../provider/navigation_provider.dart';
+
+import '../widget/app_drawer.dart';
+import '../widget/dashboard_bottom_nav.dart';
 
 class DashboardScreen
     extends ConsumerWidget {
+
   const DashboardScreen({
     super.key,
   });
@@ -26,37 +24,62 @@ class DashboardScreen
       BuildContext context,
       WidgetRef ref,
       ) {
-    final selected = ref.watch(
-      selectedMenuProvider,
+
+    final isDesktop =
+    ResponsiveHelper.isDesktop(
+      context,
     );
 
-    return Scaffold(
-      body: SafeArea(
-        child: Row(
-          children: [
-            const AppSidebar(),
+    final isMobile =
+    ResponsiveHelper.isMobile(
+      context,
+    );
 
-            Expanded(
-              child: IndexedStack(
-                index: selected,
+    final selected =
+    isDesktop
+        ? ref.watch(
+      selectedMenuProvider,
+    )
+        : ref.watch(
+      selectedIndexProvider,
+    );
 
-                children: const [
-                  DashboardHome(),
-                  ProductListScreen(),
-                  CustomerListScreen(),
-                  SalesHomeScreen(),
-                  PurchaseScreen(),
-                  ExpenseScreen(),
-                  ReportsScreen(),
-                  SettingsScreen(),
-                  SupplierScreen(),
-                  BackupScreen(),
-                ],
+    /// DESKTOP
+    if (isDesktop) {
+      return Scaffold(
+        body: SafeArea(
+          child: Row(
+            children: [
+
+              const AppSidebar(),
+
+              Expanded(
+                child:
+                dashboardPages[
+                selected],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+      );
+    }
+
+    /// MOBILE / TABLET
+    return Scaffold(
+
+      drawer:
+      const AppDrawer(),
+
+      body: SafeArea(
+        child:
+        dashboardPages[
+        selected],
       ),
+
+      bottomNavigationBar:
+      isMobile
+          ? const DashboardBottomNav()
+          : null,
     );
   }
 }

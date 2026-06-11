@@ -7,16 +7,23 @@ import '../../core/services/google_drive_service.dart';
 class BackupRepository {
   /// CREATE + UPLOAD
   Future<File> backupToGoogle() async {
-    final backup =
-    await BackupService
-        .createBackup();
+    try {
 
-    await GoogleDriveService
-        .uploadBackup(
-      backup,
-    );
+      final backup =
+      await BackupService
+          .createBackup();
 
-    return backup;
+      await GoogleDriveService
+          .uploadBackup(
+        backup,
+      );
+
+      return backup;
+
+    } catch (e) {
+
+      rethrow;
+    }
   }
 
   /// LOCAL BACKUP

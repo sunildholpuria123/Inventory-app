@@ -1,71 +1,135 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../data/database/app_database.dart';
 import '../provider/dashboard_stats_provider.dart';
 
 class RecentSalesWidget extends ConsumerWidget {
   const RecentSalesWidget({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final sales = ref.watch(recentSalesProvider);
+  Widget build(
+      BuildContext context,
+      WidgetRef ref,
+      ) {
+    final sales = ref.watch(
+      recentSalesProvider,
+    );
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
+      child: SizedBox(
+        height: 250, // Fixed height
 
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Padding(
+          padding: const EdgeInsets.all(
+            20,
+          ),
 
-          children: [
-            const Text(
-              'Recent Sales',
+          child: Column(
+            crossAxisAlignment:
+            CrossAxisAlignment.start,
 
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            children: [
+              const Text(
+                'Recent Sales',
 
-            const SizedBox(height: 20),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight:
+                  FontWeight.bold,
+                ),
+              ),
 
-            sales.when(
-              data: (items) {
-                if (items.isEmpty) {
-                  return const Text('No Sales Found');
-                }
+              const SizedBox(
+                height: 16,
+              ),
 
-                return ListView.builder(
-                  shrinkWrap: true,
+              Expanded(
+                child: sales.when(
+                  data: (items) {
+                    if (items.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'No Sales Found',
+                        ),
+                      );
+                    }
 
-                  physics: const NeverScrollableScrollPhysics(),
+                    return ListView.builder(
+                      itemCount:
+                      items.length,
 
-                  itemCount: items.length,
+                      itemBuilder:
+                          (
+                          context,
+                          index,
+                          ) {
+                        final sale =
+                        items[index];
 
-                  itemBuilder: (context, index) {
-                    final sale = items[index];
+                        return ListTile(
+                          dense: true,
 
-                    return ListTile(
-                      leading: const CircleAvatar(child: Icon(Icons.receipt)),
+                          contentPadding:
+                          EdgeInsets.zero,
 
-                      title: Text(sale.customerName),
+                          leading:
+                          const CircleAvatar(
+                            radius: 18,
 
-                      subtitle: Text(sale.invoiceNo),
+                            child: Icon(
+                              Icons.receipt,
+                              size: 18,
+                            ),
+                          ),
 
-                      trailing: Text(
-                        '₹${sale.grandTotal.toStringAsFixed(0)}',
+                          title: Text(
+                            sale
+                                .customerName,
 
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                            overflow:
+                            TextOverflow
+                                .ellipsis,
+                          ),
+
+                          subtitle: Text(
+                            sale.invoiceNo,
+                          ),
+
+                          trailing: Text(
+                            '₹${sale.grandTotal.toStringAsFixed(0)}',
+
+                            style:
+                            const TextStyle(
+                              fontWeight:
+                              FontWeight
+                                  .bold,
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
-                );
-              },
 
-              loading: () => const CircularProgressIndicator(),
+                  loading: () =>
+                  const Center(
+                    child:
+                    CircularProgressIndicator(),
+                  ),
 
-              error: (e, _) => Text(e.toString()),
-            ),
-          ],
+                  error:
+                      (
+                      e,
+                      _,
+                      ) =>
+                      Center(
+                        child: Text(
+                          e.toString(),
+                        ),
+                      ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

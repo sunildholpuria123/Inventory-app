@@ -70,7 +70,9 @@ dependencies:
   archive: ^3.4.10
   url_launcher: ^6.3.0
   http: ^1.2.2
-
+  google_sign_in: ^6.2.1
+  extension_google_sign_in_as_googleapis_auth: ^2.0.12
+  rxdart: ^0.28.0
 flutter:
   assets:
     - assets/client_secret.json
