@@ -66,3 +66,15 @@ final profitSummaryProvider = StreamProvider<ProfitSummary>((ref) {
 
   return repo.getProfitSummary();
 });
+
+final overdueInvoicesProvider = StreamProvider<List<Invoice>>((ref) {
+  final repo = ref.watch(dashboardRepositoryProvider);
+
+  return repo.getOverdueInvoices();
+});
+
+final upcomingDueProvider = StreamProvider<List<Invoice>>((ref) {
+  final repo = ref.watch(dashboardRepositoryProvider);
+
+  return repo.getUpcomingDueInvoices();
+});

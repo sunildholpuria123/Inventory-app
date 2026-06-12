@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/services/reminder_service.dart' show ReminderService;
 import '../../../data/database/app_database.dart';
 import '../provider/customer_ledger_provider.dart';
 import '../widget/payment_history_dialog.dart' show PaymentHistoryDialog;
@@ -33,56 +34,40 @@ class CustomerLedgerScreen extends ConsumerWidget {
               final invoice = items[index];
 
               return Card(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
 
                 child: Padding(
                   padding: const EdgeInsets.all(12),
 
                   child: Column(
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
                     children: [
-
                       /// TOP ROW
                       Row(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
 
                         children: [
-
                           Expanded(
                             child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
 
                               children: [
-
                                 Text(
                                   invoice.invoiceNo,
 
                                   maxLines: 2,
 
-                                  overflow:
-                                  TextOverflow.ellipsis,
+                                  overflow: TextOverflow.ellipsis,
 
-                                  style:
-                                  const TextStyle(
-                                    fontWeight:
-                                    FontWeight.bold,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
 
-                                const SizedBox(
-                                  height: 4,
-                                ),
+                                const SizedBox(height: 4),
 
-                                Text(
-                                  'Status: ${invoice.paymentStatus}',
-                                ),
+                                Text('Status: ${invoice.paymentStatus}'),
 
                                 Text(
                                   'Due: ₹${invoice.dueAmount.toStringAsFixed(2)}',
@@ -95,17 +80,13 @@ class CustomerLedgerScreen extends ConsumerWidget {
                             ),
                           ),
 
-                          const SizedBox(
-                            width: 12,
-                          ),
+                          const SizedBox(width: 12),
 
                           Text(
                             '₹${invoice.grandTotal.toStringAsFixed(2)}',
 
-                            style:
-                            const TextStyle(
-                              fontWeight:
-                              FontWeight.bold,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
 
                               fontSize: 16,
                             ),
@@ -113,57 +94,62 @@ class CustomerLedgerScreen extends ConsumerWidget {
                         ],
                       ),
 
-                      const SizedBox(
-                        height: 12,
-                      ),
+                      const SizedBox(height: 12),
 
                       /// ACTIONS
                       Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
 
                         children: [
-
                           if (invoice.dueAmount > 0)
                             ElevatedButton(
                               onPressed: () {
                                 showDialog(
                                   context: context,
 
-                                  builder: (_) =>
-                                      ReceivePaymentDialog(
-                                        invoice:
-                                        invoice,
+                                  builder: (_) => ReceivePaymentDialog(
+                                    invoice: invoice,
 
-                                        customer:
-                                        customer,
-                                      ),
+                                    customer: customer,
+                                  ),
                                 );
                               },
 
-                              child: const Text(
-                                'Receive',
-                              ),
+                              child: const Text('Receive'),
                             ),
 
-                          const SizedBox(
-                            width: 8,
-                          ),
+                          if (invoice.dueAmount > 0)
+                            IconButton(
+                              tooltip: 'Send Reminder',
+
+                              icon: const Icon(
+                                Icons.notifications_active,
+
+                                color: Colors.orange,
+                              ),
+
+                              onPressed: () async {
+                                await ReminderService.sendWhatsAppReminder(
+                                  phone: invoice.customerPhone,
+
+                                  customerName: invoice.customerName,
+
+                                  amount: invoice.dueAmount,
+                                );
+                              },
+                            ),
 
                           IconButton(
-                            icon: const Icon(
-                              Icons.history,
-                            ),
+                            tooltip: 'Payment History',
+
+                            icon: const Icon(Icons.history),
 
                             onPressed: () {
                               showDialog(
                                 context: context,
 
                                 builder: (_) =>
-                                    PaymentHistoryDialog(
-                                      invoiceId:
-                                      invoice.id,
-                                    ),
+                                    PaymentHistoryDialog(invoiceId: invoice.id),
                               );
                             },
                           ),
@@ -172,7 +158,8 @@ class CustomerLedgerScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-              );            },
+              );
+            },
           );
         },
 

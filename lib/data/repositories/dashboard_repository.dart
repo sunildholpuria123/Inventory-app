@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart' show ComparableExpr, OrderingTerm;
+import 'package:drift/drift.dart' show ComparableExpr, OrderingTerm, BooleanExpressionOperators;
 import 'package:rxdart/rxdart.dart' show Rx;
 
 import '../../presentation/dashboard/model/monthly_sales.dart'
@@ -139,5 +139,32 @@ class DashboardRepository {
         );
       },
     );
+  }
+
+  Stream<List<Invoice>> getOverdueInvoices() {
+    final today = DateTime.now();
+
+    return (db.select(db.invoices)
+          ..where(
+            (tbl) =>
+                tbl.dueAmount.isBiggerThanValue(0) & tbl.dueDate.isSmallerThanValue(today),
+          )
+          ..orderBy([(tbl) => OrderingTerm.asc(tbl.dueDate)]))
+        .watch();
+  }
+
+  Stream<List<Invoice>> getUpcomingDueInvoices() {
+    final today = DateTime.now();
+
+    final nextWeek = today.add(const Duration(days: 7));
+
+    return (db.select(db.invoices)
+          ..where(
+            (tbl) =>
+                tbl.dueAmount.isBiggerThanValue(0) &
+                tbl.dueDate.isBetweenValues(today, nextWeek),
+          )
+          ..orderBy([(tbl) => OrderingTerm.asc(tbl.dueDate)]))
+        .watch();
   }
 }
