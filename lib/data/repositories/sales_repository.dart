@@ -99,7 +99,7 @@ class SalesRepository {
   }
 
   /// GET INVOICES
-  Future<List<Invoice>> getInvoices({String search = ''}) async {
+  Stream<List<Invoice>> watchInvoices({String search = ''}) {
     final query = db.select(db.invoices);
 
     if (search.isNotEmpty) {
@@ -114,7 +114,7 @@ class SalesRepository {
       (tbl) => OrderingTerm(expression: tbl.createdAt, mode: OrderingMode.desc),
     ]);
 
-    return query.get();
+    return query.watch();
   }
 
   /// DELETE INVOICE

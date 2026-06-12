@@ -7,16 +7,13 @@ final outstandingProvider = StreamProvider<double>((ref) {
 
   return db
       .customSelect('''
-    SELECT
-    COALESCE(
-      SUM(due_amount),
-      0
-    ) AS total
-
-    FROM invoices
-
-    WHERE due_amount > 0
-    ''')
+          SELECT
+          COALESCE(
+            SUM(due_amount),
+            0
+          ) AS total
+          FROM invoices
+          ''')
       .watch()
-      .map((rows) => (rows.first.data['total'] as num).toDouble());
+      .map((rows) => (rows.first.data['total'] as num?)?.toDouble() ?? 0);
 });

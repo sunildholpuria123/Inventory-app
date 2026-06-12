@@ -4,6 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
 import '../../../data/providers/database_provider.dart';
+import '../../dashboard/provider/dashboard_provider.dart' show revenueProvider;
+import '../../dashboard/provider/dashboard_stats_provider.dart' show profitSummaryProvider, recentSalesProvider;
+import '../../dashboard/provider/outstanding_provider.dart' show outstandingProvider;
+import '../provider/customer_ledger_provider.dart' show customerLedgerProvider;
+import '../provider/payment_history_provider.dart' show paymentHistoryProvider;
 
 class ReceivePaymentDialog extends ConsumerStatefulWidget {
   final Invoice invoice;
@@ -78,32 +83,38 @@ class _ReceivePaymentDialogState extends ConsumerState<ReceivePaymentDialog> {
     )..where((tbl) => tbl.id.equals(widget.customer.id))).write(
       CustomersCompanion(creditBalance: Value(updatedCredit.toDouble())),
     );
-    await db.into(
-      db.paymentHistories,
-    ).insert(
-      PaymentHistoriesCompanion.insert(
+    await db
+        .into(db.paymentHistories)
+        .insert(
+          PaymentHistoriesCompanion.insert(
+            invoiceId: widget.invoice.id,
 
-        invoiceId:
-        widget.invoice.id,
+            customerId: widget.customer.id,
 
-        customerId:
-        widget.customer.id,
+            amount: amount,
 
-        amount:
-        amount,
+            paymentMethod: const Value('Cash'),
 
-        paymentMethod:
-        const Value(
-          'Cash',
-        ),
-
-        notes:
-        const Value(
-          null,
-        ),
-      ),
-    );
+            notes: const Value(null),
+          ),
+        );
     if (mounted) {
+      /// Customer Ledger
+      ref.invalidate(customerLedgerProvider(widget.customer.phone));
+
+      /// Payment History
+      ref.invalidate(paymentHistoryProvider(widget.invoice.id));
+
+      /// Outstanding Dashboard Card
+      ref.invalidate(outstandingProvider);
+
+      /// Dashboard KPIs
+      ref.invalidate(revenueProvider);
+
+      ref.invalidate(profitSummaryProvider);
+
+      ref.invalidate(recentSalesProvider);
+
       Navigator.pop(context);
 
       ScaffoldMessenger.of(context).showSnackBar(
