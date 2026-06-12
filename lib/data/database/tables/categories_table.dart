@@ -3,7 +3,13 @@ import 'package:drift/drift.dart';
 class Categories extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  TextColumn get name => text()();
+  TextColumn get name => text().unique()();
 
-  TextColumn get description => text().nullable()();
+  TextColumn get pricingType => text()();
+
+  TextColumn get unit => text()();
+
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }

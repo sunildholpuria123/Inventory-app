@@ -1,3 +1,5 @@
+import 'package:inventory_desktop/presentation/dashboard/screen/more_screen.dart';
+
 import '../../customers/screen/customer_list_screen.dart';
 import '../../expenses/screens/expense_screen.dart' show ExpenseScreen;
 import '../../products/screens/product_list_screen.dart';
@@ -14,6 +16,7 @@ final dashboardPages = [
   ProductListScreen(),
   CustomerListScreen(),
   SalesHomeScreen(),
+  MoreScreen(),
   PurchaseScreen(),
   ExpenseScreen(),
   ReportsScreen(),

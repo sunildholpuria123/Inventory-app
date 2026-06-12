@@ -11,7 +11,7 @@ class DashboardBottomNav extends ConsumerWidget {
     final selected = ref.watch(selectedIndexProvider);
 
     return NavigationBar(
-      selectedIndex: selected > 3 ? 0 : selected,
+      selectedIndex: selected > 4 ? 0 : selected,
 
       onDestinationSelected: (index) {
         ref.read(selectedIndexProvider.notifier).state = index;
@@ -25,6 +25,7 @@ class DashboardBottomNav extends ConsumerWidget {
         NavigationDestination(icon: Icon(Icons.people), label: 'Customers'),
 
         NavigationDestination(icon: Icon(Icons.receipt_long), label: 'Sales'),
+        NavigationDestination(icon: Icon(Icons.menu), label: 'More'),
       ],
     );
   }

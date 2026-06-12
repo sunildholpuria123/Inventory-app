@@ -5,6 +5,7 @@ import '../../../core/provider/theme_provider.dart';
 import '../../../data/providers/database_provider.dart';
 import '../../../data/repositories/backup_repository.dart'
     show BackupRepository;
+import '../../categories/screen/category_management_screen.dart';
 import '../provider/settings_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -139,6 +140,25 @@ class SettingsScreen extends ConsumerWidget {
               Card(
                 child: Column(
                   children: [
+                    ListTile(
+                      leading: const Icon(Icons.backup),
+
+                      title: const Text('Manage Categories'),
+
+                      trailing: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+
+                            MaterialPageRoute(
+                              builder: (_) => const CategoryManagementScreen(),
+                            ),
+                          );
+                        },
+
+                        child: const Text('Category'),
+                      ),
+                    ),
                     ListTile(
                       leading: const Icon(Icons.backup),
 

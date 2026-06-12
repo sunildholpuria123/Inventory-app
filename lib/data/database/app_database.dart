@@ -119,6 +119,87 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<Product>> watchAllProducts() {
     return select(products).watch();
   }
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) async {
+      await m.createAll();
+
+      await _seedCategories();
+    },
+
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.addColumn(products, products.sku);
+      }
+    },
+  );
+
+  Future<void> _seedCategories() async {
+    final existing = await select(categories).get();
+
+    if (existing.isNotEmpty) {
+      return;
+    }
+
+    await batch((batch) {
+      batch.insertAll(categories, [
+        CategoriesCompanion.insert(
+          name: 'Marble',
+          pricingType: 'AREA',
+          unit: 'SQFT',
+        ),
+
+        CategoriesCompanion.insert(
+          name: 'Granite',
+          pricingType: 'AREA',
+          unit: 'SQFT',
+        ),
+
+        CategoriesCompanion.insert(
+          name: 'Tiles',
+          pricingType: 'AREA',
+          unit: 'SQFT',
+        ),
+
+        CategoriesCompanion.insert(
+          name: 'Plumbing',
+          pricingType: 'QUANTITY',
+          unit: 'PCS',
+        ),
+
+        CategoriesCompanion.insert(
+          name: 'Sanitaryware',
+          pricingType: 'QUANTITY',
+          unit: 'PCS',
+        ),
+
+        CategoriesCompanion.insert(
+          name: 'Paint',
+          pricingType: 'QUANTITY',
+          unit: 'LTR',
+        ),
+
+        CategoriesCompanion.insert(
+          name: 'Electrical',
+          pricingType: 'QUANTITY',
+          unit: 'PCS',
+        ),
+
+        CategoriesCompanion.insert(
+          name: 'Furniture',
+          pricingType: 'QUANTITY',
+          unit: 'PCS',
+        ),
+
+        CategoriesCompanion.insert(
+          name: 'Hardware',
+          pricingType: 'QUANTITY',
+          unit: 'PCS',
+        ),
+      ]);
+    });
+  }
 }
 
 LazyDatabase _openConnection() {
