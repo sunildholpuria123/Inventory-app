@@ -44,4 +44,17 @@ class Invoices extends Table {
 
   TextColumn get pdfPath =>
       text().nullable()();
+
+  RealColumn get amountPaid =>
+      real().withDefault(
+        const Constant(0),
+      )();
+
+  RealColumn get dueAmount =>
+      real().withDefault(
+        const Constant(0),
+      )();
+
+  DateTimeColumn get dueDate =>
+      dateTime().nullable()();
 }

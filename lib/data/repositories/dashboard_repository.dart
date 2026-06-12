@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart' show ComparableExpr, OrderingTerm, OrderingMode;
+import 'package:rxdart/rxdart.dart' show Rx;
 
 import '../../presentation/dashboard/model/monthly_sales.dart' show MonthlySales;
 import '../../presentation/dashboard/model/profit_summary.dart' show ProfitSummary;
@@ -22,21 +23,21 @@ class DashboardRepository {
   }
 
   /// TOTAL PRODUCTS
-  Stream<int> getTotalProducts()  {
+  Stream<int> getTotalProducts() {
     return db.select(db.products)
         .watch()
         .map((items) => items.length);
   }
 
   /// TOTAL CUSTOMERS
-  Stream<int> getTotalCustomers()  {
+  Stream<int> getTotalCustomers() {
     return db.select(db.customers)
         .watch()
         .map((items) => items.length);
   }
 
   /// TOTAL INVOICES
-  Stream<int> getTotalSales()  {
+  Stream<int> getTotalSales() {
     return db.select(db.invoices)
         .watch()
         .map((items) => items.length);
@@ -47,28 +48,28 @@ class DashboardRepository {
   getRecentInvoices() {
     return (db.select(db.invoices)
       ..orderBy([
-            (tbl) => OrderingTerm.desc(
-          tbl.createdAt,
-        )
+            (tbl) =>
+            OrderingTerm.desc(
+              tbl.createdAt,
+            )
       ])
       ..limit(5))
         .watch();
   }
 
   /// LOW STOCK PRODUCTS
- Stream<List<Product>>
-getLowStockProducts() {
-  return (db.select(db.products)
-    ..where(
-          (tbl) =>
-          tbl.stockQty.isSmallerOrEqualValue(5),
-    ))
-      .watch();
-}
+  Stream<List<Product>>
+  getLowStockProducts() {
+    return (db.select(db.products)
+      ..where(
+            (tbl) =>
+            tbl.stockQty.isSmallerOrEqualValue(5),
+      ))
+        .watch();
+  }
 
   Stream<List<MonthlySales>>
   getMonthlySalesAnalytics() {
-
     return db.customSelect(
         '''
     SELECT
@@ -79,7 +80,6 @@ getLowStockProducts() {
     ORDER BY month
     '''
     ).watch().map((rows) {
-
       const monthNames = [
         '',
         'Jan',
@@ -97,7 +97,6 @@ getLowStockProducts() {
       ];
 
       return rows.map((row) {
-
         final month =
         int.parse(
           row.data['month']
@@ -118,26 +117,40 @@ getLowStockProducts() {
   }
 
   Stream<ProfitSummary> getProfitSummary() {
-    return Stream.combineLatest3(
+
+    return Rx.combineLatest3(
+
+      /// Revenue
       db.customSelect(
-          '''
-      SELECT COALESCE(SUM(grand_total), 0) AS total
+        '''
+      SELECT COALESCE(
+        SUM(grand_total),
+        0
+      ) AS total
       FROM invoices
-      '''
+      ''',
       ).watch(),
 
+      /// Purchases
       db.customSelect(
-          '''
-      SELECT COALESCE(SUM(total_amount), 0) AS total
+        '''
+      SELECT COALESCE(
+        SUM(total),
+        0
+      ) AS total
       FROM purchases
-      '''
+      ''',
       ).watch(),
 
+      /// Expenses
       db.customSelect(
-          '''
-      SELECT COALESCE(SUM(amount), 0) AS total
+        '''
+      SELECT COALESCE(
+        SUM(amount),
+        0
+      ) AS total
       FROM expenses
-      '''
+      ''',
       ).watch(),
 
           (
@@ -145,6 +158,7 @@ getLowStockProducts() {
           purchaseRows,
           expenseRows,
           ) {
+
         final revenue =
             (salesRows.first.data['total']
             as num?)
@@ -163,16 +177,17 @@ getLowStockProducts() {
                 ?.toDouble() ??
                 0;
 
-        final profit =
-            revenue -
-                purchases -
-                expenses;
-
         return ProfitSummary(
           revenue: revenue,
+
           purchases: purchases,
+
           expenses: expenses,
-          profit: profit,
+
+          profit:
+          revenue -
+              purchases -
+              expenses,
         );
       },
     );

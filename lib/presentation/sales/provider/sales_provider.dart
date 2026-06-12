@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../data/database/app_database.dart' show Customer;
 import '../model/cart_item.dart';
 
 /// CURRENT CART ITEMS
@@ -10,7 +11,7 @@ StateProvider<List<CartItem>>(
 
 /// SELECTED CUSTOMER
 final selectedCustomerProvider =
-StateProvider<dynamic?>(
+StateProvider<Customer?>(
       (ref) => null,
 );
 
@@ -80,3 +81,13 @@ Provider<double>((ref) {
       tax -
       discount;
 });
+
+final amountPaidProvider =
+StateProvider<double>(
+      (ref) => 0,
+);
+
+final dueDateProvider =
+StateProvider<DateTime?>(
+      (ref) => null,
+);

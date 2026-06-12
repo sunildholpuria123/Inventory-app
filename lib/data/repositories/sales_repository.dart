@@ -25,6 +25,7 @@ class SalesRepository {
   }
 
   Future<int> saveInvoice({
+    required int customerId,
     required String customerName,
     required String customerPhone,
     required double subtotal,
@@ -32,6 +33,8 @@ class SalesRepository {
     required double discount,
     required double grandTotal,
     required String paymentMethod,
+    required double amountPaid,
+    DateTime? dueDate,
     required String pdfPath,
   }) async {
     final invoiceNo =
@@ -39,30 +42,86 @@ class SalesRepository {
         '${DateTime.now().month.toString().padLeft(2, '0')}'
         '${DateTime.now().day.toString().padLeft(2, '0')}-'
         '${DateTime.now().millisecondsSinceEpoch}';
+    final dueAmount =
+        grandTotal - amountPaid;
+
+    final paymentStatus =
+    dueAmount <= 0
+        ? 'PAID'
+        : amountPaid == 0
+        ? 'CREDIT'
+        : 'PARTIAL';
 
     final invoiceId = await db
         .into(db.invoices)
         .insert(
           InvoicesCompanion.insert(
-            invoiceNo: invoiceNo,
+        invoiceNo: invoiceNo,
 
-            customerName: customerName,
+        customerName: customerName,
 
-            customerPhone: customerPhone,
+        customerPhone: customerPhone,
 
-            subtotal: subtotal,
+        subtotal: subtotal,
 
-            tax: tax,
+        tax: tax,
 
-            discount: Value(discount),
+        discount: Value(discount),
 
-            grandTotal: grandTotal,
+        grandTotal: grandTotal,
 
-            paymentMethod: Value(paymentMethod),
+        paymentMethod:
+        Value(paymentMethod),
 
-            pdfPath: Value(pdfPath),
-          ),
+        paymentStatus:
+        Value(paymentStatus),
+
+        amountPaid:
+        Value(amountPaid),
+
+        dueAmount:
+        Value(dueAmount),
+
+        dueDate:
+        Value(dueDate),
+
+        pdfPath:
+        Value(pdfPath),
+      ),
         );
+    if (dueAmount > 0) {
+
+      final customer =
+      await (db.select(
+        db.customers,
+      )
+        ..where(
+              (tbl) =>
+              tbl.id.equals(
+                customerId,
+              ),
+        ))
+          .getSingle();
+
+      await (db.update(
+        db.customers,
+      )
+        ..where(
+              (tbl) =>
+              tbl.id.equals(
+                customerId,
+              ),
+        ))
+          .write(
+        CustomersCompanion(
+          creditBalance:
+          Value(
+            customer.creditBalance +
+                dueAmount,
+          ),
+        ),
+      );
+    }
 
     return invoiceId;
   }

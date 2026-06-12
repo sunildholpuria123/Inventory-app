@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:open_filex/open_filex.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -14,13 +15,18 @@ class InvoicePdfService {
     required String invoiceNo,
     required String customerName,
     required String customerPhone,
-    required List<InvoiceItemModel>
-    items,
+    required List<InvoiceItemModel> items,
     required double subtotal,
     required double tax,
     required double discount,
     required double grandTotal,
     required String paymentMethod,
+
+    required double amountPaid,
+    required double dueAmount,
+    required String paymentStatus,
+
+    DateTime? dueDate,
   }) async {
     final pdf = pw.Document();
 
@@ -216,14 +222,40 @@ class InvoicePdfService {
                       grandTotal,
                       bold: true,
                     ),
-
-                    pw.SizedBox(
-                      height: 10,
+                    buildAmountRow(
+                      'Amount Paid',
+                      amountPaid,
                     ),
+                    buildAmountRow(
+                      'Due Amount',
+                      dueAmount,
+                    ),
+
+                    pw.Text(
+                      'Payment Details',
+
+                      style: pw.TextStyle(
+                        fontSize: 16,
+                        fontWeight:
+                        pw.FontWeight.bold,
+                      ),
+                    ),
+
+                    pw.SizedBox(height: 10),
 
                     pw.Text(
                       'Payment Method: $paymentMethod',
                     ),
+
+                    pw.Text(
+                      'Payment Status: $paymentStatus',
+                    ),
+                    if (dueDate != null)
+                      pw.Text(
+                        'Due Date: ${DateFormat(
+                          'dd MMM yyyy',
+                        ).format(dueDate)}',
+                      ),
                   ],
                 ),
               ),

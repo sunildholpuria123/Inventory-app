@@ -4665,6 +4665,41 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _amountPaidMeta = const VerificationMeta(
+    'amountPaid',
+  );
+  @override
+  late final GeneratedColumn<double> amountPaid = GeneratedColumn<double>(
+    'amount_paid',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _dueAmountMeta = const VerificationMeta(
+    'dueAmount',
+  );
+  @override
+  late final GeneratedColumn<double> dueAmount = GeneratedColumn<double>(
+    'due_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _dueDateMeta = const VerificationMeta(
+    'dueDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> dueDate = GeneratedColumn<DateTime>(
+    'due_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4679,6 +4714,9 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
     paymentStatus,
     createdAt,
     pdfPath,
+    amountPaid,
+    dueAmount,
+    dueDate,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4785,6 +4823,24 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
         pdfPath.isAcceptableOrUnknown(data['pdf_path']!, _pdfPathMeta),
       );
     }
+    if (data.containsKey('amount_paid')) {
+      context.handle(
+        _amountPaidMeta,
+        amountPaid.isAcceptableOrUnknown(data['amount_paid']!, _amountPaidMeta),
+      );
+    }
+    if (data.containsKey('due_amount')) {
+      context.handle(
+        _dueAmountMeta,
+        dueAmount.isAcceptableOrUnknown(data['due_amount']!, _dueAmountMeta),
+      );
+    }
+    if (data.containsKey('due_date')) {
+      context.handle(
+        _dueDateMeta,
+        dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta),
+      );
+    }
     return context;
   }
 
@@ -4842,6 +4898,18 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
         DriftSqlType.string,
         data['${effectivePrefix}pdf_path'],
       ),
+      amountPaid: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}amount_paid'],
+      )!,
+      dueAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}due_amount'],
+      )!,
+      dueDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}due_date'],
+      ),
     );
   }
 
@@ -4864,6 +4932,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
   final String paymentStatus;
   final DateTime createdAt;
   final String? pdfPath;
+  final double amountPaid;
+  final double dueAmount;
+  final DateTime? dueDate;
   const Invoice({
     required this.id,
     required this.invoiceNo,
@@ -4877,6 +4948,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     required this.paymentStatus,
     required this.createdAt,
     this.pdfPath,
+    required this.amountPaid,
+    required this.dueAmount,
+    this.dueDate,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4894,6 +4968,11 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || pdfPath != null) {
       map['pdf_path'] = Variable<String>(pdfPath);
+    }
+    map['amount_paid'] = Variable<double>(amountPaid);
+    map['due_amount'] = Variable<double>(dueAmount);
+    if (!nullToAbsent || dueDate != null) {
+      map['due_date'] = Variable<DateTime>(dueDate);
     }
     return map;
   }
@@ -4914,6 +4993,11 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       pdfPath: pdfPath == null && nullToAbsent
           ? const Value.absent()
           : Value(pdfPath),
+      amountPaid: Value(amountPaid),
+      dueAmount: Value(dueAmount),
+      dueDate: dueDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dueDate),
     );
   }
 
@@ -4935,6 +5019,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       paymentStatus: serializer.fromJson<String>(json['paymentStatus']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       pdfPath: serializer.fromJson<String?>(json['pdfPath']),
+      amountPaid: serializer.fromJson<double>(json['amountPaid']),
+      dueAmount: serializer.fromJson<double>(json['dueAmount']),
+      dueDate: serializer.fromJson<DateTime?>(json['dueDate']),
     );
   }
   @override
@@ -4953,6 +5040,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       'paymentStatus': serializer.toJson<String>(paymentStatus),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'pdfPath': serializer.toJson<String?>(pdfPath),
+      'amountPaid': serializer.toJson<double>(amountPaid),
+      'dueAmount': serializer.toJson<double>(dueAmount),
+      'dueDate': serializer.toJson<DateTime?>(dueDate),
     };
   }
 
@@ -4969,6 +5059,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     String? paymentStatus,
     DateTime? createdAt,
     Value<String?> pdfPath = const Value.absent(),
+    double? amountPaid,
+    double? dueAmount,
+    Value<DateTime?> dueDate = const Value.absent(),
   }) => Invoice(
     id: id ?? this.id,
     invoiceNo: invoiceNo ?? this.invoiceNo,
@@ -4982,6 +5075,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     paymentStatus: paymentStatus ?? this.paymentStatus,
     createdAt: createdAt ?? this.createdAt,
     pdfPath: pdfPath.present ? pdfPath.value : this.pdfPath,
+    amountPaid: amountPaid ?? this.amountPaid,
+    dueAmount: dueAmount ?? this.dueAmount,
+    dueDate: dueDate.present ? dueDate.value : this.dueDate,
   );
   Invoice copyWithCompanion(InvoicesCompanion data) {
     return Invoice(
@@ -5007,6 +5103,11 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           : this.paymentStatus,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       pdfPath: data.pdfPath.present ? data.pdfPath.value : this.pdfPath,
+      amountPaid: data.amountPaid.present
+          ? data.amountPaid.value
+          : this.amountPaid,
+      dueAmount: data.dueAmount.present ? data.dueAmount.value : this.dueAmount,
+      dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
     );
   }
 
@@ -5024,7 +5125,10 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           ..write('paymentMethod: $paymentMethod, ')
           ..write('paymentStatus: $paymentStatus, ')
           ..write('createdAt: $createdAt, ')
-          ..write('pdfPath: $pdfPath')
+          ..write('pdfPath: $pdfPath, ')
+          ..write('amountPaid: $amountPaid, ')
+          ..write('dueAmount: $dueAmount, ')
+          ..write('dueDate: $dueDate')
           ..write(')'))
         .toString();
   }
@@ -5043,6 +5147,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     paymentStatus,
     createdAt,
     pdfPath,
+    amountPaid,
+    dueAmount,
+    dueDate,
   );
   @override
   bool operator ==(Object other) =>
@@ -5059,7 +5166,10 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           other.paymentMethod == this.paymentMethod &&
           other.paymentStatus == this.paymentStatus &&
           other.createdAt == this.createdAt &&
-          other.pdfPath == this.pdfPath);
+          other.pdfPath == this.pdfPath &&
+          other.amountPaid == this.amountPaid &&
+          other.dueAmount == this.dueAmount &&
+          other.dueDate == this.dueDate);
 }
 
 class InvoicesCompanion extends UpdateCompanion<Invoice> {
@@ -5075,6 +5185,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
   final Value<String> paymentStatus;
   final Value<DateTime> createdAt;
   final Value<String?> pdfPath;
+  final Value<double> amountPaid;
+  final Value<double> dueAmount;
+  final Value<DateTime?> dueDate;
   const InvoicesCompanion({
     this.id = const Value.absent(),
     this.invoiceNo = const Value.absent(),
@@ -5088,6 +5201,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     this.paymentStatus = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.pdfPath = const Value.absent(),
+    this.amountPaid = const Value.absent(),
+    this.dueAmount = const Value.absent(),
+    this.dueDate = const Value.absent(),
   });
   InvoicesCompanion.insert({
     this.id = const Value.absent(),
@@ -5102,6 +5218,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     this.paymentStatus = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.pdfPath = const Value.absent(),
+    this.amountPaid = const Value.absent(),
+    this.dueAmount = const Value.absent(),
+    this.dueDate = const Value.absent(),
   }) : invoiceNo = Value(invoiceNo),
        customerName = Value(customerName),
        customerPhone = Value(customerPhone),
@@ -5121,6 +5240,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     Expression<String>? paymentStatus,
     Expression<DateTime>? createdAt,
     Expression<String>? pdfPath,
+    Expression<double>? amountPaid,
+    Expression<double>? dueAmount,
+    Expression<DateTime>? dueDate,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -5135,6 +5257,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
       if (paymentStatus != null) 'payment_status': paymentStatus,
       if (createdAt != null) 'created_at': createdAt,
       if (pdfPath != null) 'pdf_path': pdfPath,
+      if (amountPaid != null) 'amount_paid': amountPaid,
+      if (dueAmount != null) 'due_amount': dueAmount,
+      if (dueDate != null) 'due_date': dueDate,
     });
   }
 
@@ -5151,6 +5276,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     Value<String>? paymentStatus,
     Value<DateTime>? createdAt,
     Value<String?>? pdfPath,
+    Value<double>? amountPaid,
+    Value<double>? dueAmount,
+    Value<DateTime?>? dueDate,
   }) {
     return InvoicesCompanion(
       id: id ?? this.id,
@@ -5165,6 +5293,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
       paymentStatus: paymentStatus ?? this.paymentStatus,
       createdAt: createdAt ?? this.createdAt,
       pdfPath: pdfPath ?? this.pdfPath,
+      amountPaid: amountPaid ?? this.amountPaid,
+      dueAmount: dueAmount ?? this.dueAmount,
+      dueDate: dueDate ?? this.dueDate,
     );
   }
 
@@ -5207,6 +5338,15 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     if (pdfPath.present) {
       map['pdf_path'] = Variable<String>(pdfPath.value);
     }
+    if (amountPaid.present) {
+      map['amount_paid'] = Variable<double>(amountPaid.value);
+    }
+    if (dueAmount.present) {
+      map['due_amount'] = Variable<double>(dueAmount.value);
+    }
+    if (dueDate.present) {
+      map['due_date'] = Variable<DateTime>(dueDate.value);
+    }
     return map;
   }
 
@@ -5224,7 +5364,10 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
           ..write('paymentMethod: $paymentMethod, ')
           ..write('paymentStatus: $paymentStatus, ')
           ..write('createdAt: $createdAt, ')
-          ..write('pdfPath: $pdfPath')
+          ..write('pdfPath: $pdfPath, ')
+          ..write('amountPaid: $amountPaid, ')
+          ..write('dueAmount: $dueAmount, ')
+          ..write('dueDate: $dueDate')
           ..write(')'))
         .toString();
   }
@@ -8088,6 +8231,9 @@ typedef $$InvoicesTableCreateCompanionBuilder =
       Value<String> paymentStatus,
       Value<DateTime> createdAt,
       Value<String?> pdfPath,
+      Value<double> amountPaid,
+      Value<double> dueAmount,
+      Value<DateTime?> dueDate,
     });
 typedef $$InvoicesTableUpdateCompanionBuilder =
     InvoicesCompanion Function({
@@ -8103,6 +8249,9 @@ typedef $$InvoicesTableUpdateCompanionBuilder =
       Value<String> paymentStatus,
       Value<DateTime> createdAt,
       Value<String?> pdfPath,
+      Value<double> amountPaid,
+      Value<double> dueAmount,
+      Value<DateTime?> dueDate,
     });
 
 class $$InvoicesTableFilterComposer
@@ -8171,6 +8320,21 @@ class $$InvoicesTableFilterComposer
 
   ColumnFilters<String> get pdfPath => $composableBuilder(
     column: $table.pdfPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get amountPaid => $composableBuilder(
+    column: $table.amountPaid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get dueAmount => $composableBuilder(
+    column: $table.dueAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get dueDate => $composableBuilder(
+    column: $table.dueDate,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -8243,6 +8407,21 @@ class $$InvoicesTableOrderingComposer
     column: $table.pdfPath,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<double> get amountPaid => $composableBuilder(
+    column: $table.amountPaid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get dueAmount => $composableBuilder(
+    column: $table.dueAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get dueDate => $composableBuilder(
+    column: $table.dueDate,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$InvoicesTableAnnotationComposer
@@ -8299,6 +8478,17 @@ class $$InvoicesTableAnnotationComposer
 
   GeneratedColumn<String> get pdfPath =>
       $composableBuilder(column: $table.pdfPath, builder: (column) => column);
+
+  GeneratedColumn<double> get amountPaid => $composableBuilder(
+    column: $table.amountPaid,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get dueAmount =>
+      $composableBuilder(column: $table.dueAmount, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get dueDate =>
+      $composableBuilder(column: $table.dueDate, builder: (column) => column);
 }
 
 class $$InvoicesTableTableManager
@@ -8341,6 +8531,9 @@ class $$InvoicesTableTableManager
                 Value<String> paymentStatus = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String?> pdfPath = const Value.absent(),
+                Value<double> amountPaid = const Value.absent(),
+                Value<double> dueAmount = const Value.absent(),
+                Value<DateTime?> dueDate = const Value.absent(),
               }) => InvoicesCompanion(
                 id: id,
                 invoiceNo: invoiceNo,
@@ -8354,6 +8547,9 @@ class $$InvoicesTableTableManager
                 paymentStatus: paymentStatus,
                 createdAt: createdAt,
                 pdfPath: pdfPath,
+                amountPaid: amountPaid,
+                dueAmount: dueAmount,
+                dueDate: dueDate,
               ),
           createCompanionCallback:
               ({
@@ -8369,6 +8565,9 @@ class $$InvoicesTableTableManager
                 Value<String> paymentStatus = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String?> pdfPath = const Value.absent(),
+                Value<double> amountPaid = const Value.absent(),
+                Value<double> dueAmount = const Value.absent(),
+                Value<DateTime?> dueDate = const Value.absent(),
               }) => InvoicesCompanion.insert(
                 id: id,
                 invoiceNo: invoiceNo,
@@ -8382,6 +8581,9 @@ class $$InvoicesTableTableManager
                 paymentStatus: paymentStatus,
                 createdAt: createdAt,
                 pdfPath: pdfPath,
+                amountPaid: amountPaid,
+                dueAmount: dueAmount,
+                dueDate: dueDate,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

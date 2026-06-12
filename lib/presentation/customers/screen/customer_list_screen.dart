@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inventory_desktop/core/utils/responsive_helper.dart';
 
 import '../provider/customer_provider.dart';
 import '../widget/add_customer_dialog.dart';
+import '../widget/customer_card_list.dart' show CustomerCardList;
 import '../widget/customer_table.dart';
 
 class CustomerListScreen
@@ -91,7 +93,13 @@ class CustomerListScreen
                     );
                   }).toList();
 
-                  return CustomerTable(
+                  return ResponsiveHelper.isMobile(
+                    context,
+                  )
+                      ? CustomerCardList(
+                    customers: filtered,
+                  )
+                      : CustomerTable(
                     customers: filtered,
                   );
                 },

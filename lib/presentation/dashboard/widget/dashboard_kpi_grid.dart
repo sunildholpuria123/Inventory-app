@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../provider/dashboard_stats_provider.dart';
+import '../provider/outstanding_provider.dart' show outstandingProvider;
 import 'dashboard_error_card.dart' show DashboardErrorCard;
 import 'dashboard_kpi_row.dart' show DashboardKpiCard;
 import 'dashboard_loading_card.dart' show DashboardLoadingCard;
@@ -25,7 +26,10 @@ class DashboardKpiGrid extends ConsumerWidget {
 
     final sales =
     ref.watch(totalSalesProvider);
-
+    final outstanding =
+    ref.watch(
+      outstandingProvider,
+    );
     return LayoutBuilder(
       builder: (context, constraints) {
 
@@ -118,6 +122,25 @@ class DashboardKpiGrid extends ConsumerWidget {
                     value.toString(),
                     icon:
                     Icons.shopping_cart,
+                  ),
+
+              loading: () =>
+              const DashboardLoadingCard(),
+
+              error: (_, __) =>
+              const DashboardErrorCard(),
+            ),
+            outstanding.when(
+              data: (value) =>
+                  DashboardKpiCard(
+                    title:
+                    'Outstanding',
+
+                    value:
+                    '₹${value.toStringAsFixed(0)}',
+
+                    icon:
+                    Icons.pending_actions,
                   ),
 
               loading: () =>
