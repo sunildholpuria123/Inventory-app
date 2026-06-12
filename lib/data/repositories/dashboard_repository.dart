@@ -1,5 +1,4 @@
-import 'package:drift/drift.dart'
-    show ComparableExpr, OrderingTerm;
+import 'package:drift/drift.dart' show ComparableExpr, OrderingTerm;
 import 'package:rxdart/rxdart.dart' show Rx;
 
 import '../../presentation/dashboard/model/monthly_sales.dart'
@@ -54,44 +53,40 @@ class DashboardRepository {
     )..where((tbl) => tbl.stockQty.isSmallerOrEqualValue(5))).watch();
   }
 
+  String _monthName(int month) {
+    const months = [
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    return months[month];
+  }
+
   Stream<List<MonthlySales>> getMonthlySalesAnalytics() {
-    return db
-        .customSelect('''
-    SELECT
-      strftime('%m', created_at) AS month,
-      SUM(grand_total) AS total
-    FROM invoices
-    GROUP BY month
-    ORDER BY month
-    ''')
-        .watch()
-        .map((rows) {
-          const monthNames = [
-            '',
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
-            'Oct',
-            'Nov',
-            'Dec',
-          ];
+    return db.select(db.invoices).watch().map((invoices) {
+      final Map<String, double> monthlyTotals = {};
 
-          return rows.map((row) {
-            final month = int.parse(row.data['month'].toString());
+      for (final invoice in invoices) {
+        final month = _monthName(invoice.createdAt.month);
 
-            return MonthlySales(
-              month: monthNames[month],
+        monthlyTotals[month] = (monthlyTotals[month] ?? 0) + invoice.grandTotal;
+      }
 
-              amount: (row.data['total'] as num).toDouble(),
-            );
-          }).toList();
-        });
+      return monthlyTotals.entries
+          .map((entry) => MonthlySales(month: entry.key, amount: entry.value))
+          .toList();
+    });
   }
 
   Stream<ProfitSummary> getProfitSummary() {

@@ -45,70 +45,204 @@ class SalesHistoryScreen extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       final invoice = items[index];
 
-                      return Card(
-                        child: ListTile(
-                          leading: const CircleAvatar(
-                            child: Icon(Icons.receipt),
-                          ),
+                       return Card(
+                        margin: const EdgeInsets.only(
+                          bottom: 12,
+                        ),
 
-                          title: Text(invoice.customerName),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
 
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
 
                             children: [
-                              Text(invoice.invoiceNo),
 
-                              Text(invoice.createdAt.toString()),
-                            ],
-                          ),
-
-                          trailing: SizedBox(
-                            width: 220,
-
-                            child: Row(
-                              children: [
-                                Text(
-                                  '₹${invoice.grandTotal.toStringAsFixed(0)}',
+                              const CircleAvatar(
+                                child: Icon(
+                                  Icons.receipt,
                                 ),
+                              ),
 
-                                IconButton(
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
+                              const SizedBox(
+                                width: 12,
+                              ),
 
-                                      builder: (_) => InvoiceDetailsDialog(
-                                        invoice: invoice,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+
+                                  children: [
+
+                                    Text(
+                                      invoice.customerName,
+
+                                      maxLines: 1,
+
+                                      overflow:
+                                      TextOverflow.ellipsis,
+
+                                      style:
+                                      const TextStyle(
+                                        fontWeight:
+                                        FontWeight.bold,
+
+                                        fontSize: 16,
                                       ),
-                                    );
-                                  },
+                                    ),
 
-                                  icon: const Icon(Icons.visibility),
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+
+                                    Text(
+                                      invoice.invoiceNo,
+
+                                      maxLines: 2,
+
+                                      overflow:
+                                      TextOverflow.ellipsis,
+
+                                      style:
+                                      TextStyle(
+                                        color:
+                                        Colors.grey[700],
+                                      ),
+                                    ),
+
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+
+                                    Text(
+                                      invoice.createdAt
+                                          .toString()
+                                          .substring(
+                                        0,
+                                        16,
+                                      ),
+
+                                      style:
+                                      TextStyle(
+                                        color:
+                                        Colors.grey[600],
+
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                              ),
 
-                                IconButton(
-                                  onPressed: () async {
-                                    final repo = ref.read(
-                                      salesRepositoryProvider,
-                                    );
+                              const SizedBox(
+                                width: 12,
+                              ),
 
-                                    await repo.restoreStockFromInvoice(
-                                      invoice.id,
-                                    );
+                              Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.end,
 
-                                    await repo.deleteInvoice(invoice.id);
+                                children: [
 
-                                    ref.refresh(salesHistoryProvider);
-                                  },
+                                  Text(
+                                    '₹${invoice.grandTotal.toStringAsFixed(0)}',
 
-                                  icon: const Icon(
-                                    Icons.delete,
+                                    style:
+                                    const TextStyle(
+                                      fontWeight:
+                                      FontWeight.bold,
 
-                                    color: Colors.red,
+                                      fontSize: 16,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+
+                                  Row(
+                                    mainAxisSize:
+                                    MainAxisSize.min,
+
+                                    children: [
+
+                                      IconButton(
+                                        visualDensity:
+                                        VisualDensity.compact,
+
+                                        constraints:
+                                        const BoxConstraints(),
+
+                                        onPressed: () {
+                                          showDialog(
+                                            context:
+                                            context,
+
+                                            builder:
+                                                (_) =>
+                                                InvoiceDetailsDialog(
+                                                  invoice:
+                                                  invoice,
+                                                ),
+                                          );
+                                        },
+
+                                        icon: const Icon(
+                                          Icons.visibility,
+
+                                          color:
+                                          Colors.grey,
+                                        ),
+                                      ),
+
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+
+                                      IconButton(
+                                        visualDensity:
+                                        VisualDensity.compact,
+
+                                        constraints:
+                                        const BoxConstraints(),
+
+                                        onPressed:
+                                            () async {
+
+                                          final repo =
+                                          ref.read(
+                                            salesRepositoryProvider,
+                                          );
+
+                                          await repo
+                                              .restoreStockFromInvoice(
+                                            invoice.id,
+                                          );
+
+                                          await repo
+                                              .deleteInvoice(
+                                            invoice.id,
+                                          );
+
+                                          ref.refresh(
+                                            salesHistoryProvider,
+                                          );
+                                        },
+
+                                        icon: const Icon(
+                                          Icons.delete,
+
+                                          color:
+                                          Colors.red,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       );
