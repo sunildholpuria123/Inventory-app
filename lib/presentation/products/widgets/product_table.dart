@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
+import '../../categories/provider/category_provider.dart';
 import '../provider/product_provider.dart';
+import '../screens/product_detail_screen.dart';
 import 'edit_product_dialog.dart';
 
 class ProductTable extends ConsumerWidget {
@@ -14,6 +16,11 @@ class ProductTable extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final categories = ref.watch(categoriesProvider);
+
+    final categoryMap = {
+      for (final category in categories.value ?? []) category.id: category,
+    };
     return Card(
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -37,6 +44,12 @@ class ProductTable extends ConsumerWidget {
 
               DataColumn(label: Text('Name')),
 
+              DataColumn(label: Text('Category')),
+
+              DataColumn(label: Text('Unit')),
+
+              DataColumn(label: Text('Pricing')),
+
               DataColumn(label: Text('Stock')),
 
               DataColumn(label: Text('Purchase')),
@@ -45,7 +58,6 @@ class ProductTable extends ConsumerWidget {
 
               DataColumn(label: Text('Actions')),
             ],
-
             rows: products.map((product) {
               return DataRow(
                 cells: [
@@ -78,6 +90,14 @@ class ProductTable extends ConsumerWidget {
 
                   /// NAME
                   DataCell(Text(product.name)),
+
+                  DataCell(Text(categoryMap[product.categoryId]?.name ?? '-')),
+
+                  DataCell(Text(categoryMap[product.categoryId]?.unit ?? '-')),
+
+                  DataCell(
+                    Text(categoryMap[product.categoryId]?.pricingType ?? '-'),
+                  ),
 
                   /// STOCK
                   DataCell(
@@ -129,6 +149,24 @@ class ProductTable extends ConsumerWidget {
                           },
 
                           icon: const Icon(Icons.delete, color: Colors.red),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.info_outline,
+                          ),
+
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    ProductDetailScreen(
+                                      product: product,
+                                    ),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),

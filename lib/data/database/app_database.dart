@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:inventory_desktop/data/database/tables/product_variants.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -36,6 +37,7 @@ part 'app_database.g.dart';
     Invoices,
     InvoiceItems,
     PaymentHistories,
+    ProductVariants,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -125,7 +127,6 @@ class AppDatabase extends _$AppDatabase {
     onCreate: (m) async {
       await m.createAll();
 
-      await _seedCategories();
     },
 
     onUpgrade: (m, from, to) async {
@@ -135,71 +136,6 @@ class AppDatabase extends _$AppDatabase {
     },
   );
 
-  Future<void> _seedCategories() async {
-    final existing = await select(categories).get();
-
-    if (existing.isNotEmpty) {
-      return;
-    }
-
-    await batch((batch) {
-      batch.insertAll(categories, [
-        CategoriesCompanion.insert(
-          name: 'Marble',
-          pricingType: 'AREA',
-          unit: 'SQFT',
-        ),
-
-        CategoriesCompanion.insert(
-          name: 'Granite',
-          pricingType: 'AREA',
-          unit: 'SQFT',
-        ),
-
-        CategoriesCompanion.insert(
-          name: 'Tiles',
-          pricingType: 'AREA',
-          unit: 'SQFT',
-        ),
-
-        CategoriesCompanion.insert(
-          name: 'Plumbing',
-          pricingType: 'QUANTITY',
-          unit: 'PCS',
-        ),
-
-        CategoriesCompanion.insert(
-          name: 'Sanitaryware',
-          pricingType: 'QUANTITY',
-          unit: 'PCS',
-        ),
-
-        CategoriesCompanion.insert(
-          name: 'Paint',
-          pricingType: 'QUANTITY',
-          unit: 'LTR',
-        ),
-
-        CategoriesCompanion.insert(
-          name: 'Electrical',
-          pricingType: 'QUANTITY',
-          unit: 'PCS',
-        ),
-
-        CategoriesCompanion.insert(
-          name: 'Furniture',
-          pricingType: 'QUANTITY',
-          unit: 'PCS',
-        ),
-
-        CategoriesCompanion.insert(
-          name: 'Hardware',
-          pricingType: 'QUANTITY',
-          unit: 'PCS',
-        ),
-      ]);
-    });
-  }
 }
 
 LazyDatabase _openConnection() {

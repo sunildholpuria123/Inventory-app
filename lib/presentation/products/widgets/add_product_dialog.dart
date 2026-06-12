@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/product_image_service.dart';
+import '../../categories/provider/category_provider.dart';
 import '../provider/product_provider.dart';
 
 class AddProductDialog extends ConsumerStatefulWidget {
@@ -15,6 +16,8 @@ class AddProductDialog extends ConsumerStatefulWidget {
 
 class _AddProductDialogState extends ConsumerState<AddProductDialog> {
   String? imagePath;
+
+  int? selectedCategoryId;
 
   final nameController = TextEditingController();
 
@@ -58,6 +61,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final categories = ref.watch(categoriesProvider);
+
     return AlertDialog(
       title: const Text('Add Product'),
 
@@ -131,11 +136,58 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
 
                 const SizedBox(height: 15),
 
+                /// CATEGORY
+                categories.when(
+                  data: (items) {
+                    return DropdownButtonFormField<int>(
+                      value: selectedCategoryId,
+
+                      decoration: const InputDecoration(labelText: 'Category'),
+
+                      items: items.map((category) {
+                        return DropdownMenuItem<int>(
+                          value: category.id,
+
+                          child: Text(
+                            '${category.name} (${category.pricingType})',
+                          ),
+                        );
+                      }).toList(),
+
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Select Category';
+                        }
+
+                        return null;
+                      },
+
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCategoryId = value;
+                        });
+                      },
+                    );
+                  },
+
+                  loading: () => const Padding(
+                    padding: EdgeInsets.all(8),
+
+                    child: CircularProgressIndicator(),
+                  ),
+
+                  error: (e, _) => Text(e.toString()),
+                ),
+
+                const SizedBox(height: 15),
+
                 /// PURCHASE PRICE
                 TextFormField(
                   controller: purchaseController,
 
-                  keyboardType: TextInputType.number,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
 
                   decoration: const InputDecoration(
                     labelText: 'Purchase Price',
@@ -156,7 +208,9 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                 TextFormField(
                   controller: sellingController,
 
-                  keyboardType: TextInputType.number,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
 
                   decoration: const InputDecoration(labelText: 'Selling Price'),
 
@@ -231,6 +285,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                     final repo = ref.read(productRepositoryProvider);
 
                     await repo.addProduct(
+                      categoryId: selectedCategoryId!,
+
                       name: nameController.text.trim(),
 
                       purchasePrice: double.parse(purchaseController.text),
@@ -238,6 +294,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                       sellingPrice: double.parse(sellingController.text),
 
                       stockQty: int.parse(stockController.text),
+
+                      barcode: barcodeController.text.trim(),
 
                       imagePath: imagePath,
                     );

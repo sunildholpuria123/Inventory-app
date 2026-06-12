@@ -1,3 +1,5 @@
+import 'package:drift/drift.dart';
+
 import '../../presentation/sales/model/cart_item.dart' show CartItem;
 import '../database/app_database.dart';
 
@@ -19,11 +21,21 @@ class InvoiceItemRepository {
 
               productId: item.product.id,
 
+              variantId: Value(item.variant?.id),
+
               productName: item.product.name,
 
-              quantity: item.qty,
+              variantName: Value(item.variant?.variantName),
 
-              price: item.price,
+              quantity: item.quantity,
+
+              price: item.unitPrice,
+
+              height: Value(item.height),
+
+              width: Value(item.width),
+
+              area: Value(item.isAreaBased ? item.area : null),
 
               total: item.total,
             ),

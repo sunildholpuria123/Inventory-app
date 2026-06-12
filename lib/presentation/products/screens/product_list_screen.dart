@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/provider/pagination_provider.dart';
+import '../../categories/provider/category_provider.dart';
 import '../provider/product_provider.dart';
 import '../widgets/add_product_dialog.dart';
+import '../widgets/grouped_product_table.dart';
 import '../widgets/product_table.dart';
 
 class ProductListScreen extends ConsumerWidget {
@@ -13,9 +15,13 @@ class ProductListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final products = ref.watch(productsProvider);
 
+    final categories = ref.watch(categoriesProvider);
+
     final currentPage = ref.watch(currentPageProvider);
 
     final pageSize = ref.watch(pageSizeProvider);
+
+    final selectedCategory = ref.watch(productCategoryFilterProvider);
 
     return Scaffold(
       body: Padding(
@@ -23,12 +29,14 @@ class ProductListScreen extends ConsumerWidget {
 
         child: Column(
           children: [
+            /// HEADER
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
               children: [
                 Text(
                   'Products',
+
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
 
@@ -36,6 +44,7 @@ class ProductListScreen extends ConsumerWidget {
                   onPressed: () {
                     showDialog(
                       context: context,
+
                       builder: (_) => const AddProductDialog(),
                     );
                   },
@@ -49,6 +58,7 @@ class ProductListScreen extends ConsumerWidget {
 
             const SizedBox(height: 20),
 
+            /// SEARCH
             TextField(
               decoration: InputDecoration(
                 hintText: 'Search Product',
@@ -62,72 +72,80 @@ class ProductListScreen extends ConsumerWidget {
 
               onChanged: (value) {
                 ref.read(productSearchProvider.notifier).state = value;
+
+                ref.read(currentPageProvider.notifier).state = 1;
               },
+            ),
+
+            const SizedBox(height: 15),
+
+            /// CATEGORY FILTER
+            categories.when(
+              data: (items) {
+                return DropdownButtonFormField<int?>(
+                  value: selectedCategory,
+
+                  decoration: InputDecoration(
+                    labelText: 'Category',
+
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+
+                  items: [
+                    const DropdownMenuItem<int?>(
+                      value: null,
+
+                      child: Text('All Categories'),
+                    ),
+
+                    ...items.map((category) {
+                      return DropdownMenuItem<int?>(
+                        value: category.id,
+
+                        child: Text(category.name),
+                      );
+                    }),
+                  ],
+
+                  onChanged: (value) {
+                    ref.read(productCategoryFilterProvider.notifier).state =
+                        value;
+
+                    ref.read(currentPageProvider.notifier).state = 1;
+                  },
+                );
+              },
+
+              loading: () => const LinearProgressIndicator(),
+
+              error: (e, _) => Text(e.toString()),
             ),
 
             const SizedBox(height: 20),
 
+            /// PRODUCTS
             Expanded(
-              child: products.when(
-                data: (items) {
-                  final search = ref.watch(productSearchProvider);
+              child: Builder(
+                builder: (_) {
+                  final groupedProducts = ref.watch(groupedProductsProvider);
 
-                  final filtered = items.where((product) {
-                    return product.name.toLowerCase().contains(
-                      search.toLowerCase(),
-                    );
-                  }).toList();
+                  return groupedProducts.when(
+                    data: (groups) {
+                      if (groups.isEmpty) {
+                        return const Center(child: Text('No Products Found'));
+                      }
 
-                  final start = (currentPage - 1) * pageSize;
+                      return GroupedProductTable(groups: groups);
+                    },
 
-                  final end = (start + pageSize).clamp(0, filtered.length);
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
 
-                  final paginated = filtered.sublist(start, end);
-
-                  return Column(
-                    children: [
-                      Expanded(child: ProductTable(products: paginated)),
-
-                      const SizedBox(height: 15),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-
-                        children: [
-                          IconButton(
-                            onPressed: currentPage > 1
-                                ? () {
-                                    ref
-                                        .read(currentPageProvider.notifier)
-                                        .state--;
-                                  }
-                                : null,
-
-                            icon: const Icon(Icons.arrow_back),
-                          ),
-
-                          Text('Page $currentPage'),
-
-                          IconButton(
-                            onPressed: end < filtered.length
-                                ? () {
-                                    ref
-                                        .read(currentPageProvider.notifier)
-                                        .state++;
-                                  }
-                                : null,
-
-                            icon: const Icon(Icons.arrow_forward),
-                          ),
-                        ],
-                      ),
-                    ],
+                    error: (e, _) => Center(child: Text(e.toString())),
                   );
                 },
-
-                loading: () => const Center(child: CircularProgressIndicator()),
-
-                error: (e, _) => Center(child: Text(e.toString())),
               ),
             ),
           ],

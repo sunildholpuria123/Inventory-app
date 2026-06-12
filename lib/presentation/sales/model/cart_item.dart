@@ -1,15 +1,78 @@
+import '../../../data/database/app_database.dart';
+
 class CartItem {
-  final dynamic product;
+  final Product product;
 
-  final int qty;
+  final ProductVariant? variant;
 
-  final double price;
+  final int quantity;
 
-  CartItem({required this.product, required this.qty, required this.price});
+  final double unitPrice;
 
-  /// TOTAL
-  double get total => qty * price;
+  /// Used for Marble/Granite/Tiles
+  final double? height;
 
-  /// PRODUCT NAME
-  String get productName => product.name;
+  final double? width;
+
+  CartItem({
+    required this.product,
+    this.variant,
+    required this.quantity,
+    required this.unitPrice,
+    this.height,
+    this.width,
+  });
+
+  bool get isAreaBased => height != null && width != null;
+
+  double get area {
+    if (!isAreaBased) {
+      return 0;
+    }
+
+    return height! * width!;
+  }
+
+  double get total {
+    if (isAreaBased) {
+      final rate = variant?.sellingPrice ?? unitPrice;
+
+      return area * rate;
+    }
+
+    return quantity * unitPrice;
+  }
+
+  String get displayName {
+    if (variant != null) {
+      return '${product.name}'
+          ' - '
+          '${variant!.variantName}';
+    }
+
+    return product.name;
+  }
+
+  CartItem copyWith({
+    Product? product,
+    ProductVariant? variant,
+    int? quantity,
+    double? unitPrice,
+    double? height,
+    double? width,
+  }) {
+    return CartItem(
+      product: product ?? this.product,
+
+      variant: variant ?? this.variant,
+
+      quantity: quantity ?? this.quantity,
+
+      unitPrice: unitPrice ?? this.unitPrice,
+
+      height: height ?? this.height,
+
+      width: width ?? this.width,
+    );
+  }
 }

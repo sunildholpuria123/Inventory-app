@@ -57,7 +57,9 @@ class InvoicePdfService {
 
                     pw.Text('Invoice No: $invoiceNo'),
 
-                    pw.Text('Date: ${DateTime.now()}'),
+                    pw.Text(
+                      'Date: ${DateFormat('dd MMM yyyy').format(DateTime.now())}',
+                    ),
                   ],
                 ),
 
@@ -105,15 +107,30 @@ class InvoicePdfService {
 
               headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
 
-              headers: ['Product', 'Qty', 'Price', 'Total'],
+              cellStyle: const pw.TextStyle(fontSize: 10),
+
+              headers: ['Product', 'Qty', 'Rate', 'Area', 'Total'],
 
               data: items.map((e) {
+                final productName = e.variantName != null
+                    ? '${e.product.name}\n'
+                          '(${e.variantName})'
+                    : e.product.name;
+
+                final areaText = e.isAreaBased
+                    ? '${e.height?.toStringAsFixed(2)} × '
+                          '${e.width?.toStringAsFixed(2)}\n'
+                          '= ${e.area?.toStringAsFixed(2)} sqft'
+                    : '-';
+
                 return [
-                  e.product.name,
+                  productName,
 
                   e.qty.toString(),
 
                   '₹${e.price.toStringAsFixed(2)}',
+
+                  areaText,
 
                   '₹${e.total.toStringAsFixed(2)}',
                 ];

@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart'
-    show Value, ComparableExpr, StringExpressionOperators;
+    show Value, ComparableExpr, StringExpressionOperators, OrderingTerm;
 
 import '../../core/services/product_image_service.dart'
     show ProductImageService;
@@ -11,12 +11,25 @@ class ProductRepository {
   ProductRepository(this.db);
 
   /// GET ALL PRODUCTS
-  Stream<List<Product>> watchProducts() {
-    return db.watchAllProducts();
+  Stream<List<Product>> watchProducts({String search = '', int? categoryId}) {
+    final query = db.select(db.products);
+
+    if (search.isNotEmpty) {
+      query.where((tbl) => tbl.name.like('%$search%'));
+    }
+
+    if (categoryId != null) {
+      query.where((tbl) => tbl.categoryId.equals(categoryId));
+    }
+
+    query.orderBy([(tbl) => OrderingTerm.asc(tbl.name)]);
+
+    return query.watch();
   }
 
   /// ADD PRODUCT
   Future<void> addProduct({
+    required int categoryId,
     required String name,
     required double purchasePrice,
     required double sellingPrice,
@@ -26,7 +39,7 @@ class ProductRepository {
   }) async {
     await db.insertProduct(
       ProductsCompanion.insert(
-        categoryId: 1,
+        categoryId: categoryId,
 
         name: name.trim(),
 
@@ -50,6 +63,7 @@ class ProductRepository {
   /// UPDATE PRODUCT
   Future<void> updateProduct({
     required int id,
+    required int categoryId,
     required String name,
     required double purchasePrice,
     required double sellingPrice,
@@ -60,7 +74,7 @@ class ProductRepository {
     await (db.update(db.products)..where((tbl) => tbl.id.equals(id))).write(
       ProductsCompanion(
         name: Value(name.trim()),
-
+        categoryId: Value(categoryId),
         purchasePrice: Value(purchasePrice),
 
         sellingPrice: Value(sellingPrice),

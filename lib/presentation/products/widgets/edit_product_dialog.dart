@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/product_image_service.dart';
 import '../../../data/database/app_database.dart';
+import '../../categories/provider/category_provider.dart';
 import '../provider/product_provider.dart';
 
 class EditProductDialog extends ConsumerStatefulWidget {
@@ -30,6 +31,7 @@ class _EditProductDialogState extends ConsumerState<EditProductDialog> {
   String? selectedImagePath;
 
   bool isLoading = false;
+  int? selectedCategoryId;
 
   @override
   void initState() {
@@ -50,6 +52,7 @@ class _EditProductDialogState extends ConsumerState<EditProductDialog> {
     );
 
     selectedImagePath = widget.product.imagePath;
+    selectedCategoryId = widget.product.categoryId;
   }
 
   @override
@@ -83,6 +86,7 @@ class _EditProductDialogState extends ConsumerState<EditProductDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final categories = ref.watch(categoriesProvider);
     return AlertDialog(
       title: const Text('Edit Product'),
 
@@ -166,6 +170,43 @@ class _EditProductDialogState extends ConsumerState<EditProductDialog> {
                   },
 
                   decoration: const InputDecoration(labelText: 'Product Name'),
+                ),
+                const SizedBox(height: 20),
+
+                categories.when(
+                  data: (items) {
+                    return DropdownButtonFormField<int>(
+                      value: selectedCategoryId,
+
+                      decoration: const InputDecoration(labelText: 'Category'),
+
+                      items: items.map((category) {
+                        return DropdownMenuItem(
+                          value: category.id,
+
+                          child: Text(category.name),
+                        );
+                      }).toList(),
+
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Select Category';
+                        }
+
+                        return null;
+                      },
+
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCategoryId = value;
+                        });
+                      },
+                    );
+                  },
+
+                  loading: () => const CircularProgressIndicator(),
+
+                  error: (_, __) => const Text('Unable to load categories'),
                 ),
 
                 const SizedBox(height: 20),
@@ -260,6 +301,7 @@ class _EditProductDialogState extends ConsumerState<EditProductDialog> {
 
                     await repo.updateProduct(
                       id: widget.product.id,
+                      categoryId: selectedCategoryId!,
 
                       name: nameController.text.trim(),
 

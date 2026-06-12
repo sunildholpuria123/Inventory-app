@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../model/cart_item.dart' show CartItem;
+import '../model/cart_item.dart';
 import '../provider/sales_provider.dart';
 
 class InvoiceProductList extends ConsumerWidget {
@@ -17,7 +17,6 @@ class InvoiceProductList extends ConsumerWidget {
 
     return ListView.builder(
       shrinkWrap: true,
-
       itemCount: items.length,
 
       itemBuilder: (context, index) {
@@ -26,81 +25,116 @@ class InvoiceProductList extends ConsumerWidget {
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(12),
+
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+
               children: [
+                /// PRODUCT DETAILS
                 Expanded(
-                  flex: 3,
+                  flex: 4,
+
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+
                     children: [
                       Text(
-                        item.product.name,
+                        item.displayName,
+
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
 
-                      Text('₹${item.price}'),
+                      const SizedBox(height: 4),
+
+                      Text('Rate: ₹${item.unitPrice.toStringAsFixed(2)}'),
+
+                      /// AREA DETAILS
+                      if (item.isAreaBased)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+
+                          child: Text(
+                            '${item.height} × '
+                            '${item.width} = '
+                            '${item.area.toStringAsFixed(2)} sqft',
+
+                            style: const TextStyle(color: Colors.blueGrey),
+                          ),
+                        ),
                     ],
                   ),
                 ),
 
-                IconButton(
-                  onPressed: () {
-                    if (item.qty <= 1) {
-                      return;
-                    }
+                /// QUANTITY CONTROLS
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        if (item.quantity <= 1) {
+                          return;
+                        }
 
-                    final updated = [...items];
+                        final updated = [...items];
 
-                    updated[index] = CartItem(
-                      product: item.product,
-                      qty: item.qty - 1,
-                      price: item.price,
-                    );
+                        updated[index] = item.copyWith(
+                          quantity: item.quantity - 1,
+                        );
 
-                    ref.read(invoiceItemsProvider.notifier).state = updated;
-                  },
-                  icon: const Icon(Icons.remove_circle),
+                        ref.read(invoiceItemsProvider.notifier).state = updated;
+                      },
+
+                      icon: const Icon(Icons.remove_circle),
+                    ),
+
+                    Text(
+                      item.quantity.toString(),
+
+                      style: const TextStyle(
+                        fontSize: 18,
+
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    IconButton(
+                      onPressed: () {
+                        final updated = [...items];
+
+                        updated[index] = item.copyWith(
+                          quantity: item.quantity + 1,
+                        );
+
+                        ref.read(invoiceItemsProvider.notifier).state = updated;
+                      },
+
+                      icon: const Icon(Icons.add_circle),
+                    ),
+                  ],
                 ),
 
-                Text(
-                  item.qty.toString(),
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                const SizedBox(width: 16),
 
-                IconButton(
-                  onPressed: () {
-                    final updated = [...items];
+                /// TOTAL + DELETE
+                Column(
+                  children: [
+                    Text(
+                      '₹${item.total.toStringAsFixed(2)}',
 
-                    updated[index] = CartItem(
-                      product: item.product,
-                      qty: item.qty + 1,
-                      price: item.price,
-                    );
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
 
-                    ref.read(invoiceItemsProvider.notifier).state = updated;
-                  },
-                  icon: const Icon(Icons.add_circle),
-                ),
+                    IconButton(
+                      onPressed: () {
+                        final updated = [...items];
 
-                const SizedBox(width: 20),
+                        updated.removeAt(index);
 
-                Text(
-                  '₹${item.total.toStringAsFixed(2)}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+                        ref.read(invoiceItemsProvider.notifier).state = updated;
+                      },
 
-                IconButton(
-                  onPressed: () {
-                    final updated = [...items];
-
-                    updated.removeAt(index);
-
-                    ref.read(invoiceItemsProvider.notifier).state = updated;
-                  },
-                  icon: const Icon(Icons.delete, color: Colors.red),
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                    ),
+                  ],
                 ),
               ],
             ),

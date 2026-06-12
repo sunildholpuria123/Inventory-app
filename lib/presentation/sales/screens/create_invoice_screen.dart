@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../products/provider/product_provider.dart'
     show productRepositoryProvider;
+import '../../products/provider/product_variant_provider.dart';
 import '../model/invoice_item_model.dart';
 import '../provider/invoice_item_provider.dart';
 import '../provider/sales_provider.dart';
@@ -197,10 +198,24 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
 
       /// CHECK STOCK
       for (final item in items) {
-        if (item.product.stockQty < item.qty) {
-          showMessage('Insufficient stock for ${item.product.name}');
+        if (item.variant != null) {
+          if (item.variant!.stockQty < item.quantity) {
+            showMessage(
+              'Insufficient stock for '
+              '${item.displayName}',
+            );
 
-          return;
+            return;
+          }
+        } else {
+          if (item.product.stockQty < item.quantity) {
+            showMessage(
+              'Insufficient stock for '
+              '${item.product.name}',
+            );
+
+            return;
+          }
         }
       }
 
@@ -222,9 +237,17 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
               (e) => InvoiceItemModel(
                 product: e.product,
 
-                qty: e.qty,
+                variantName: e.variant?.variantName,
 
-                price: e.price,
+                qty: e.quantity,
+
+                price: e.unitPrice,
+
+                height: e.height,
+
+                width: e.width,
+
+                area: e.isAreaBased ? e.area : null,
               ),
             )
             .toList(),
@@ -284,15 +307,26 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
         items: items,
       );
 
-      /// UPDATE PRODUCT STOCK
+      /// UPDATE STOCK
+
       final productRepo = ref.read(productRepositoryProvider);
 
-      for (final item in items) {
-        await productRepo.reduceStock(
-          productId: item.product.id,
+      final variantRepo = ref.read(productVariantRepositoryProvider);
 
-          qty: item.qty,
-        );
+      for (final item in items) {
+        if (item.variant != null) {
+          await variantRepo.updateVariant(
+            item.variant!.copyWith(
+              stockQty: item.variant!.stockQty - item.quantity,
+            ),
+          );
+        } else {
+          await productRepo.reduceStock(
+            productId: item.product.id,
+
+            qty: item.quantity,
+          );
+        }
       }
 
       /// CLEAR CART
