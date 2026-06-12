@@ -5,19 +5,12 @@ import '../provider/supplier_provider.dart';
 import '../widgets/add_supplier_dialog.dart';
 import '../widgets/supplier_table.dart';
 
-class SupplierScreen
-    extends ConsumerWidget {
-  const SupplierScreen({
-    super.key,
-  });
+class SupplierScreen extends ConsumerWidget {
+  const SupplierScreen({super.key});
 
   @override
-  Widget build(
-      BuildContext context,
-      WidgetRef ref,
-      ) {
-    final suppliers =
-    ref.watch(suppliersProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final suppliers = ref.watch(suppliersProvider);
 
     return Scaffold(
       body: Padding(
@@ -26,33 +19,25 @@ class SupplierScreen
         child: Column(
           children: [
             Row(
-              mainAxisAlignment:
-              MainAxisAlignment
-                  .spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
               children: [
                 Text(
                   'Suppliers',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineMedium,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
 
                 ElevatedButton.icon(
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (_) =>
-                      const AddSupplierDialog(),
+                      builder: (_) => const AddSupplierDialog(),
                     );
                   },
 
-                  icon:
-                  const Icon(Icons.add),
+                  icon: const Icon(Icons.add),
 
-                  label: const Text(
-                    'Add Supplier',
-                  ),
+                  label: const Text('Add Supplier'),
                 ),
               ],
             ),
@@ -60,21 +45,13 @@ class SupplierScreen
             const SizedBox(height: 20),
 
             TextField(
-              decoration:
-              const InputDecoration(
-                hintText:
-                'Search Supplier',
-                prefixIcon:
-                Icon(Icons.search),
+              decoration: const InputDecoration(
+                hintText: 'Search Supplier',
+                prefixIcon: Icon(Icons.search),
               ),
 
               onChanged: (value) {
-                ref
-                    .read(
-                  supplierSearchProvider
-                      .notifier,
-                )
-                    .state = value;
+                ref.read(supplierSearchProvider.notifier).state = value;
               },
             ),
 
@@ -83,34 +60,18 @@ class SupplierScreen
             Expanded(
               child: suppliers.when(
                 data: (items) {
-                  final search = ref.watch(
-                    supplierSearchProvider,
-                  );
+                  final search = ref.watch(supplierSearchProvider);
 
-                  final filtered =
-                  items.where((e) {
-                    return e.name
-                        .toLowerCase()
-                        .contains(
-                      search.toLowerCase(),
-                    );
+                  final filtered = items.where((e) {
+                    return e.name.toLowerCase().contains(search.toLowerCase());
                   }).toList();
 
-                  return SupplierTable(
-                    suppliers: filtered,
-                  );
+                  return SupplierTable(suppliers: filtered);
                 },
 
-                loading: () =>
-                const Center(
-                  child:
-                  CircularProgressIndicator(),
-                ),
+                loading: () => const Center(child: CircularProgressIndicator()),
 
-                error: (e, _) => Center(
-                  child:
-                  Text(e.toString()),
-                ),
+                error: (e, _) => Center(child: Text(e.toString())),
               ),
             ),
           ],

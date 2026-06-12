@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:archive/archive_io.dart' show ZipFileEncoder, extractFileToDisk;
 
+import 'package:archive/archive_io.dart' show ZipFileEncoder, extractFileToDisk;
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -25,57 +25,33 @@ class BackupService {
     return p.join(dir.path, 'inventory.sqlite');
   }
 
-  static Future<File>
-  getDatabaseFile() async {
-    final appDir =
-    await getApplicationDocumentsDirectory();
+  static Future<File> getDatabaseFile() async {
+    final appDir = await getApplicationDocumentsDirectory();
 
-    return File(
-      p.join(
-        appDir.path,
-        'inventory.sqlite',
-      ),
-    );
+    return File(p.join(appDir.path, 'inventory.sqlite'));
   }
 
   Future<File?> backupDatabase() async {
+    final dbPath = await getDatabasePath();
 
-    final dbPath =
-    await getDatabasePath();
-
-    final dbFile =
-    File(dbPath);
+    final dbFile = File(dbPath);
 
     if (!await dbFile.exists()) {
       return null;
     }
 
-    if (Platform.isAndroid ||
-        Platform.isIOS) {
+    if (Platform.isAndroid || Platform.isIOS) {
+      final backupDir = await getBackupDirectory();
 
-      final backupDir =
-      await getBackupDirectory();
+      final output = File(p.join(backupDir.path, 'inventory_backup.sqlite'));
 
-      final output = File(
-        p.join(
-          backupDir.path,
-          'inventory_backup.sqlite',
-        ),
-      );
-
-      return dbFile.copy(
-        output.path,
-      );
+      return dbFile.copy(output.path);
     }
 
-    final output =
-    await FilePicker.platform
-        .saveFile(
-      dialogTitle:
-      'Save Database Backup',
+    final output = await FilePicker.platform.saveFile(
+      dialogTitle: 'Save Database Backup',
 
-      fileName:
-      'inventory_backup.sqlite',
+      fileName: 'inventory_backup.sqlite',
     );
 
     if (output == null) {
@@ -84,6 +60,7 @@ class BackupService {
 
     return dbFile.copy(output);
   }
+
   Future<void> restoreDatabase() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -107,31 +84,19 @@ class BackupService {
 
   /// CREATE ZIP BACKUP
   static Future<File> createBackup() async {
-
-    final dbFile =
-    await getDatabaseFile();
+    final dbFile = await getDatabaseFile();
 
     if (!await dbFile.exists()) {
-
-      throw Exception(
-        'Database not found',
-      );
+      throw Exception('Database not found');
     }
 
-    final backupDir =
-    await getBackupDirectory();
+    final backupDir = await getBackupDirectory();
 
-    final timestamp =
-        DateTime.now()
-            .millisecondsSinceEpoch;
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
 
-    final zipPath = p.join(
-      backupDir.path,
-      'backup_$timestamp.zip',
-    );
+    final zipPath = p.join(backupDir.path, 'backup_$timestamp.zip');
 
-    final encoder =
-    ZipFileEncoder();
+    final encoder = ZipFileEncoder();
 
     encoder.create(zipPath);
 
@@ -141,32 +106,19 @@ class BackupService {
 
     return File(zipPath);
   }
+
   /// RESTORE BACKUP
-  static Future<void> restoreBackup(
-      File zipFile,
-      ) async {
-    final tempDir =
-    await getTemporaryDirectory();
+  static Future<void> restoreBackup(File zipFile) async {
+    final tempDir = await getTemporaryDirectory();
 
-    extractFileToDisk(
-      zipFile.path,
-      tempDir.path,
-    );
+    extractFileToDisk(zipFile.path, tempDir.path);
 
-    final extractedDb = File(
-      p.join(
-        tempDir.path,
-        'inventory.sqlite',
-      ),
-    );
+    final extractedDb = File(p.join(tempDir.path, 'inventory.sqlite'));
 
-    final originalDb =
-    await getDatabaseFile();
+    final originalDb = await getDatabaseFile();
 
     if (await extractedDb.exists()) {
-      await extractedDb.copy(
-        originalDb.path,
-      );
+      await extractedDb.copy(originalDb.path);
     }
   }
 }

@@ -2,16 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/providers/database_provider.dart';
 
-final outstandingProvider =
-StreamProvider<double>((ref) {
+final outstandingProvider = StreamProvider<double>((ref) {
+  final db = ref.watch(databaseProvider);
 
-  final db =
-  ref.watch(
-    databaseProvider,
-  );
-
-  return db.customSelect(
-      '''
+  return db
+      .customSelect('''
     SELECT
     COALESCE(
       SUM(due_amount),
@@ -21,14 +16,7 @@ StreamProvider<double>((ref) {
     FROM invoices
 
     WHERE due_amount > 0
-    '''
-  )
+    ''')
       .watch()
-      .map(
-        (rows) =>
-        (rows.first.data[
-        'total']
-        as num)
-            .toDouble(),
-  );
+      .map((rows) => (rows.first.data['total'] as num).toDouble());
 });

@@ -32,43 +32,26 @@ class AutoBackupService {
     }
   }
 
-  static Future<void> performBackup(
-      SharedPreferences prefs,
-      ) async {
-
+  static Future<void> performBackup(SharedPreferences prefs) async {
     try {
-
-      final dbFile =
-      await BackupService
-          .getDatabaseFile();
+      final dbFile = await BackupService.getDatabaseFile();
 
       if (!await dbFile.exists()) {
         return;
       }
 
-      final repo =
-      BackupRepository();
+      final repo = BackupRepository();
 
-      if (Platform.isWindows ||
-          Platform.isLinux ||
-          Platform.isMacOS) {
-
+      if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
         await repo.backupToGoogle();
       }
 
-      await prefs.setString(
-        'last_backup',
-        DateTime.now()
-            .toIso8601String(),
-      );
-
+      await prefs.setString('last_backup', DateTime.now().toIso8601String());
     } catch (e) {
-
-      print(
-        'Backup failed: $e',
-      );
+      print('Backup failed: $e');
     }
   }
+
   Future<void> createAutoBackup() async {
     final appDir = await getApplicationDocumentsDirectory();
 

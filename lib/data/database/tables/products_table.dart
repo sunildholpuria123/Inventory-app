@@ -7,11 +7,9 @@ class Products extends Table {
 
   TextColumn get name => text()();
 
-  TextColumn get sku =>
-      text().nullable()();
+  TextColumn get sku => text().nullable()();
 
-  TextColumn get barcode =>
-      text().nullable()();
+  TextColumn get barcode => text().nullable()();
 
   RealColumn get purchasePrice => real()();
 
@@ -21,9 +19,7 @@ class Products extends Table {
 
   IntColumn get minStock => integer()();
 
-  TextColumn get imagePath =>
-      text().nullable()();
+  TextColumn get imagePath => text().nullable()();
 
-  DateTimeColumn get createdAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }

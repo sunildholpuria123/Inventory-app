@@ -5,22 +5,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../provider/expense_provider.dart';
 
 class ExpenseAnalytics extends ConsumerWidget {
-  const ExpenseAnalytics({
-    super.key,
-  });
+  const ExpenseAnalytics({super.key});
 
   @override
-  Widget build(
-      BuildContext context,
-      WidgetRef ref,
-      ) {
-    final expenses =
-    ref.watch(expensesProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final expenses = ref.watch(expensesProvider);
 
     return expenses.when(
       data: (items) {
-        final categoryTotals =
-        <String, double>{};
+        final categoryTotals = <String, double>{};
 
         double totalExpense = 0;
 
@@ -29,10 +22,8 @@ class ExpenseAnalytics extends ConsumerWidget {
 
           categoryTotals.update(
             expense.category,
-                (value) =>
-            value + expense.amount,
-            ifAbsent: () =>
-            expense.amount,
+            (value) => value + expense.amount,
+            ifAbsent: () => expense.amount,
           );
         }
 
@@ -44,24 +35,17 @@ class ExpenseAnalytics extends ConsumerWidget {
               Expanded(
                 child: Card(
                   child: Padding(
-                    padding:
-                    const EdgeInsets.all(
-                      20,
-                    ),
+                    padding: const EdgeInsets.all(20),
 
                     child: PieChart(
                       PieChartData(
-                        sections:
-                        categoryTotals.entries
+                        sections: categoryTotals.entries
                             .map(
-                              (e) =>
-                              PieChartSectionData(
-                                value:
-                                e.value,
-                                title:
-                                e.key,
+                              (e) => PieChartSectionData(
+                                value: e.value,
+                                title: e.key,
                               ),
-                        )
+                            )
                             .toList(),
                       ),
                     ),
@@ -69,54 +53,36 @@ class ExpenseAnalytics extends ConsumerWidget {
                 ),
               ),
 
-              const SizedBox(
-                width: 20,
-              ),
+              const SizedBox(width: 20),
 
               Expanded(
                 child: Card(
                   child: Padding(
-                    padding:
-                    const EdgeInsets.all(
-                      20,
-                    ),
+                    padding: const EdgeInsets.all(20),
 
                     child: Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
 
                       children: [
                         const Text(
                           'Monthly Expenses',
                           style: TextStyle(
                             fontSize: 20,
-                            fontWeight:
-                            FontWeight
-                                .bold,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
 
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        const SizedBox(height: 20),
 
-                        const Text(
-                          'Total Expenses',
-                        ),
+                        const Text('Total Expenses'),
 
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 10),
 
                         Text(
                           '₹${totalExpense.toStringAsFixed(0)}',
-                          style:
-                          const TextStyle(
+                          style: const TextStyle(
                             fontSize: 32,
-                            fontWeight:
-                            FontWeight
-                                .bold,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
@@ -129,18 +95,9 @@ class ExpenseAnalytics extends ConsumerWidget {
         );
       },
 
-      loading: () =>
-      const Center(
-        child:
-        CircularProgressIndicator(),
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
 
-      error: (e, _) =>
-          Center(
-            child: Text(
-              e.toString(),
-            ),
-          ),
+      error: (e, _) => Center(child: Text(e.toString())),
     );
   }
 }

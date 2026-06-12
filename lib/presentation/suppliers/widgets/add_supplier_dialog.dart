@@ -3,94 +3,62 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../provider/supplier_provider.dart';
 
-class AddSupplierDialog
-    extends ConsumerStatefulWidget {
-  const AddSupplierDialog({
-    super.key,
-  });
+class AddSupplierDialog extends ConsumerStatefulWidget {
+  const AddSupplierDialog({super.key});
 
   @override
-  ConsumerState<AddSupplierDialog>
-  createState() =>
-      _AddSupplierDialogState();
+  ConsumerState<AddSupplierDialog> createState() => _AddSupplierDialogState();
 }
 
-class _AddSupplierDialogState
-    extends ConsumerState<
-        AddSupplierDialog> {
-  final nameController =
-  TextEditingController();
+class _AddSupplierDialogState extends ConsumerState<AddSupplierDialog> {
+  final nameController = TextEditingController();
 
-  final phoneController =
-  TextEditingController();
+  final phoneController = TextEditingController();
 
-  final emailController =
-  TextEditingController();
+  final emailController = TextEditingController();
 
-  final addressController =
-  TextEditingController();
+  final addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text(
-        'Add Supplier',
-      ),
+      title: const Text('Add Supplier'),
 
       content: SizedBox(
         width: 400,
 
         child: Column(
-          mainAxisSize:
-          MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min,
 
           children: [
             TextField(
-              controller:
-              nameController,
+              controller: nameController,
 
-              decoration:
-              const InputDecoration(
-                labelText:
-                'Supplier Name',
-              ),
+              decoration: const InputDecoration(labelText: 'Supplier Name'),
             ),
 
             const SizedBox(height: 15),
 
             TextField(
-              controller:
-              phoneController,
+              controller: phoneController,
 
-              decoration:
-              const InputDecoration(
-                labelText: 'Phone',
-              ),
+              decoration: const InputDecoration(labelText: 'Phone'),
             ),
 
             const SizedBox(height: 15),
 
             TextField(
-              controller:
-              emailController,
+              controller: emailController,
 
-              decoration:
-              const InputDecoration(
-                labelText: 'Email',
-              ),
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
 
             const SizedBox(height: 15),
 
             TextField(
-              controller:
-              addressController,
+              controller: addressController,
 
-              decoration:
-              const InputDecoration(
-                labelText:
-                'Address',
-              ),
+              decoration: const InputDecoration(labelText: 'Address'),
             ),
           ],
         ),
@@ -99,19 +67,13 @@ class _AddSupplierDialogState
       actions: [
         ElevatedButton(
           onPressed: () async {
-            final repo = ref.read(
-              supplierRepositoryProvider,
-            );
+            final repo = ref.read(supplierRepositoryProvider);
 
             await repo.addSupplier(
-              name:
-              nameController.text,
-              phone:
-              phoneController.text,
-              email:
-              emailController.text,
-              address:
-              addressController.text,
+              name: nameController.text,
+              phone: phoneController.text,
+              email: emailController.text,
+              address: addressController.text,
             );
 
             if (mounted) {
@@ -119,9 +81,7 @@ class _AddSupplierDialogState
             }
           },
 
-          child: const Text(
-            'Save',
-          ),
+          child: const Text('Save'),
         ),
       ],
     );

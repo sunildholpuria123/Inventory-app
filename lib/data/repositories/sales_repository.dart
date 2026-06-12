@@ -42,11 +42,9 @@ class SalesRepository {
         '${DateTime.now().month.toString().padLeft(2, '0')}'
         '${DateTime.now().day.toString().padLeft(2, '0')}-'
         '${DateTime.now().millisecondsSinceEpoch}';
-    final dueAmount =
-        grandTotal - amountPaid;
+    final dueAmount = grandTotal - amountPaid;
 
-    final paymentStatus =
-    dueAmount <= 0
+    final paymentStatus = dueAmount <= 0
         ? 'PAID'
         : amountPaid == 0
         ? 'CREDIT'
@@ -56,69 +54,43 @@ class SalesRepository {
         .into(db.invoices)
         .insert(
           InvoicesCompanion.insert(
-        invoiceNo: invoiceNo,
+            invoiceNo: invoiceNo,
 
-        customerName: customerName,
+            customerName: customerName,
 
-        customerPhone: customerPhone,
+            customerPhone: customerPhone,
 
-        subtotal: subtotal,
+            subtotal: subtotal,
 
-        tax: tax,
+            tax: tax,
 
-        discount: Value(discount),
+            discount: Value(discount),
 
-        grandTotal: grandTotal,
+            grandTotal: grandTotal,
 
-        paymentMethod:
-        Value(paymentMethod),
+            paymentMethod: Value(paymentMethod),
 
-        paymentStatus:
-        Value(paymentStatus),
+            paymentStatus: Value(paymentStatus),
 
-        amountPaid:
-        Value(amountPaid),
+            amountPaid: Value(amountPaid),
 
-        dueAmount:
-        Value(dueAmount),
+            dueAmount: Value(dueAmount),
 
-        dueDate:
-        Value(dueDate),
+            dueDate: Value(dueDate),
 
-        pdfPath:
-        Value(pdfPath),
-      ),
+            pdfPath: Value(pdfPath),
+          ),
         );
     if (dueAmount > 0) {
-
-      final customer =
-      await (db.select(
+      final customer = await (db.select(
         db.customers,
-      )
-        ..where(
-              (tbl) =>
-              tbl.id.equals(
-                customerId,
-              ),
-        ))
-          .getSingle();
+      )..where((tbl) => tbl.id.equals(customerId))).getSingle();
 
       await (db.update(
         db.customers,
-      )
-        ..where(
-              (tbl) =>
-              tbl.id.equals(
-                customerId,
-              ),
-        ))
-          .write(
+      )..where((tbl) => tbl.id.equals(customerId))).write(
         CustomersCompanion(
-          creditBalance:
-          Value(
-            customer.creditBalance +
-                dueAmount,
-          ),
+          creditBalance: Value(customer.creditBalance + dueAmount),
         ),
       );
     }
@@ -158,47 +130,20 @@ class SalesRepository {
     )..where((tbl) => tbl.id.equals(invoiceId))).go();
   }
 
-  Future<void> restoreStockFromInvoice(
-      int invoiceId,
-      ) async {
-    final items =
-    await (db.select(
+  Future<void> restoreStockFromInvoice(int invoiceId) async {
+    final items = await (db.select(
       db.invoiceItems,
-    )..where(
-          (tbl) =>
-          tbl.invoiceId.equals(
-            invoiceId,
-          ),
-    ))
-        .get();
+    )..where((tbl) => tbl.invoiceId.equals(invoiceId))).get();
 
     for (final item in items) {
-      final product =
-      await (db.select(
+      final product = await (db.select(
         db.products,
-      )..where(
-            (tbl) =>
-            tbl.id.equals(
-              item.productId,
-            ),
-      ))
-          .getSingle();
+      )..where((tbl) => tbl.id.equals(item.productId))).getSingle();
 
       await (db.update(
         db.products,
-      )..where(
-            (tbl) =>
-            tbl.id.equals(
-              item.productId,
-            ),
-      ))
-          .write(
-        ProductsCompanion(
-          stockQty: Value(
-            product.stockQty +
-                item.quantity,
-          ),
-        ),
+      )..where((tbl) => tbl.id.equals(item.productId))).write(
+        ProductsCompanion(stockQty: Value(product.stockQty + item.quantity)),
       );
     }
   }

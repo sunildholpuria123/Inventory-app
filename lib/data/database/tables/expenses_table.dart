@@ -9,9 +9,7 @@ class Expenses extends Table {
 
   TextColumn get category => text()();
 
-  TextColumn get note =>
-      text().nullable()();
+  TextColumn get note => text().nullable()();
 
-  DateTimeColumn get createdAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }

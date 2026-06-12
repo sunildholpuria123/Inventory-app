@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../provider/product_provider.dart';
-
 import '../../../core/services/product_image_service.dart';
+import '../provider/product_provider.dart';
 
 class AddProductDialog extends ConsumerStatefulWidget {
   const AddProductDialog({super.key});

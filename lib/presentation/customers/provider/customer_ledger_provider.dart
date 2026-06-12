@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart' show OrderingTerm;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../data/providers/database_provider.dart';
 import '../../../data/database/app_database.dart';
+import '../../../data/providers/database_provider.dart';
 
 final customerLedgerProvider = FutureProvider.family<List<Invoice>, String>((
   ref,

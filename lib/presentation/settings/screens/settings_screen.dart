@@ -3,22 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/provider/theme_provider.dart';
 import '../../../data/providers/database_provider.dart';
-import '../../../data/repositories/backup_repository.dart' show BackupRepository;
+import '../../../data/repositories/backup_repository.dart'
+    show BackupRepository;
 import '../provider/settings_provider.dart';
 
-class SettingsScreen
-    extends ConsumerWidget {
-  const SettingsScreen({
-    super.key,
-  });
+class SettingsScreen extends ConsumerWidget {
+  const SettingsScreen({super.key});
 
   @override
-  Widget build(
-      BuildContext context,
-      WidgetRef ref,
-      ) {
-    final settings =
-    ref.watch(settingsProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
 
     return Scaffold(
       body: Padding(
@@ -26,44 +20,29 @@ class SettingsScreen
 
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment:
-            CrossAxisAlignment
-                .start,
+            crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
               Text(
                 'Application Settings',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
 
               const SizedBox(height: 30),
 
-              buildSectionTitle(
-                'Appearance',
-              ),
+              buildSectionTitle('Appearance'),
 
               SwitchListTile(
                 value: settings.darkMode,
 
-                title:
-                const Text('Dark Mode'),
+                title: const Text('Dark Mode'),
 
                 onChanged: (value) {
-                  ref
-                      .read(
-                    themeModeProvider.notifier,
-                  )
-                      .state = value
+                  ref.read(themeModeProvider.notifier).state = value
                       ? ThemeMode.dark
                       : ThemeMode.light;
 
-                  ref
-                      .read(
-                    settingsProvider.notifier,
-                  )
-                      .state = settings.copyWith(
+                  ref.read(settingsProvider.notifier).state = settings.copyWith(
                     darkMode: value,
                   );
                 },
@@ -71,110 +50,54 @@ class SettingsScreen
 
               const Divider(),
 
-              buildSectionTitle(
-                'Currency',
-              ),
+              buildSectionTitle('Currency'),
 
               DropdownButtonFormField(
-                value:
-                settings.currency,
+                value: settings.currency,
 
                 items: const [
-                  DropdownMenuItem(
-                    value: '₹',
-                    child: Text(
-                      'Indian Rupee ₹',
-                    ),
-                  ),
+                  DropdownMenuItem(value: '₹', child: Text('Indian Rupee ₹')),
 
-                  DropdownMenuItem(
-                    value: '\$',
-                    child:
-                    Text('Dollar \$'),
-                  ),
+                  DropdownMenuItem(value: '\$', child: Text('Dollar \$')),
 
-                  DropdownMenuItem(
-                    value: '€',
-                    child: Text(
-                      'Euro €',
-                    ),
-                  ),
+                  DropdownMenuItem(value: '€', child: Text('Euro €')),
                 ],
 
                 onChanged: (value) {
-                  ref
-                      .read(
-                    settingsProvider
-                        .notifier,
-                  )
-                      .state = settings
-                      .copyWith(
-                    currency:
-                    value!,
+                  ref.read(settingsProvider.notifier).state = settings.copyWith(
+                    currency: value!,
                   );
                 },
               ),
 
               const SizedBox(height: 30),
 
-              buildSectionTitle(
-                'Tax Settings',
-              ),
+              buildSectionTitle('Tax Settings'),
 
               TextFormField(
-                initialValue: settings
-                    .taxPercent
-                    .toString(),
+                initialValue: settings.taxPercent.toString(),
 
-                decoration:
-                const InputDecoration(
-                  labelText:
-                  'GST / Tax %',
-                ),
+                decoration: const InputDecoration(labelText: 'GST / Tax %'),
 
                 onChanged: (value) {
-                  ref
-                      .read(
-                    settingsProvider
-                        .notifier,
-                  )
-                      .state = settings
-                      .copyWith(
-                    taxPercent:
-                    double.tryParse(
-                      value,
-                    ) ??
-                        0,
+                  ref.read(settingsProvider.notifier).state = settings.copyWith(
+                    taxPercent: double.tryParse(value) ?? 0,
                   );
                 },
               ),
 
               const SizedBox(height: 30),
 
-              buildSectionTitle(
-                'Company Details',
-              ),
+              buildSectionTitle('Company Details'),
 
               TextFormField(
-                initialValue: settings
-                    .companyName,
+                initialValue: settings.companyName,
 
-                decoration:
-                const InputDecoration(
-                  labelText:
-                  'Company Name',
-                ),
+                decoration: const InputDecoration(labelText: 'Company Name'),
 
                 onChanged: (value) {
-                  ref
-                      .read(
-                    settingsProvider
-                        .notifier,
-                  )
-                      .state = settings
-                      .copyWith(
-                    companyName:
-                    value,
+                  ref.read(settingsProvider.notifier).state = settings.copyWith(
+                    companyName: value,
                   );
                 },
               ),
@@ -182,116 +105,74 @@ class SettingsScreen
               const SizedBox(height: 20),
 
               TextFormField(
-                initialValue: settings
-                    .companyAddress,
+                initialValue: settings.companyAddress,
 
-                decoration:
-                const InputDecoration(
-                  labelText:
-                  'Company Address',
-                ),
+                decoration: const InputDecoration(labelText: 'Company Address'),
 
                 onChanged: (value) {
-                  ref
-                      .read(
-                    settingsProvider
-                        .notifier,
-                  )
-                      .state = settings
-                      .copyWith(
-                    companyAddress:
-                    value,
+                  ref.read(settingsProvider.notifier).state = settings.copyWith(
+                    companyAddress: value,
                   );
                 },
               ),
 
               const SizedBox(height: 30),
 
-              buildSectionTitle(
-                'Invoice Settings',
-              ),
+              buildSectionTitle('Invoice Settings'),
 
               TextFormField(
-                initialValue: settings
-                    .invoicePrefix,
+                initialValue: settings.invoicePrefix,
 
-                decoration:
-                const InputDecoration(
-                  labelText:
-                  'Invoice Prefix',
-                ),
+                decoration: const InputDecoration(labelText: 'Invoice Prefix'),
 
                 onChanged: (value) {
-                  ref
-                      .read(
-                    settingsProvider
-                        .notifier,
-                  )
-                      .state = settings
-                      .copyWith(
-                    invoicePrefix:
-                    value,
+                  ref.read(settingsProvider.notifier).state = settings.copyWith(
+                    invoicePrefix: value,
                   );
                 },
               ),
 
               const SizedBox(height: 30),
 
-              buildSectionTitle(
-                'Backup & Restore',
-              ),
+              buildSectionTitle('Backup & Restore'),
 
               Card(
                 child: Column(
                   children: [
                     ListTile(
-                      leading:
-                      const Icon(Icons.backup),
+                      leading: const Icon(Icons.backup),
 
-                      title:
-                      const Text('Backup Database'),
+                      title: const Text('Backup Database'),
 
                       trailing: ElevatedButton(
                         onPressed: () {},
 
-                        child: const Text(
-                          'Backup',
-                        ),
+                        child: const Text('Backup'),
                       ),
                     ),
 
                     ListTile(
-                      leading:
-                      const Icon(Icons.restore),
+                      leading: const Icon(Icons.restore),
 
-                      title:
-                      const Text('Restore Database'),
+                      title: const Text('Restore Database'),
 
                       trailing: ElevatedButton(
                         onPressed: () {},
 
-                        child: const Text(
-                          'Restore',
-                        ),
+                        child: const Text('Restore'),
                       ),
                     ),
                     ListTile(
-                      leading:
-                      const Icon(Icons.delete_forever),
-                      title:
-                      const Text('Reset Database'),
+                      leading: const Icon(Icons.delete_forever),
+                      title: const Text('Reset Database'),
                       trailing: ElevatedButton(
                         onPressed: () async {
-                          final db = ref.read(
-                            databaseProvider,
-                          );
+                          final db = ref.read(databaseProvider);
 
                           await db.clearDatabase();
                         },
 
-                        child: const Text(
-                          'Reset',
-                        ),
+                        child: const Text('Reset'),
                       ),
                     ),
                   ],
@@ -306,65 +187,35 @@ class SettingsScreen
 
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Settings Saved',
-                        ),
-                      ),
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Settings Saved')),
                     );
                   },
 
-                  icon:
-                  const Icon(Icons.save),
+                  icon: const Icon(Icons.save),
 
-                  label: const Text(
-                    'Save Settings',
-                  ),
+                  label: const Text('Save Settings'),
                 ),
               ),
               ElevatedButton.icon(
-                icon: const Icon(
-                  Icons.backup,
-                ),
+                icon: const Icon(Icons.backup),
 
-                label: const Text(
-                  'Backup Now',
-                ),
+                label: const Text('Backup Now'),
 
                 onPressed: () async {
-
                   try {
+                    await BackupRepository().backupToGoogle();
 
-                    await BackupRepository()
-                        .backupToGoogle();
-
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Backup Successful',
-                        ),
-                      ),
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Backup Successful')),
                     );
-
                   } catch (e) {
-
                     ScaffoldMessenger.of(
                       context,
-                    ).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          e.toString(),
-                        ),
-                      ),
-                    );
+                    ).showSnackBar(SnackBar(content: Text(e.toString())));
                   }
                 },
-              )
+              ),
             ],
           ),
         ),
@@ -372,22 +223,13 @@ class SettingsScreen
     );
   }
 
-  Widget buildSectionTitle(
-      String title,
-      ) {
+  Widget buildSectionTitle(String title) {
     return Padding(
-      padding:
-      const EdgeInsets.only(
-        bottom: 15,
-      ),
+      padding: const EdgeInsets.only(bottom: 15),
 
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight:
-          FontWeight.bold,
-        ),
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       ),
     );
   }

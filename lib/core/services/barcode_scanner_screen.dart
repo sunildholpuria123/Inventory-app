@@ -1,30 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-class BarcodeScannerScreen
-    extends StatefulWidget {
-  const BarcodeScannerScreen({
-    super.key,
-  });
+class BarcodeScannerScreen extends StatefulWidget {
+  const BarcodeScannerScreen({super.key});
 
   @override
-  State<BarcodeScannerScreen>
-  createState() =>
-      _BarcodeScannerScreenState();
+  State<BarcodeScannerScreen> createState() => _BarcodeScannerScreenState();
 }
 
-class _BarcodeScannerScreenState
-    extends State<
-        BarcodeScannerScreen> {
+class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
   String barcode = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title:
-        const Text('Barcode Scanner'),
-      ),
+      appBar: AppBar(title: const Text('Barcode Scanner')),
 
       body: Column(
         children: [
@@ -33,14 +23,11 @@ class _BarcodeScannerScreenState
 
             child: MobileScanner(
               onDetect: (capture) {
-                final codes =
-                    capture.barcodes;
+                final codes = capture.barcodes;
 
                 if (codes.isNotEmpty) {
                   setState(() {
-                    barcode =
-                        codes.first.rawValue ??
-                            '';
+                    barcode = codes.first.rawValue ?? '';
                   });
                 }
               },
@@ -50,12 +37,8 @@ class _BarcodeScannerScreenState
           Expanded(
             child: Center(
               child: Text(
-                barcode.isEmpty
-                    ? 'Scan barcode'
-                    : barcode,
-                style: const TextStyle(
-                  fontSize: 24,
-                ),
+                barcode.isEmpty ? 'Scan barcode' : barcode,
+                style: const TextStyle(fontSize: 24),
               ),
             ),
           ),

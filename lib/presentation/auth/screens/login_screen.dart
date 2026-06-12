@@ -5,25 +5,17 @@ import '../../../core/services/auto_backup_service.dart' show AutoBackupService;
 import '../../dashboard/screen/dashboard_screen.dart';
 import '../provider/auth_provider.dart';
 
-class LoginScreen
-    extends ConsumerStatefulWidget {
-  const LoginScreen({
-    super.key,
-  });
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen>
-  createState() =>
-      _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState
-    extends ConsumerState<LoginScreen> {
-  final emailController =
-  TextEditingController();
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final emailController = TextEditingController();
 
-  final passwordController =
-  TextEditingController();
+  final passwordController = TextEditingController();
 
   bool isLoading = false;
 
@@ -36,141 +28,93 @@ class _LoginScreenState
 
           child: Card(
             child: Padding(
-              padding:
-              const EdgeInsets.all(
-                30,
-              ),
+              padding: const EdgeInsets.all(30),
 
               child: Column(
-                mainAxisSize:
-                MainAxisSize.min,
+                mainAxisSize: MainAxisSize.min,
 
                 children: [
-                  const Icon(
-                    Icons.inventory,
-                    size: 80,
-                  ),
+                  const Icon(Icons.inventory, size: 80),
 
                   const SizedBox(height: 20),
 
                   Text(
                     'Inventory ERP',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.headlineMedium,
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
 
                   const SizedBox(height: 30),
 
                   TextField(
-                    controller:
-                    emailController,
+                    controller: emailController,
 
-                    decoration:
-                    const InputDecoration(
-                      labelText:
-                      'Email',
-                    ),
+                    decoration: const InputDecoration(labelText: 'Email'),
                   ),
 
                   const SizedBox(height: 20),
 
                   TextField(
-                    controller:
-                    passwordController,
+                    controller: passwordController,
 
                     obscureText: true,
 
-                    decoration:
-                    const InputDecoration(
-                      labelText:
-                      'Password',
-                    ),
+                    decoration: const InputDecoration(labelText: 'Password'),
                   ),
 
                   const SizedBox(height: 30),
 
                   SizedBox(
-                    width:
-                    double.infinity,
+                    width: double.infinity,
 
                     height: 50,
 
                     child: ElevatedButton(
-                      onPressed:
-                      isLoading
+                      onPressed: isLoading
                           ? null
                           : () async {
-                        setState(() {
-                          isLoading =
-                          true;
-                        });
+                              setState(() {
+                                isLoading = true;
+                              });
 
-                        final repo =
-                        ref.read(
-                          authRepositoryProvider,
-                        );
+                              final repo = ref.read(authRepositoryProvider);
 
-                        final user =
-                        await repo.login(
-                          email:
-                          emailController.text,
-                          password:
-                          passwordController.text,
-                        );
+                              final user = await repo.login(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              );
 
-                        setState(() {
-                          isLoading =
-                          false;
-                        });
+                              setState(() {
+                                isLoading = false;
+                              });
 
-                        if (user ==
-                            null) {
-                          if (context
-                              .mounted) {
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(
-                              const SnackBar(
-                                content:
-                                Text(
-                                  'Invalid Credentials',
-                                ),
-                              ),
-                            );
-                          }
+                              if (user == null) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Invalid Credentials'),
+                                    ),
+                                  );
+                                }
 
-                          return;
-                        }
+                                return;
+                              }
 
-                        ref
-                            .read(
-                          authUserProvider
-                              .notifier,
-                        )
-                            .state = user;
+                              ref.read(authUserProvider.notifier).state = user;
 
-                        if (context
-                            .mounted) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (_) =>
-                              const DashboardScreen(),
-                            ),
-                          );
-                          await AutoBackupService
-                              .autoBackup();
-                        }
-                      },
+                              if (context.mounted) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const DashboardScreen(),
+                                  ),
+                                );
+                                await AutoBackupService.autoBackup();
+                              }
+                            },
 
-                      child:
-                      isLoading
+                      child: isLoading
                           ? const CircularProgressIndicator()
-                          : const Text(
-                        'Login',
-                      ),
+                          : const Text('Login'),
                     ),
                   ),
                 ],

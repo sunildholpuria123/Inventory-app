@@ -1,4 +1,3 @@
-
 import '../../../data/database/app_database.dart';
 
 class PurchaseItem {
@@ -15,16 +14,11 @@ class PurchaseItem {
   });
 
   /// TOTAL
-  double get total =>
-      qty * price;
-  double get subtotal =>
-      qty * price;
+  double get total => qty * price;
 
-  PurchaseItem copyWith({
-    Product? product,
-    int? qty,
-    double? price,
-  }) {
+  double get subtotal => qty * price;
+
+  PurchaseItem copyWith({Product? product, int? qty, double? price}) {
     return PurchaseItem(
       product: product ?? this.product,
       qty: qty ?? this.qty,

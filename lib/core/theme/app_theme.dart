@@ -8,10 +8,7 @@ class AppTheme {
 
     scaffoldBackgroundColor: const Color(0xfff5f7fb),
 
-    appBarTheme: const AppBarTheme(
-      centerTitle: false,
-      elevation: 0,
-    ),
+    appBarTheme: const AppBarTheme(centerTitle: false, elevation: 0),
 
     /*cardTheme: CardTheme(
       elevation: 2,
@@ -23,9 +20,7 @@ class AppTheme {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
       ),

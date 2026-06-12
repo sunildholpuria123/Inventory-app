@@ -7,26 +7,15 @@ import '../widgets/add_product_dialog.dart';
 import '../widgets/product_table.dart';
 
 class ProductListScreen extends ConsumerWidget {
-  const ProductListScreen({
-    super.key,
-  });
+  const ProductListScreen({super.key});
 
   @override
-  Widget build(
-      BuildContext context,
-      WidgetRef ref,
-      ) {
-    final products = ref.watch(
-      productsProvider,
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final products = ref.watch(productsProvider);
 
-    final currentPage = ref.watch(
-      currentPageProvider,
-    );
+    final currentPage = ref.watch(currentPageProvider);
 
-    final pageSize = ref.watch(
-      pageSizeProvider,
-    );
+    final pageSize = ref.watch(pageSizeProvider);
 
     return Scaffold(
       body: Padding(
@@ -35,33 +24,25 @@ class ProductListScreen extends ConsumerWidget {
         child: Column(
           children: [
             Row(
-              mainAxisAlignment:
-              MainAxisAlignment
-                  .spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
               children: [
                 Text(
                   'Products',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineMedium,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
 
                 ElevatedButton.icon(
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (_) =>
-                      const AddProductDialog(),
+                      builder: (_) => const AddProductDialog(),
                     );
                   },
 
-                  icon:
-                  const Icon(Icons.add),
+                  icon: const Icon(Icons.add),
 
-                  label: const Text(
-                    'Add Product',
-                  ),
+                  label: const Text('Add Product'),
                 ),
               ],
             ),
@@ -69,32 +50,18 @@ class ProductListScreen extends ConsumerWidget {
             const SizedBox(height: 20),
 
             TextField(
-              decoration:
-              InputDecoration(
-                hintText:
-                'Search Product',
+              decoration: InputDecoration(
+                hintText: 'Search Product',
 
-                prefixIcon:
-                const Icon(
-                  Icons.search,
-                ),
+                prefixIcon: const Icon(Icons.search),
 
-                border:
-                OutlineInputBorder(
-                  borderRadius:
-                  BorderRadius.circular(
-                    14,
-                  ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
                 ),
               ),
 
               onChanged: (value) {
-                ref
-                    .read(
-                  productSearchProvider
-                      .notifier,
-                )
-                    .state = value;
+                ref.read(productSearchProvider.notifier).state = value;
               },
             ),
 
@@ -103,105 +70,54 @@ class ProductListScreen extends ConsumerWidget {
             Expanded(
               child: products.when(
                 data: (items) {
-                  final search =
-                  ref.watch(
-                    productSearchProvider,
-                  );
+                  final search = ref.watch(productSearchProvider);
 
-                  final filtered =
-                  items.where(
-                        (product) {
-                      return product.name
-                          .toLowerCase()
-                          .contains(
-                        search
-                            .toLowerCase(),
-                      );
-                    },
-                  ).toList();
+                  final filtered = items.where((product) {
+                    return product.name.toLowerCase().contains(
+                      search.toLowerCase(),
+                    );
+                  }).toList();
 
-                  final start =
-                      (currentPage - 1) *
-                          pageSize;
+                  final start = (currentPage - 1) * pageSize;
 
-                  final end =
-                  (start + pageSize)
-                      .clamp(
-                    0,
-                    filtered.length,
-                  );
+                  final end = (start + pageSize).clamp(0, filtered.length);
 
-                  final paginated =
-                  filtered.sublist(
-                    start,
-                    end,
-                  );
+                  final paginated = filtered.sublist(start, end);
 
                   return Column(
                     children: [
-                      Expanded(
-                        child:
-                        ProductTable(
-                          products:
-                          paginated,
-                        ),
-                      ),
+                      Expanded(child: ProductTable(products: paginated)),
 
-                      const SizedBox(
-                        height: 15,
-                      ),
+                      const SizedBox(height: 15),
 
                       Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment
-                            .end,
+                        mainAxisAlignment: MainAxisAlignment.end,
 
                         children: [
                           IconButton(
-                            onPressed:
-                            currentPage >
-                                1
+                            onPressed: currentPage > 1
                                 ? () {
-                              ref
-                                  .read(
-                                currentPageProvider
-                                    .notifier,
-                              )
-                                  .state--;
-                            }
+                                    ref
+                                        .read(currentPageProvider.notifier)
+                                        .state--;
+                                  }
                                 : null,
 
-                            icon:
-                            const Icon(
-                              Icons
-                                  .arrow_back,
-                            ),
+                            icon: const Icon(Icons.arrow_back),
                           ),
 
-                          Text(
-                            'Page $currentPage',
-                          ),
+                          Text('Page $currentPage'),
 
                           IconButton(
-                            onPressed:
-                            end <
-                                filtered
-                                    .length
+                            onPressed: end < filtered.length
                                 ? () {
-                              ref
-                                  .read(
-                                currentPageProvider
-                                    .notifier,
-                              )
-                                  .state++;
-                            }
+                                    ref
+                                        .read(currentPageProvider.notifier)
+                                        .state++;
+                                  }
                                 : null,
 
-                            icon:
-                            const Icon(
-                              Icons
-                                  .arrow_forward,
-                            ),
+                            icon: const Icon(Icons.arrow_forward),
                           ),
                         ],
                       ),
@@ -209,18 +125,9 @@ class ProductListScreen extends ConsumerWidget {
                   );
                 },
 
-                loading: () =>
-                const Center(
-                  child:
-                  CircularProgressIndicator(),
-                ),
+                loading: () => const Center(child: CircularProgressIndicator()),
 
-                error: (e, _) =>
-                    Center(
-                      child: Text(
-                        e.toString(),
-                      ),
-                    ),
+                error: (e, _) => Center(child: Text(e.toString())),
               ),
             ),
           ],

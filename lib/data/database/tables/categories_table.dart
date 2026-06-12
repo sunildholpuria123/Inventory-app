@@ -5,6 +5,5 @@ class Categories extends Table {
 
   TextColumn get name => text()();
 
-  TextColumn get description =>
-      text().nullable()();
+  TextColumn get description => text().nullable()();
 }

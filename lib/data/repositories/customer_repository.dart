@@ -22,30 +22,18 @@ class CustomerRepository {
         name: name,
         phone: phone,
 
-        email: Value(
-          email?.isEmpty == true
-              ? null
-              : email,
-        ),
+        email: Value(email?.isEmpty == true ? null : email),
 
-        address: Value(
-          address?.isEmpty == true
-              ? null
-              : address,
-        ),
+        address: Value(address?.isEmpty == true ? null : address),
       ),
     );
   }
 
-  Future<void> updateCustomerData({
-    required Customer customer,
-  }) async {
+  Future<void> updateCustomerData({required Customer customer}) async {
     await db.updateCustomer(customer);
   }
 
-  Future<void> deleteCustomer(
-      int id,
-      ) async {
+  Future<void> deleteCustomer(int id) async {
     await db.deleteCustomer(id);
   }
 }

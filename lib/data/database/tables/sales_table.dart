@@ -17,6 +17,5 @@ class Sales extends Table {
 
   TextColumn get paymentStatus => text()();
 
-  DateTimeColumn get createdAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }

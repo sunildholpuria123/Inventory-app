@@ -6,19 +6,12 @@ import '../widgets/add_expense_dialog.dart';
 import '../widgets/expense_analytics.dart';
 import '../widgets/expense_table.dart';
 
-class ExpenseScreen
-    extends ConsumerWidget {
-  const ExpenseScreen({
-    super.key,
-  });
+class ExpenseScreen extends ConsumerWidget {
+  const ExpenseScreen({super.key});
 
   @override
-  Widget build(
-      BuildContext context,
-      WidgetRef ref,
-      ) {
-    final expenses =
-    ref.watch(expensesProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final expenses = ref.watch(expensesProvider);
 
     return Scaffold(
       body: Padding(
@@ -27,31 +20,23 @@ class ExpenseScreen
         child: Column(
           children: [
             Row(
-              mainAxisAlignment:
-              MainAxisAlignment
-                  .spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
               children: [
                 Text(
                   'Expenses',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineMedium,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
 
                 ElevatedButton.icon(
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (_) =>
-                      const AddExpenseDialog(),
+                      builder: (_) => const AddExpenseDialog(),
                     );
                   },
-                  icon:
-                  const Icon(Icons.add),
-                  label: const Text(
-                    'Add Expense',
-                  ),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add Expense'),
                 ),
               ],
             ),
@@ -63,20 +48,12 @@ class ExpenseScreen
             const SizedBox(height: 20),
 
             TextField(
-              decoration:
-              const InputDecoration(
-                hintText:
-                'Search Expense',
-                prefixIcon:
-                Icon(Icons.search),
+              decoration: const InputDecoration(
+                hintText: 'Search Expense',
+                prefixIcon: Icon(Icons.search),
               ),
               onChanged: (value) {
-                ref
-                    .read(
-                  expenseSearchProvider
-                      .notifier,
-                )
-                    .state = value;
+                ref.read(expenseSearchProvider.notifier).state = value;
               },
             ),
 
@@ -85,34 +62,18 @@ class ExpenseScreen
             Expanded(
               child: expenses.when(
                 data: (items) {
-                  final search = ref.watch(
-                    expenseSearchProvider,
-                  );
+                  final search = ref.watch(expenseSearchProvider);
 
-                  final filtered =
-                  items.where((e) {
-                    return e.title
-                        .toLowerCase()
-                        .contains(
-                      search.toLowerCase(),
-                    );
+                  final filtered = items.where((e) {
+                    return e.title.toLowerCase().contains(search.toLowerCase());
                   }).toList();
 
-                  return ExpenseTable(
-                    expenses: filtered,
-                  );
+                  return ExpenseTable(expenses: filtered);
                 },
 
-                loading: () =>
-                const Center(
-                  child:
-                  CircularProgressIndicator(),
-                ),
+                loading: () => const Center(child: CircularProgressIndicator()),
 
-                error: (e, _) => Center(
-                  child:
-                  Text(e.toString()),
-                ),
+                error: (e, _) => Center(child: Text(e.toString())),
               ),
             ),
           ],

@@ -11,6 +11,5 @@ class Users extends Table {
 
   TextColumn get role => text()();
 
-  DateTimeColumn get createdAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }

@@ -3,8 +3,5 @@ class ReportFilterModel {
 
   final DateTime? endDate;
 
-  ReportFilterModel({
-    this.startDate,
-    this.endDate,
-  });
+  ReportFilterModel({this.startDate, this.endDate});
 }

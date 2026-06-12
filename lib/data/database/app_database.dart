@@ -33,7 +33,7 @@ part 'app_database.g.dart';
     PurchaseItems,
     Expenses,
     Invoices,
-    InvoiceItems
+    InvoiceItems,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -52,9 +52,7 @@ class AppDatabase extends _$AppDatabase {
     return select(products).watch();
   }
 
-  Future<int> insertProduct(
-      ProductsCompanion data,
-      ) {
+  Future<int> insertProduct(ProductsCompanion data) {
     return into(products).insert(data);
   }
 
@@ -63,16 +61,12 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future deleteProduct(int id) {
-    return (delete(products)
-      ..where((tbl) => tbl.id.equals(id)))
-        .go();
+    return (delete(products)..where((tbl) => tbl.id.equals(id))).go();
   }
 
   // CUSTOMERS
 
-  Future<int> insertCustomer(
-      CustomersCompanion data,
-      ) {
+  Future<int> insertCustomer(CustomersCompanion data) {
     return into(customers).insert(data);
   }
 
@@ -80,27 +74,19 @@ class AppDatabase extends _$AppDatabase {
     return select(customers).get();
   }
 
-
-
   // SALES
 
-  Future<int> createSale(
-      SalesCompanion data,
-      ) {
+  Future<int> createSale(SalesCompanion data) {
     return into(sales).insert(data);
   }
 
-  Future<int> insertSaleItem(
-      SaleItemsCompanion data,
-      ) {
+  Future<int> insertSaleItem(SaleItemsCompanion data) {
     return into(saleItems).insert(data);
   }
 
   // EXPENSES
 
-  Future<int> insertExpense(
-      ExpensesCompanion data,
-      ) {
+  Future<int> insertExpense(ExpensesCompanion data) {
     return into(expenses).insert(data);
   }
 
@@ -108,17 +94,12 @@ class AppDatabase extends _$AppDatabase {
     return select(customers).watch();
   }
 
-  Future updateCustomer(
-      Customer customer,
-      ) {
-    return update(customers)
-        .replace(customer);
+  Future updateCustomer(Customer customer) {
+    return update(customers).replace(customer);
   }
 
   Future deleteCustomer(int id) {
-    return (delete(customers)
-      ..where((tbl) => tbl.id.equals(id)))
-        .go();
+    return (delete(customers)..where((tbl) => tbl.id.equals(id))).go();
   }
 
   Future<void> clearDatabase() async {
@@ -133,29 +114,18 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// WATCH ALL PRODUCTS
-  Stream<List<Product>>
-  watchAllProducts() {
-    return select(
-      products,
-    ).watch();
+  Stream<List<Product>> watchAllProducts() {
+    return select(products).watch();
   }
 }
 
-
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    final dbFolder =
-    await getApplicationDocumentsDirectory();
+    final dbFolder = await getApplicationDocumentsDirectory();
 
-    final file = File(
-      p.join(
-        dbFolder.path,
-        'inventory.sqlite',
-      ),
-    );
+    final file = File(p.join(dbFolder.path, 'inventory.sqlite'));
     print(file.path);
 
     return NativeDatabase(file);
   });
 }
-

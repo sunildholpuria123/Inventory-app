@@ -15,9 +15,7 @@ class BackupPathHelper {
       baseDir = await getApplicationDocumentsDirectory();
     }
 
-    final backupDir = Directory(
-      p.join(baseDir.path, 'backups'),
-    );
+    final backupDir = Directory(p.join(baseDir.path, 'backups'));
 
     if (!await backupDir.exists()) {
       await backupDir.create(recursive: true);

@@ -6,9 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../data/database/app_database.dart';
 
 class ExcelExportService {
-  Future<void> exportProducts(
-      List<Product> products,
-      ) async {
+  Future<void> exportProducts(List<Product> products) async {
     final excel = Excel.createExcel();
 
     final sheet = excel['Products'];
@@ -25,21 +23,14 @@ class ExcelExportService {
         IntCellValue(product.id),
         TextCellValue(product.name),
         IntCellValue(product.stockQty),
-        DoubleCellValue(
-          product.sellingPrice,
-        ),
+        DoubleCellValue(product.sellingPrice),
       ]);
     }
 
-    final dir =
-    await getApplicationDocumentsDirectory();
+    final dir = await getApplicationDocumentsDirectory();
 
-    final file = File(
-      '${dir.path}/products.xlsx',
-    );
+    final file = File('${dir.path}/products.xlsx');
 
-    await file.writeAsBytes(
-      excel.encode()!,
-    );
+    await file.writeAsBytes(excel.encode()!);
   }
 }

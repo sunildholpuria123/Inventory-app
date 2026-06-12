@@ -3,8 +3,5 @@ class MonthlySalesModel {
 
   final double total;
 
-  MonthlySalesModel({
-    required this.month,
-    required this.total,
-  });
+  MonthlySalesModel({required this.month, required this.total});
 }

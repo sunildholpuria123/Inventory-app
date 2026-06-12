@@ -7,52 +7,32 @@ class ProfitCard extends ConsumerWidget {
   const ProfitCard({super.key});
 
   @override
-  Widget build(
-      BuildContext context,
-      WidgetRef ref,
-      ) {
-    final summary = ref.watch(
-      profitSummaryProvider,
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final summary = ref.watch(profitSummaryProvider);
 
     return summary.when(
       data: (data) {
-
-        final isProfit =
-            data.profit >= 0;
+        final isProfit = data.profit >= 0;
 
         return Card(
           child: Padding(
-            padding:
-            const EdgeInsets.all(
-              20,
-            ),
+            padding: const EdgeInsets.all(20),
 
             child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment
-                  .start,
+              crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-
                 Text(
-                  isProfit
-                      ? 'Net Profit'
-                      : 'Net Loss',
+                  isProfit ? 'Net Profit' : 'Net Loss',
 
-                  style:
-                  const TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
 
-                    fontWeight:
-                    FontWeight
-                        .bold,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
 
-                const SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
 
                 Text(
                   '₹${data.profit.toStringAsFixed(0)}',
@@ -60,76 +40,39 @@ class ProfitCard extends ConsumerWidget {
                   style: TextStyle(
                     fontSize: 36,
 
-                    fontWeight:
-                    FontWeight
-                        .bold,
+                    fontWeight: FontWeight.bold,
 
-                    color: isProfit
-                        ? Colors.green
-                        : Colors.red,
+                    color: isProfit ? Colors.green : Colors.red,
                   ),
                 ),
 
                 const Divider(),
 
-                buildRow(
-                  'Revenue',
-                  data.revenue,
-                ),
+                buildRow('Revenue', data.revenue),
 
-                buildRow(
-                  'Purchases',
-                  data.purchases,
-                ),
+                buildRow('Purchases', data.purchases),
 
-                buildRow(
-                  'Expenses',
-                  data.expenses,
-                ),
+                buildRow('Expenses', data.expenses),
               ],
             ),
           ),
         );
       },
 
-      loading: () =>
-      const Center(
-        child:
-        CircularProgressIndicator(),
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
 
-      error: (e, _) =>
-          Center(
-            child: Text(
-              e.toString(),
-            ),
-          ),
+      error: (e, _) => Center(child: Text(e.toString())),
     );
   }
 
-  Widget buildRow(
-      String title,
-      double value,
-      ) {
+  Widget buildRow(String title, double value) {
     return Padding(
-      padding:
-      const EdgeInsets.symmetric(
-        vertical: 4,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 4),
 
       child: Row(
-        mainAxisAlignment:
-        MainAxisAlignment
-            .spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-        children: [
-
-          Text(title),
-
-          Text(
-            '₹${value.toStringAsFixed(0)}',
-          ),
-        ],
+        children: [Text(title), Text('₹${value.toStringAsFixed(0)}')],
       ),
     );
   }

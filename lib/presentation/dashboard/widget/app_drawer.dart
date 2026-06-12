@@ -18,17 +18,11 @@ class AppDrawer extends ConsumerWidget {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                vertical: 30,
-              ),
+              padding: const EdgeInsets.symmetric(vertical: 30),
               color: const Color(0xFF111827),
               child: const Column(
                 children: [
-                  Icon(
-                    Icons.inventory_2,
-                    size: 70,
-                    color: Colors.white,
-                  ),
+                  Icon(Icons.inventory_2, size: 70, color: Colors.white),
 
                   SizedBox(height: 16),
 
@@ -138,10 +132,7 @@ class AppDrawer extends ConsumerWidget {
             const Divider(),
 
             ListTile(
-              leading: const Icon(
-                Icons.logout,
-                color: Colors.red,
-              ),
+              leading: const Icon(Icons.logout, color: Colors.red),
               title: const Text(
                 'Logout',
                 style: TextStyle(
@@ -155,35 +146,21 @@ class AppDrawer extends ConsumerWidget {
                 final shouldLogout = await showDialog<bool>(
                   context: context,
                   builder: (_) => AlertDialog(
-                    title: const Text(
-                      'Logout',
-                    ),
-                    content: const Text(
-                      'Are you sure you want to logout?',
-                    ),
+                    title: const Text('Logout'),
+                    content: const Text('Are you sure you want to logout?'),
                     actions: [
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(
-                            context,
-                            false,
-                          );
+                          Navigator.pop(context, false);
                         },
-                        child: const Text(
-                          'Cancel',
-                        ),
+                        child: const Text('Cancel'),
                       ),
 
                       FilledButton(
                         onPressed: () {
-                          Navigator.pop(
-                            context,
-                            true,
-                          );
+                          Navigator.pop(context, true);
                         },
-                        child: const Text(
-                          'Logout',
-                        ),
+                        child: const Text('Logout'),
                       ),
                     ],
                   ),
@@ -202,47 +179,31 @@ class AppDrawer extends ConsumerWidget {
             ),
 
             ListTile(
-              leading: const Icon(
-                Icons.exit_to_app,
-              ),
-              title: const Text(
-                'Exit App',
-              ),
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Exit App'),
               onTap: () async {
                 Navigator.pop(context);
 
                 final shouldExit = await showDialog<bool>(
                   context: context,
                   builder: (_) => AlertDialog(
-                    title: const Text(
-                      'Exit Application',
-                    ),
+                    title: const Text('Exit Application'),
                     content: const Text(
                       'Do you want to close the application?',
                     ),
                     actions: [
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(
-                            context,
-                            false,
-                          );
+                          Navigator.pop(context, false);
                         },
-                        child: const Text(
-                          'Cancel',
-                        ),
+                        child: const Text('Cancel'),
                       ),
 
                       FilledButton(
                         onPressed: () {
-                          Navigator.pop(
-                            context,
-                            true,
-                          );
+                          Navigator.pop(context, true);
                         },
-                        child: const Text(
-                          'Exit',
-                        ),
+                        child: const Text('Exit'),
                       ),
                     ],
                   ),
@@ -252,8 +213,7 @@ class AppDrawer extends ConsumerWidget {
                   return;
                 }
 
-                if (!Platform.isAndroid &&
-                    !Platform.isIOS) {
+                if (!Platform.isAndroid && !Platform.isIOS) {
                   exit(0);
                 }
               },
@@ -267,56 +227,38 @@ class AppDrawer extends ConsumerWidget {
   }
 
   Widget buildItem(
-      BuildContext context,
-      WidgetRef ref, {
-        required IconData icon,
-        required String title,
-        required int index,
-        required int selected,
-      }) {
+    BuildContext context,
+    WidgetRef ref, {
+    required IconData icon,
+    required String title,
+    required int index,
+    required int selected,
+  }) {
     final isSelected = selected == index;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 2,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: ListTile(
         leading: Icon(
           icon,
-          color: isSelected
-              ? Theme.of(context)
-              .colorScheme
-              .primary
-              : null,
+          color: isSelected ? Theme.of(context).colorScheme.primary : null,
         ),
 
         title: Text(
           title,
           style: TextStyle(
-            fontWeight: isSelected
-                ? FontWeight.bold
-                : FontWeight.normal,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),
 
         selected: isSelected,
 
-        selectedTileColor: Theme.of(context)
-            .colorScheme
-            .primaryContainer,
+        selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
 
-        shape: RoundedRectangleBorder(
-          borderRadius:
-          BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
 
         onTap: () {
-          ref
-              .read(
-            selectedIndexProvider
-                .notifier,
-          )
-              .state = index;
+          ref.read(selectedIndexProvider.notifier).state = index;
 
           Navigator.pop(context);
         },

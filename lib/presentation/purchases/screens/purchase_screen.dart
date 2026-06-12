@@ -1,271 +1,160 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../products/provider/product_provider.dart';
-
 import '../provider/purchase_provider.dart';
-
-import '../provider/purchase_repository_provider.dart' hide purchaseRepositoryProvider;
-
 import '../widgets/purchase_item_list.dart';
-
 import '../widgets/purchase_product_dropdown.dart';
-
 import '../widgets/purchase_summary.dart';
-
 import '../widgets/supplier_dropdown.dart';
 
-class PurchaseScreen
-    extends ConsumerStatefulWidget {
-  const PurchaseScreen({
-    super.key,
-  });
+class PurchaseScreen extends ConsumerStatefulWidget {
+  const PurchaseScreen({super.key});
 
   @override
-  ConsumerState<PurchaseScreen>
-  createState() =>
-      _PurchaseScreenState();
+  ConsumerState<PurchaseScreen> createState() => _PurchaseScreenState();
 }
 
-class _PurchaseScreenState
-    extends ConsumerState<
-        PurchaseScreen> {
+class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
   bool isSaving = false;
 
   @override
-  Widget build(
-      BuildContext context,
-      ) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding:
-        const EdgeInsets.all(
-          20,
-        ),
+        padding: const EdgeInsets.all(20),
 
         child: Column(
           children: [
             Row(
-              mainAxisAlignment:
-              MainAxisAlignment
-                  .spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
               children: [
                 Text(
                   'Purchase Entry',
 
-                  style: Theme.of(
-                    context,
-                  ).textTheme.headlineMedium,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
 
                 ElevatedButton.icon(
-                  onPressed:
-                  isSaving
+                  onPressed: isSaving
                       ? null
                       : () async {
-                    final supplier =
-                    ref.read(
-                      selectedSupplierProvider,
-                    );
+                          final supplier = ref.read(selectedSupplierProvider);
 
-                    final items =
-                    ref.read(
-                      purchaseItemsProvider,
-                    );
+                          final items = ref.read(purchaseItemsProvider);
 
-                    final total =
-                    ref.read(
-                      purchaseSubtotalProvider,
-                    );
+                          final total = ref.read(purchaseSubtotalProvider);
 
-                    /// VALIDATION
-                    if (supplier ==
-                        null) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Select Supplier',
-                          ),
-                        ),
-                      );
+                          /// VALIDATION
+                          if (supplier == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Select Supplier')),
+                            );
 
-                      return;
-                    }
+                            return;
+                          }
 
-                    if (items
-                        .isEmpty) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Add Products',
-                          ),
-                        ),
-                      );
+                          if (items.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Add Products')),
+                            );
 
-                      return;
-                    }
+                            return;
+                          }
 
-                    try {
-                      setState(() {
-                        isSaving =
-                        true;
-                      });
+                          try {
+                            setState(() {
+                              isSaving = true;
+                            });
 
-                      final repo =
-                      ref.read(
-                        purchaseRepositoryProvider,
-                      );
+                            final repo = ref.read(purchaseRepositoryProvider);
 
-                      /// SAVE PURCHASE
-                      final purchaseId =
-                      await repo.savePurchase(
-                        supplierName:
-                        supplier.name,
+                            /// SAVE PURCHASE
+                            final purchaseId = await repo.savePurchase(
+                              supplierName: supplier.name,
 
-                        supplierPhone:
-                        supplier.phone ??
-                            '',
+                              supplierPhone: supplier.phone ?? '',
 
-                        total:
-                        total,
-                      );
+                              total: total,
+                            );
 
-                      /// SAVE PURCHASE ITEMS
-                      await repo
-                          .savePurchaseItems(
-                        purchaseId:
-                        purchaseId,
+                            /// SAVE PURCHASE ITEMS
+                            await repo.savePurchaseItems(
+                              purchaseId: purchaseId,
 
-                        items:
-                        items,
-                      );
+                              items: items,
+                            );
 
-                      /// UPDATE STOCK
-                      final productRepo =
-                      ref.read(
-                        productRepositoryProvider,
-                      );
+                            /// UPDATE STOCK
+                            final productRepo = ref.read(
+                              productRepositoryProvider,
+                            );
 
-                      for (final item
-                      in items) {
-                        await productRepo
-                            .increaseStock(
-                          productId:
-                          item.product.id,
+                            for (final item in items) {
+                              await productRepo.increaseStock(
+                                productId: item.product.id,
 
-                          qty:
-                          item.qty,
-                        );
-                      }
+                                qty: item.qty,
+                              );
+                            }
 
-                      /// CLEAR CART
-                      ref
-                          .read(
-                        purchaseItemsProvider.notifier,
-                      )
-                          .state = [];
+                            /// CLEAR CART
+                            ref.read(purchaseItemsProvider.notifier).state = [];
 
-                      if (context
-                          .mounted) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(
-                          const SnackBar(
-                            content:
-                            Text(
-                              'Purchase Saved Successfully',
-                            ),
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      if (context
-                          .mounted) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(
-                          SnackBar(
-                            content:
-                            Text(
-                              e.toString(),
-                            ),
-                          ),
-                        );
-                      }
-                    } finally {
-                      if (mounted) {
-                        setState(() {
-                          isSaving =
-                          false;
-                        });
-                      }
-                    }
-                  },
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Purchase Saved Successfully'),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(e.toString())),
+                              );
+                            }
+                          } finally {
+                            if (mounted) {
+                              setState(() {
+                                isSaving = false;
+                              });
+                            }
+                          }
+                        },
 
                   icon: isSaving
                       ? const SizedBox(
-                    width: 18,
-                    height: 18,
+                          width: 18,
+                          height: 18,
 
-                    child:
-                    CircularProgressIndicator(
-                      strokeWidth:
-                      2,
-                    ),
-                  )
-                      : const Icon(
-                    Icons.save,
-                  ),
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.save),
 
-                  label: Text(
-                    isSaving
-                        ? 'Saving...'
-                        : 'Save Purchase',
-                  ),
+                  label: Text(isSaving ? 'Saving...' : 'Save Purchase'),
                 ),
               ],
             ),
 
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
 
             const Row(
               children: [
-                Expanded(
-                  child:
-                  SupplierDropdown(),
-                ),
+                Expanded(child: SupplierDropdown()),
 
-                SizedBox(
-                  width: 20,
-                ),
+                SizedBox(width: 20),
 
-                Expanded(
-                  child:
-                  PurchaseProductDropdown(),
-                ),
+                Expanded(child: PurchaseProductDropdown()),
               ],
             ),
 
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
 
-            const Expanded(
-              child:
-              PurchaseItemList(),
-            ),
+            const Expanded(child: PurchaseItemList()),
 
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
 
             const PurchaseSummary(),
           ],

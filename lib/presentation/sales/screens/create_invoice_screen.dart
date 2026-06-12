@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../data/repositories/product_repository.dart';
-
 import '../../products/provider/product_provider.dart'
     show productRepositoryProvider;
 import '../model/invoice_item_model.dart';
-
 import '../provider/invoice_item_provider.dart';
 import '../provider/sales_provider.dart';
 import '../provider/sales_repository_provider.dart';
-
 import '../widgets/customer_dropdown.dart';
 import '../widgets/invoice_product_list.dart';
 import '../widgets/invoice_summary.dart';

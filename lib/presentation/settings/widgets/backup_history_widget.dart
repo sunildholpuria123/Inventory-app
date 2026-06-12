@@ -4,21 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-class BackupHistoryWidget
-    extends StatefulWidget {
-  const BackupHistoryWidget({
-    super.key,
-  });
+class BackupHistoryWidget extends StatefulWidget {
+  const BackupHistoryWidget({super.key});
 
   @override
-  State<BackupHistoryWidget>
-  createState() =>
-      _BackupHistoryWidgetState();
+  State<BackupHistoryWidget> createState() => _BackupHistoryWidgetState();
 }
 
-class _BackupHistoryWidgetState
-    extends State<
-        BackupHistoryWidget> {
+class _BackupHistoryWidgetState extends State<BackupHistoryWidget> {
   List<FileSystemEntity> backups = [];
 
   @override
@@ -29,15 +22,9 @@ class _BackupHistoryWidgetState
   }
 
   Future<void> loadBackups() async {
-    final appDir =
-    await getApplicationDocumentsDirectory();
+    final appDir = await getApplicationDocumentsDirectory();
 
-    final backupDir = Directory(
-      p.join(
-        appDir.path,
-        'auto_backups',
-      ),
-    );
+    final backupDir = Directory(p.join(appDir.path, 'auto_backups'));
 
     if (await backupDir.exists()) {
       backups = backupDir.listSync();
@@ -53,18 +40,12 @@ class _BackupHistoryWidgetState
         itemCount: backups.length,
 
         itemBuilder: (context, index) {
-          final file =
-          backups[index];
+          final file = backups[index];
 
           return ListTile(
-            leading:
-            const Icon(Icons.storage),
+            leading: const Icon(Icons.storage),
 
-            title: Text(
-              p.basename(
-                file.path,
-              ),
-            ),
+            title: Text(p.basename(file.path)),
           );
         },
       ),

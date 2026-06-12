@@ -7,32 +7,16 @@ import '../../data/database/app_database.dart';
 import '../auth/repository/auth_repository.dart';
 import '../dashboard/provider/dashboard_provider.dart';
 
-
-class AppSidebar
-    extends ConsumerWidget {
-  const AppSidebar({
-    super.key,
-  });
+class AppSidebar extends ConsumerWidget {
+  const AppSidebar({super.key});
 
   @override
-  Widget build(
-      BuildContext context,
-      WidgetRef ref,
-      ) {
-    final selected =
-    ref.watch(
-      selectedMenuProvider,
-    );
-    final width = ResponsiveHelper.isTablet(
-      context,
-    )
-        ? 90.0
-        : 260.0;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selected = ref.watch(selectedMenuProvider);
+    final width = ResponsiveHelper.isTablet(context) ? 90.0 : 260.0;
     return Container(
       width: width,
-      color: const Color(
-        0xff111827,
-      ),
+      color: const Color(0xff111827),
 
       child: SafeArea(
         child: ListView(
@@ -40,26 +24,16 @@ class AppSidebar
           children: [
             const SizedBox(height: 40),
 
-            const Icon(
-              Icons.inventory_2,
-              size: 70,
-              color: Colors.white,
-            ),
+            const Icon(Icons.inventory_2, size: 70, color: Colors.white),
 
             const SizedBox(height: 15),
 
-            ResponsiveHelper.isTablet(
-              context,
-            )
+            ResponsiveHelper.isTablet(context)
                 ? const SizedBox()
                 : Text(
-              'Inventory ERP',
-              style:
-              const TextStyle(
-                color:
-                Colors.white,
-              ),
-            ),
+                    'Inventory ERP',
+                    style: const TextStyle(color: Colors.white),
+                  ),
 
             const SizedBox(height: 40),
 
@@ -73,8 +47,7 @@ class AppSidebar
 
             buildItem(
               ref,
-              icon:
-              Icons.inventory_2,
+              icon: Icons.inventory_2,
               title: 'Products',
               index: 1,
               selected: selected,
@@ -90,8 +63,7 @@ class AppSidebar
 
             buildItem(
               ref,
-              icon:
-              Icons.receipt_long,
+              icon: Icons.receipt_long,
               title: 'Sales',
               index: 3,
               selected: selected,
@@ -99,8 +71,7 @@ class AppSidebar
 
             buildItem(
               ref,
-              icon:
-              Icons.shopping_cart,
+              icon: Icons.shopping_cart,
               title: 'Purchases',
               index: 4,
               selected: selected,
@@ -108,8 +79,7 @@ class AppSidebar
 
             buildItem(
               ref,
-              icon:
-              Icons.money_off,
+              icon: Icons.money_off,
               title: 'Expenses',
               index: 5,
               selected: selected,
@@ -152,9 +122,7 @@ class AppSidebar
               index: -1,
               selected: selected,
               onTap: () async {
-                final repo = AuthRepository(
-                  AppDatabase(),
-                );
+                final repo = AuthRepository(AppDatabase());
 
                 await repo.logout();
 
@@ -162,7 +130,7 @@ class AppSidebar
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     '/',
-                        (route) => false,
+                    (route) => false,
                   );
                 }
               },
@@ -177,7 +145,6 @@ class AppSidebar
                 await windowManager.close();
               },
             ),
-
           ],
         ),
       ),
@@ -185,57 +152,31 @@ class AppSidebar
   }
 
   Widget buildItem(
-      WidgetRef ref, {
-        required IconData icon,
-        required String title,
-        required int index,
-        required int selected,
-        VoidCallback? onTap,
-      }) {
-    final isSelected =
-        selected == index;
+    WidgetRef ref, {
+    required IconData icon,
+    required String title,
+    required int index,
+    required int selected,
+    VoidCallback? onTap,
+  }) {
+    final isSelected = selected == index;
 
     return Padding(
-      padding:
-      const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 5,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
 
       child: ListTile(
-        shape: RoundedRectangleBorder(
-          borderRadius:
-          BorderRadius.circular(
-            14,
-          ),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
 
-        tileColor:
-        isSelected
-            ? Colors.indigo
-            : Colors.transparent,
+        tileColor: isSelected ? Colors.indigo : Colors.transparent,
 
-        leading: Icon(
-          icon,
-          color: Colors.white,
-        ),
+        leading: Icon(icon, color: Colors.white),
 
-        title: Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-          ),
-        ),
+        title: Text(title, style: const TextStyle(color: Colors.white)),
 
         onTap:
-        onTap ??
-                () {
-              ref
-                  .read(
-                selectedMenuProvider
-                    .notifier,
-              )
-                  .state = index;
+            onTap ??
+            () {
+              ref.read(selectedMenuProvider.notifier).state = index;
             },
       ),
     );

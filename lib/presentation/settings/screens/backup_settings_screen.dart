@@ -4,171 +4,107 @@ import '../../../core/services/auto_backup_service.dart';
 import '../../../core/services/backup_service.dart';
 import '../widgets/backup_history_widget.dart';
 
-class BackupSettingsScreen
-    extends StatelessWidget {
-  const BackupSettingsScreen({
-    super.key,
-  });
+class BackupSettingsScreen extends StatelessWidget {
+  const BackupSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final backupService =
-    BackupService();
+    final backupService = BackupService();
 
-    final autoBackupService =
-    AutoBackupService();
+    final autoBackupService = AutoBackupService();
 
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20),
 
         child: Column(
-          crossAxisAlignment:
-          CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
             Text(
               'Backup & Restore',
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
 
             const SizedBox(height: 30),
 
             Card(
               child: Padding(
-                padding:
-                const EdgeInsets.all(
-                  20,
-                ),
+                padding: const EdgeInsets.all(20),
 
                 child: Column(
                   children: [
                     ListTile(
-                      leading: const Icon(
-                        Icons.backup,
-                      ),
+                      leading: const Icon(Icons.backup),
 
-                      title: const Text(
-                        'Backup Database',
-                      ),
+                      title: const Text('Backup Database'),
 
-                      subtitle: const Text(
-                        'Export SQLite database',
-                      ),
+                      subtitle: const Text('Export SQLite database'),
 
-                      trailing:
-                      ElevatedButton(
-                        onPressed:
-                            () async {
-                          await backupService
-                              .backupDatabase();
+                      trailing: ElevatedButton(
+                        onPressed: () async {
+                          await backupService.backupDatabase();
 
-                          if (context
-                              .mounted) {
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Backup Completed',
-                                ),
-                              ),
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Backup Completed')),
                             );
                           }
                         },
 
-                        child:
-                        const Text(
-                          'Backup',
-                        ),
+                        child: const Text('Backup'),
                       ),
                     ),
 
                     const Divider(),
 
                     ListTile(
-                      leading: const Icon(
-                        Icons.restore,
-                      ),
+                      leading: const Icon(Icons.restore),
 
-                      title: const Text(
-                        'Restore Database',
-                      ),
+                      title: const Text('Restore Database'),
 
-                      subtitle: const Text(
-                        'Import SQLite backup',
-                      ),
+                      subtitle: const Text('Import SQLite backup'),
 
-                      trailing:
-                      ElevatedButton(
-                        onPressed:
-                            () async {
-                          await backupService
-                              .restoreDatabase();
+                      trailing: ElevatedButton(
+                        onPressed: () async {
+                          await backupService.restoreDatabase();
 
-                          if (context
-                              .mounted) {
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text(
-                                  'Restore Completed',
-                                ),
+                                content: Text('Restore Completed'),
                               ),
                             );
                           }
                         },
 
-                        child:
-                        const Text(
-                          'Restore',
-                        ),
+                        child: const Text('Restore'),
                       ),
                     ),
 
                     const Divider(),
 
                     ListTile(
-                      leading: const Icon(
-                        Icons.history,
-                      ),
+                      leading: const Icon(Icons.history),
 
-                      title: const Text(
-                        'Auto Backup',
-                      ),
+                      title: const Text('Auto Backup'),
 
-                      subtitle: const Text(
-                        'Create automatic backup',
-                      ),
+                      subtitle: const Text('Create automatic backup'),
 
-                      trailing:
-                      ElevatedButton(
-                        onPressed:
-                            () async {
-                          await autoBackupService
-                              .createAutoBackup();
+                      trailing: ElevatedButton(
+                        onPressed: () async {
+                          await autoBackupService.createAutoBackup();
 
-                          if (context
-                              .mounted) {
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text(
-                                  'Auto Backup Created',
-                                ),
+                                content: Text('Auto Backup Created'),
                               ),
                             );
                           }
                         },
 
-                        child:
-                        const Text(
-                          'Run',
-                        ),
+                        child: const Text('Run'),
                       ),
                     ),
                   ],
@@ -177,9 +113,7 @@ class BackupSettingsScreen
             ),
             const SizedBox(height: 20),
 
-            Expanded(
-              child: BackupHistoryWidget(),
-            ),
+            Expanded(child: BackupHistoryWidget()),
           ],
         ),
       ),

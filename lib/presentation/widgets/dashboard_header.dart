@@ -6,35 +6,26 @@ class DashboardHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment:
-      MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
-          crossAxisAlignment:
-          CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Dashboard',
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
 
             const SizedBox(height: 5),
 
             Text(
               'Manage your inventory system',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),
 
-        CircleAvatar(
-          radius: 24,
-          child: Icon(Icons.person),
-        ),
+        CircleAvatar(radius: 24, child: Icon(Icons.person)),
       ],
     );
   }

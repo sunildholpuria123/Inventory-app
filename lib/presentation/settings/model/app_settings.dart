@@ -29,27 +29,17 @@ class AppSettings {
     String? invoicePrefix,
   }) {
     return AppSettings(
-      darkMode:
-      darkMode ?? this.darkMode,
+      darkMode: darkMode ?? this.darkMode,
 
-      currency:
-      currency ?? this.currency,
+      currency: currency ?? this.currency,
 
-      taxPercent:
-      taxPercent ??
-          this.taxPercent,
+      taxPercent: taxPercent ?? this.taxPercent,
 
-      companyName:
-      companyName ??
-          this.companyName,
+      companyName: companyName ?? this.companyName,
 
-      companyAddress:
-      companyAddress ??
-          this.companyAddress,
+      companyAddress: companyAddress ?? this.companyAddress,
 
-      invoicePrefix:
-      invoicePrefix ??
-          this.invoicePrefix,
+      invoicePrefix: invoicePrefix ?? this.invoicePrefix,
     );
   }
 }

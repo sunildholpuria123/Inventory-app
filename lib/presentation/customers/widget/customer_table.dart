@@ -87,14 +87,11 @@ class CustomerTable extends ConsumerWidget {
 
                             MaterialPageRoute(
                               builder: (_) =>
-                                  CustomerLedgerScreen(
-                                    customer: customer,
-                                  ),
+                                  CustomerLedgerScreen(customer: customer),
                             ),
                           );
                         },
                       ),
-
                     ],
                   ),
                 ),

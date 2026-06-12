@@ -2,30 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/cart_item.dart' show CartItem;
-import '../model/invoice_item_model.dart';
 import '../provider/sales_provider.dart';
 
-class InvoiceProductList
-    extends ConsumerWidget {
-  const InvoiceProductList({
-    super.key,
-  });
+class InvoiceProductList extends ConsumerWidget {
+  const InvoiceProductList({super.key});
 
   @override
-  Widget build(
-      BuildContext context,
-      WidgetRef ref,
-      ) {
-    final items = ref.watch(
-      invoiceItemsProvider,
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final items = ref.watch(invoiceItemsProvider);
 
     if (items.isEmpty) {
-      return const Center(
-        child: Text(
-          'No Products Added',
-        ),
-      );
+      return const Center(child: Text('No Products Added'));
     }
 
     return ListView.builder(
@@ -33,12 +20,8 @@ class InvoiceProductList
 
       itemCount: items.length,
 
-      itemBuilder: (
-          context,
-          index,
-          ) {
-        final item =
-        items[index];
+      itemBuilder: (context, index) {
+        final item = items[index];
 
         return Card(
           child: Padding(
@@ -48,20 +31,14 @@ class InvoiceProductList
                 Expanded(
                   flex: 3,
                   child: Column(
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         item.product.name,
-                        style: const TextStyle(
-                          fontWeight:
-                          FontWeight.bold,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
 
-                      Text(
-                        '₹${item.price}',
-                      ),
+                      Text('₹${item.price}'),
                     ],
                   ),
                 ),
@@ -72,95 +49,58 @@ class InvoiceProductList
                       return;
                     }
 
-                    final updated =
-                    [...items];
+                    final updated = [...items];
 
-                    updated[index] =
-                        CartItem(
-                          product:
-                          item.product,
-                          qty:
-                          item.qty - 1,
-                          price:
-                          item.price,
-                        );
+                    updated[index] = CartItem(
+                      product: item.product,
+                      qty: item.qty - 1,
+                      price: item.price,
+                    );
 
-                    ref
-                        .read(
-                      invoiceItemsProvider
-                          .notifier,
-                    )
-                        .state = updated;
+                    ref.read(invoiceItemsProvider.notifier).state = updated;
                   },
-                  icon: const Icon(
-                    Icons.remove_circle,
-                  ),
+                  icon: const Icon(Icons.remove_circle),
                 ),
 
                 Text(
                   item.qty.toString(),
                   style: const TextStyle(
                     fontSize: 18,
-                    fontWeight:
-                    FontWeight.bold,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
 
                 IconButton(
                   onPressed: () {
-                    final updated =
-                    [...items];
+                    final updated = [...items];
 
-                    updated[index] =
-                        CartItem(
-                          product:
-                          item.product,
-                          qty:
-                          item.qty + 1,
-                          price:
-                          item.price,
-                        );
+                    updated[index] = CartItem(
+                      product: item.product,
+                      qty: item.qty + 1,
+                      price: item.price,
+                    );
 
-                    ref
-                        .read(
-                      invoiceItemsProvider
-                          .notifier,
-                    )
-                        .state = updated;
+                    ref.read(invoiceItemsProvider.notifier).state = updated;
                   },
-                  icon: const Icon(
-                    Icons.add_circle,
-                  ),
+                  icon: const Icon(Icons.add_circle),
                 ),
 
                 const SizedBox(width: 20),
 
                 Text(
                   '₹${item.total.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontWeight:
-                    FontWeight.bold,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
 
                 IconButton(
                   onPressed: () {
-                    final updated =
-                    [...items];
+                    final updated = [...items];
 
                     updated.removeAt(index);
 
-                    ref
-                        .read(
-                      invoiceItemsProvider
-                          .notifier,
-                    )
-                        .state = updated;
+                    ref.read(invoiceItemsProvider.notifier).state = updated;
                   },
-                  icon: const Icon(
-                    Icons.delete,
-                    color: Colors.red,
-                  ),
+                  icon: const Icon(Icons.delete, color: Colors.red),
                 ),
               ],
             ),

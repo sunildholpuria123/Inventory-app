@@ -49,56 +49,40 @@ class CustomerLedgerScreen extends ConsumerWidget {
                     ],
                   ),
 
-                    trailing: Column(
-                      mainAxisAlignment:
-                      MainAxisAlignment.center,
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
 
-                      children: [
+                    children: [
+                      Text(
+                        '₹${invoice.grandTotal.toStringAsFixed(2)}',
 
-                        Text(
-                          '₹${invoice.grandTotal.toStringAsFixed(2)}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
 
-                          style: const TextStyle(
-                            fontWeight:
-                            FontWeight.bold,
-                          ),
+                      if (invoice.dueAmount > 0)
+                        TextButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+
+                              builder: (_) => ReceivePaymentDialog(
+                                invoice: invoice,
+
+                                customer: customer,
+                              ),
+                            );
+                          },
+
+                          child: const Text('Receive'),
+                        )
+                      else
+                        const Text(
+                          'Paid',
+
+                          style: TextStyle(color: Colors.green),
                         ),
-
-                        if (invoice.dueAmount > 0)
-
-                          TextButton(
-                            onPressed: () {
-
-                              showDialog(
-                                context: context,
-
-                                builder: (_) =>
-                                    ReceivePaymentDialog(
-                                      invoice:
-                                      invoice,
-
-                                      customer:
-                                      customer,
-                                    ),
-                              );
-                            },
-
-                            child:
-                            const Text(
-                              'Receive',
-                            ),
-                          )
-                        else
-                          const Text(
-                            'Paid',
-
-                            style: TextStyle(
-                              color:
-                              Colors.green,
-                            ),
-                          ),
-                      ],
-                    ),
+                    ],
+                  ),
                 ),
               );
             },

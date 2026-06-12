@@ -1,6 +1,8 @@
-import 'package:drift/drift.dart' show Value, ComparableExpr, StringExpressionOperators;
+import 'package:drift/drift.dart'
+    show Value, ComparableExpr, StringExpressionOperators;
 
-import '../../core/services/product_image_service.dart' show ProductImageService;
+import '../../core/services/product_image_service.dart'
+    show ProductImageService;
 import '../database/app_database.dart';
 
 class ProductRepository {
@@ -75,23 +77,13 @@ class ProductRepository {
   }
 
   /// DELETE PRODUCT
-  Future<void> deleteProduct(Product product,) async {
+  Future<void> deleteProduct(Product product) async {
     /// DELETE IMAGE
-    await ProductImageService
-        .deleteImage(
-      product.imagePath,
-    );
+    await ProductImageService.deleteImage(product.imagePath);
 
     await (db.delete(
       db.products,
-    )
-      ..where(
-            (tbl) =>
-            tbl.id.equals(
-              product.id,
-            ),
-      ))
-        .go();
+    )..where((tbl) => tbl.id.equals(product.id))).go();
   }
 
   /// REDUCE STOCK AFTER SALES

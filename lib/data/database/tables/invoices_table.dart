@@ -1,60 +1,33 @@
 import 'package:drift/drift.dart';
 
 class Invoices extends Table {
-  IntColumn get id =>
-      integer().autoIncrement()();
+  IntColumn get id => integer().autoIncrement()();
 
-  TextColumn get invoiceNo =>
-      text()();
+  TextColumn get invoiceNo => text()();
 
-  TextColumn get customerName =>
-      text()();
+  TextColumn get customerName => text()();
 
-  TextColumn get customerPhone =>
-      text()();
+  TextColumn get customerPhone => text()();
 
-  RealColumn get subtotal =>
-      real()();
+  RealColumn get subtotal => real()();
 
-  RealColumn get tax =>
-      real()();
+  RealColumn get tax => real()();
 
-  RealColumn get discount =>
-      real().withDefault(
-        const Constant(0),
-      )();
+  RealColumn get discount => real().withDefault(const Constant(0))();
 
-  RealColumn get grandTotal =>
-      real()();
+  RealColumn get grandTotal => real()();
 
-  TextColumn get paymentMethod =>
-      text().withDefault(
-        const Constant('CASH'),
-      )();
+  TextColumn get paymentMethod => text().withDefault(const Constant('CASH'))();
 
-  TextColumn get paymentStatus =>
-      text().withDefault(
-        const Constant('PAID'),
-      )();
+  TextColumn get paymentStatus => text().withDefault(const Constant('PAID'))();
 
-  DateTimeColumn get createdAt =>
-      dateTime().withDefault(
-        currentDateAndTime,
-      )();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 
-  TextColumn get pdfPath =>
-      text().nullable()();
+  TextColumn get pdfPath => text().nullable()();
 
-  RealColumn get amountPaid =>
-      real().withDefault(
-        const Constant(0),
-      )();
+  RealColumn get amountPaid => real().withDefault(const Constant(0))();
 
-  RealColumn get dueAmount =>
-      real().withDefault(
-        const Constant(0),
-      )();
+  RealColumn get dueAmount => real().withDefault(const Constant(0))();
 
-  DateTimeColumn get dueDate =>
-      dateTime().nullable()();
+  DateTimeColumn get dueDate => dateTime().nullable()();
 }

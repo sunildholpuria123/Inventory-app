@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-class ProductImageWidget
-    extends StatelessWidget {
+class ProductImageWidget extends StatelessWidget {
   final String? imagePath;
 
   final double size;
@@ -15,24 +14,13 @@ class ProductImageWidget
   });
 
   @override
-  Widget build(
-      BuildContext context,
-      ) {
+  Widget build(BuildContext context) {
     if (imagePath == null) {
-      return CircleAvatar(
-        radius: size / 2,
-
-        child: const Icon(
-          Icons.image,
-        ),
-      );
+      return CircleAvatar(radius: size / 2, child: const Icon(Icons.image));
     }
 
     return ClipRRect(
-      borderRadius:
-      BorderRadius.circular(
-        8,
-      ),
+      borderRadius: BorderRadius.circular(8),
 
       child: Image.file(
         File(imagePath!),
@@ -42,14 +30,11 @@ class ProductImageWidget
 
         fit: BoxFit.cover,
 
-        errorBuilder:
-            (_, __, ___) {
+        errorBuilder: (_, __, ___) {
           return CircleAvatar(
             radius: size / 2,
 
-            child: const Icon(
-              Icons.broken_image,
-            ),
+            child: const Icon(Icons.broken_image),
           );
         },
       ),

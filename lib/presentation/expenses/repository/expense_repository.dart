@@ -1,8 +1,7 @@
-
-
 import 'package:drift/drift.dart';
 
-import '../../../data/database/app_database.dart' show Expense, AppDatabase, ExpensesCompanion;
+import '../../../data/database/app_database.dart'
+    show Expense, AppDatabase, ExpensesCompanion;
 
 class ExpenseRepository {
   final AppDatabase db;
@@ -29,13 +28,7 @@ class ExpenseRepository {
     );
   }
 
-  Future<void> deleteExpense(
-      int id,
-      ) async {
-    await (db.delete(db.expenses)
-      ..where(
-            (tbl) => tbl.id.equals(id),
-      ))
-        .go();
+  Future<void> deleteExpense(int id) async {
+    await (db.delete(db.expenses)..where((tbl) => tbl.id.equals(id))).go();
   }
 }

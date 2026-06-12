@@ -5,52 +5,32 @@ import '../../products/provider/product_provider.dart';
 import '../model/cart_item.dart';
 import '../provider/sales_provider.dart';
 
-class ProductDropdown
-    extends ConsumerStatefulWidget {
-  const ProductDropdown({
-    super.key,
-  });
+class ProductDropdown extends ConsumerStatefulWidget {
+  const ProductDropdown({super.key});
 
   @override
-  ConsumerState<ProductDropdown>
-  createState() =>
-      _ProductDropdownState();
+  ConsumerState<ProductDropdown> createState() => _ProductDropdownState();
 }
 
-class _ProductDropdownState
-    extends ConsumerState<
-        ProductDropdown> {
+class _ProductDropdownState extends ConsumerState<ProductDropdown> {
   dynamic selectedProduct;
 
   @override
-  Widget build(
-      BuildContext context,
-      ) {
-    final products =
-    ref.watch(
-      productsProvider,
-    );
+  Widget build(BuildContext context) {
+    final products = ref.watch(productsProvider);
 
     return products.when(
       data: (items) {
-        return DropdownButtonFormField<
-            dynamic>(
+        return DropdownButtonFormField<dynamic>(
           value: null,
 
-          decoration:
-          const InputDecoration(
-            labelText:
-            'Add Product',
-          ),
+          decoration: const InputDecoration(labelText: 'Add Product'),
 
-          items:
-          items.map((product) {
+          items: items.map((product) {
             return DropdownMenuItem(
               value: product.id,
 
-              child: Text(
-                product.name,
-              ),
+              child: Text(product.name),
             );
           }).toList(),
 
@@ -59,84 +39,48 @@ class _ProductDropdownState
               return;
             }
 
-            final product =
-            items.firstWhere(
-                  (e) =>
-              e.id == value,
-            );
+            final product = items.firstWhere((e) => e.id == value);
 
             /// OUT OF STOCK CHECK
             if (product.stockQty <= 0) {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Out of stock',
-                  ),
-                ),
-              );
+              ).showSnackBar(const SnackBar(content: Text('Out of stock')));
 
               return;
             }
 
-            final current =
-            ref.read(
-              invoiceItemsProvider,
-            );
+            final current = ref.read(invoiceItemsProvider);
 
             /// PREVENT DUPLICATE
-            final alreadyExists =
-            current.any(
-                  (e) =>
-              e.product.id ==
-                  product.id,
+            final alreadyExists = current.any(
+              (e) => e.product.id == product.id,
             );
 
             if (alreadyExists) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Product already added',
-                  ),
-                ),
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Product already added')),
               );
 
               return;
             }
 
-            ref
-                .read(
-              invoiceItemsProvider
-                  .notifier,
-            )
-                .state = [
+            ref.read(invoiceItemsProvider.notifier).state = [
               ...current,
 
-              CartItem(
-                product: product,
-                qty: 1,
-                price:
-                product
-                    .sellingPrice,
-              ),
+              CartItem(product: product, qty: 1, price: product.sellingPrice),
             ];
 
             setState(() {
-              selectedProduct =
-              null;
+              selectedProduct = null;
             });
           },
         );
       },
 
-      loading: () =>
-      const CircularProgressIndicator(),
+      loading: () => const CircularProgressIndicator(),
 
-      error: (e, _) =>
-          Text(e.toString()),
+      error: (e, _) => Text(e.toString()),
     );
   }
 }

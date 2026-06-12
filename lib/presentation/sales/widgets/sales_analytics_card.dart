@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SalesAnalyticsCard
-    extends StatelessWidget {
+class SalesAnalyticsCard extends StatelessWidget {
   final String title;
 
   final String value;
@@ -17,13 +16,10 @@ class SalesAnalyticsCard
     return Expanded(
       child: Card(
         child: Padding(
-          padding:
-          const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
 
           child: Column(
-            crossAxisAlignment:
-            CrossAxisAlignment
-                .start,
+            crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
               Text(title),
@@ -34,8 +30,7 @@ class SalesAnalyticsCard
                 value,
                 style: const TextStyle(
                   fontSize: 28,
-                  fontWeight:
-                  FontWeight.bold,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],

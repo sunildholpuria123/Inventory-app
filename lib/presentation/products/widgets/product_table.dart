@@ -4,32 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
-
 import '../provider/product_provider.dart';
-
 import 'edit_product_dialog.dart';
 
-class ProductTable
-    extends ConsumerWidget {
+class ProductTable extends ConsumerWidget {
   final List<Product> products;
 
-  const ProductTable({
-    super.key,
-    required this.products,
-  });
+  const ProductTable({super.key, required this.products});
 
   @override
-  Widget build(
-      BuildContext context,
-      WidgetRef ref,
-      ) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: SingleChildScrollView(
-        scrollDirection:
-        Axis.horizontal,
+        scrollDirection: Axis.horizontal,
         child: SingleChildScrollView(
-          scrollDirection:
-          Axis.horizontal,
+          scrollDirection: Axis.horizontal,
 
           child: DataTable(
             dataRowMinHeight: 70,
@@ -42,194 +31,111 @@ class ProductTable
             horizontalMargin: 20,
 
             columns: const [
-              DataColumn(
-                label: Text('Image'),
-              ),
+              DataColumn(label: Text('Image')),
 
-              DataColumn(
-                label: Text('ID'),
-              ),
+              DataColumn(label: Text('ID')),
 
-              DataColumn(
-                label: Text('Name'),
-              ),
+              DataColumn(label: Text('Name')),
 
-              DataColumn(
-                label: Text('Stock'),
-              ),
+              DataColumn(label: Text('Stock')),
 
-              DataColumn(
-                label: Text(
-                  'Purchase',
-                ),
-              ),
+              DataColumn(label: Text('Purchase')),
 
-              DataColumn(
-                label: Text(
-                  'Selling',
-                ),
-              ),
+              DataColumn(label: Text('Selling')),
 
-              DataColumn(
-                label: Text(
-                  'Actions',
-                ),
-              ),
+              DataColumn(label: Text('Actions')),
             ],
 
-            rows: products.map(
-                  (product) {
-                return DataRow(
-                  cells: [
-                    /// IMAGE
-                    DataCell(
-                      product.imagePath ==
-                          null
-                          ? const CircleAvatar(
-                        child: Icon(
-                          Icons.image,
-                        ),
-                      )
-                          : ClipRRect(
-                        borderRadius:
-                        BorderRadius.circular(
-                          8,
-                        ),
+            rows: products.map((product) {
+              return DataRow(
+                cells: [
+                  /// IMAGE
+                  DataCell(
+                    product.imagePath == null
+                        ? const CircleAvatar(child: Icon(Icons.image))
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
 
-                        child: Image.file(
-                          File(
-                            product
-                                .imagePath!,
+                            child: Image.file(
+                              File(product.imagePath!),
+
+                              width: 50,
+                              height: 50,
+
+                              fit: BoxFit.cover,
+
+                              errorBuilder: (_, __, ___) {
+                                return const CircleAvatar(
+                                  child: Icon(Icons.broken_image),
+                                );
+                              },
+                            ),
                           ),
+                  ),
 
-                          width: 50,
-                          height: 50,
+                  /// ID
+                  DataCell(Text(product.id.toString())),
 
-                          fit: BoxFit.cover,
+                  /// NAME
+                  DataCell(Text(product.name)),
 
-                          errorBuilder:
-                              (
-                              _,
-                              __,
-                              ___,
-                              ) {
-                            return const CircleAvatar(
-                              child: Icon(
-                                Icons
-                                    .broken_image,
-                              ),
+                  /// STOCK
+                  DataCell(
+                    Text(
+                      product.stockQty.toString(),
+
+                      style: TextStyle(
+                        color: product.stockQty <= 5
+                            ? Colors.red
+                            : Colors.green,
+
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  /// PURCHASE PRICE
+                  DataCell(Text('₹${product.purchasePrice}')),
+
+                  /// SELLING PRICE
+                  DataCell(Text('₹${product.sellingPrice}')),
+
+                  /// ACTIONS
+                  DataCell(
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+
+                      children: [
+                        /// EDIT
+                        IconButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+
+                              builder: (_) =>
+                                  EditProductDialog(product: product),
                             );
                           },
+
+                          icon: const Icon(Icons.edit),
                         ),
-                      ),
-                    ),
 
-                    /// ID
-                    DataCell(
-                      Text(
-                        product.id
-                            .toString(),
-                      ),
-                    ),
+                        /// DELETE
+                        IconButton(
+                          onPressed: () async {
+                            final repo = ref.read(productRepositoryProvider);
 
-                    /// NAME
-                    DataCell(
-                      Text(product.name),
-                    ),
+                            await repo.deleteProduct(product);
+                          },
 
-                    /// STOCK
-                    DataCell(
-                      Text(
-                        product.stockQty
-                            .toString(),
-
-                        style: TextStyle(
-                          color:
-                          product.stockQty <=
-                              5
-                              ? Colors.red
-                              : Colors
-                              .green,
-
-                          fontWeight:
-                          FontWeight
-                              .bold,
+                          icon: const Icon(Icons.delete, color: Colors.red),
                         ),
-                      ),
+                      ],
                     ),
-
-                    /// PURCHASE PRICE
-                    DataCell(
-                      Text(
-                        '₹${product.purchasePrice}',
-                      ),
-                    ),
-
-                    /// SELLING PRICE
-                    DataCell(
-                      Text(
-                        '₹${product.sellingPrice}',
-                      ),
-                    ),
-
-                    /// ACTIONS
-                    DataCell(
-                      Row(
-                        mainAxisSize:
-                        MainAxisSize.min,
-
-                        children: [
-                          /// EDIT
-                          IconButton(
-                            onPressed: () {
-                              showDialog(
-                                context:
-                                context,
-
-                                builder:
-                                    (_) =>
-                                    EditProductDialog(
-                                      product:
-                                      product,
-                                    ),
-                              );
-                            },
-
-                            icon:
-                            const Icon(
-                              Icons.edit,
-                            ),
-                          ),
-
-                          /// DELETE
-                          IconButton(
-                            onPressed:
-                                () async {
-                              final repo =
-                              ref.read(
-                                productRepositoryProvider,
-                              );
-
-                              await repo
-                                  .deleteProduct(
-                                product,
-                              );
-                            },
-
-                            icon:
-                            const Icon(
-                              Icons.delete,
-                              color:
-                              Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ).toList(),
+                  ),
+                ],
+              );
+            }).toList(),
           ),
         ),
       ),

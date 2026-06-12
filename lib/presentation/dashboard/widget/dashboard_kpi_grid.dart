@@ -11,28 +11,17 @@ class DashboardKpiGrid extends ConsumerWidget {
   const DashboardKpiGrid({super.key});
 
   @override
-  Widget build(
-      BuildContext context,
-      WidgetRef ref,
-      ) {
-    final revenue =
-    ref.watch(revenueProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final revenue = ref.watch(revenueProvider);
 
-    final products =
-    ref.watch(totalProductsProvider);
+    final products = ref.watch(totalProductsProvider);
 
-    final customers =
-    ref.watch(totalCustomersProvider);
+    final customers = ref.watch(totalCustomersProvider);
 
-    final sales =
-    ref.watch(totalSalesProvider);
-    final outstanding =
-    ref.watch(
-      outstandingProvider,
-    );
+    final sales = ref.watch(totalSalesProvider);
+    final outstanding = ref.watch(outstandingProvider);
     return LayoutBuilder(
       builder: (context, constraints) {
-
         int crossAxisCount;
 
         if (constraints.maxWidth >= 1100) {
@@ -44,110 +33,78 @@ class DashboardKpiGrid extends ConsumerWidget {
         }
 
         return GridView.count(
-          crossAxisCount:
-          crossAxisCount,
+          crossAxisCount: crossAxisCount,
 
           shrinkWrap: true,
 
-          physics:
-          const NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
 
           crossAxisSpacing: 20,
 
           mainAxisSpacing: 20,
 
-          childAspectRatio:
-          constraints.maxWidth < 700
-              ? 3.5
-              : 2.5,
+          childAspectRatio: constraints.maxWidth < 700 ? 3.5 : 2.5,
 
           children: [
-
             revenue.when(
-              data: (value) =>
-                  DashboardKpiCard(
-                    title: 'Revenue',
-                    value:
-                    '₹${value.toStringAsFixed(0)}',
-                    icon:
-                    Icons.currency_rupee,
-                  ),
+              data: (value) => DashboardKpiCard(
+                title: 'Revenue',
+                value: '₹${value.toStringAsFixed(0)}',
+                icon: Icons.currency_rupee,
+              ),
 
-              loading: () =>
-              const DashboardLoadingCard(),
+              loading: () => const DashboardLoadingCard(),
 
-              error: (_, __) =>
-              const DashboardErrorCard(),
+              error: (_, __) => const DashboardErrorCard(),
             ),
 
             products.when(
-              data: (value) =>
-                  DashboardKpiCard(
-                    title: 'Products',
-                    value:
-                    value.toString(),
-                    icon:
-                    Icons.inventory_2,
-                  ),
+              data: (value) => DashboardKpiCard(
+                title: 'Products',
+                value: value.toString(),
+                icon: Icons.inventory_2,
+              ),
 
-              loading: () =>
-              const DashboardLoadingCard(),
+              loading: () => const DashboardLoadingCard(),
 
-              error: (_, __) =>
-              const DashboardErrorCard(),
+              error: (_, __) => const DashboardErrorCard(),
             ),
 
             customers.when(
-              data: (value) =>
-                  DashboardKpiCard(
-                    title: 'Customers',
-                    value:
-                    value.toString(),
-                    icon:
-                    Icons.people,
-                  ),
+              data: (value) => DashboardKpiCard(
+                title: 'Customers',
+                value: value.toString(),
+                icon: Icons.people,
+              ),
 
-              loading: () =>
-              const DashboardLoadingCard(),
+              loading: () => const DashboardLoadingCard(),
 
-              error: (_, __) =>
-              const DashboardErrorCard(),
+              error: (_, __) => const DashboardErrorCard(),
             ),
 
             sales.when(
-              data: (value) =>
-                  DashboardKpiCard(
-                    title: 'Orders',
-                    value:
-                    value.toString(),
-                    icon:
-                    Icons.shopping_cart,
-                  ),
+              data: (value) => DashboardKpiCard(
+                title: 'Orders',
+                value: value.toString(),
+                icon: Icons.shopping_cart,
+              ),
 
-              loading: () =>
-              const DashboardLoadingCard(),
+              loading: () => const DashboardLoadingCard(),
 
-              error: (_, __) =>
-              const DashboardErrorCard(),
+              error: (_, __) => const DashboardErrorCard(),
             ),
             outstanding.when(
-              data: (value) =>
-                  DashboardKpiCard(
-                    title:
-                    'Outstanding',
+              data: (value) => DashboardKpiCard(
+                title: 'Outstanding',
 
-                    value:
-                    '₹${value.toStringAsFixed(0)}',
+                value: '₹${value.toStringAsFixed(0)}',
 
-                    icon:
-                    Icons.pending_actions,
-                  ),
+                icon: Icons.pending_actions,
+              ),
 
-              loading: () =>
-              const DashboardLoadingCard(),
+              loading: () => const DashboardLoadingCard(),
 
-              error: (_, __) =>
-              const DashboardErrorCard(),
+              error: (_, __) => const DashboardErrorCard(),
             ),
           ],
         );

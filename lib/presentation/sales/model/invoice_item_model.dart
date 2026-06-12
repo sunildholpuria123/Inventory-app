@@ -13,9 +13,7 @@ class InvoiceItemModel {
     required this.price,
   });
 
-  double get total =>
-      qty * price;
+  double get total => qty * price;
 
-  String get productName =>
-      product.name;
+  String get productName => product.name;
 }

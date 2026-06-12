@@ -8,37 +8,25 @@ class DashboardStats extends StatelessWidget {
     return Row(
       children: const [
         Expanded(
-          child: StatCard(
-            title: 'Revenue',
-            value: '₹50,000',
-          ),
+          child: StatCard(title: 'Revenue', value: '₹50,000'),
         ),
 
         SizedBox(width: 20),
 
         Expanded(
-          child: StatCard(
-            title: 'Products',
-            value: '150',
-          ),
+          child: StatCard(title: 'Products', value: '150'),
         ),
 
         SizedBox(width: 20),
 
         Expanded(
-          child: StatCard(
-            title: 'Customers',
-            value: '80',
-          ),
+          child: StatCard(title: 'Customers', value: '80'),
         ),
 
         SizedBox(width: 20),
 
         Expanded(
-          child: StatCard(
-            title: 'Orders',
-            value: '35',
-          ),
+          child: StatCard(title: 'Orders', value: '35'),
         ),
       ],
     );
@@ -49,11 +37,7 @@ class StatCard extends StatelessWidget {
   final String title;
   final String value;
 
-  const StatCard({
-    super.key,
-    required this.title,
-    required this.value,
-  });
+  const StatCard({super.key, required this.title, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +45,7 @@ class StatCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
-          crossAxisAlignment:
-          CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title),
 
@@ -70,10 +53,7 @@ class StatCard extends StatelessWidget {
 
             Text(
               value,
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
           ],
         ),

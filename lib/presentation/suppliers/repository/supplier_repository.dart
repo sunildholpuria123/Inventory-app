@@ -7,10 +7,8 @@ class SupplierRepository {
 
   SupplierRepository(this.db);
 
-  Stream<List<Supplier>>
-  watchSuppliers() {
-    return db.select(db.suppliers)
-        .watch();
+  Stream<List<Supplier>> watchSuppliers() {
+    return db.select(db.suppliers).watch();
   }
 
   Future<void> addSupplier({
@@ -22,31 +20,20 @@ class SupplierRepository {
     await db
         .into(db.suppliers)
         .insert(
-      SuppliersCompanion.insert(
-        name: name,
-        phone: phone,
-        email: Value(email),
-        address: Value(address),
-      ),
-    );
+          SuppliersCompanion.insert(
+            name: name,
+            phone: phone,
+            email: Value(email),
+            address: Value(address),
+          ),
+        );
   }
 
-  Future<void> updateSupplier({
-    required Supplier supplier,
-  }) async {
-    await db
-        .update(db.suppliers)
-        .replace(supplier);
+  Future<void> updateSupplier({required Supplier supplier}) async {
+    await db.update(db.suppliers).replace(supplier);
   }
 
-  Future<void> deleteSupplier(
-      int id,
-      ) async {
-    await (db.delete(db.suppliers)
-      ..where(
-            (tbl) =>
-            tbl.id.equals(id),
-      ))
-        .go();
+  Future<void> deleteSupplier(int id) async {
+    await (db.delete(db.suppliers)..where((tbl) => tbl.id.equals(id))).go();
   }
 }

@@ -73,9 +73,11 @@ class _ReceivePaymentDialogState extends ConsumerState<ReceivePaymentDialog> {
       double.infinity,
     );
 
-    await (db.update(db.customers)
-          ..where((tbl) => tbl.id.equals(widget.customer.id)))
-        .write(CustomersCompanion(creditBalance: Value(updatedCredit.toDouble())));
+    await (db.update(
+      db.customers,
+    )..where((tbl) => tbl.id.equals(widget.customer.id))).write(
+      CustomersCompanion(creditBalance: Value(updatedCredit.toDouble())),
+    );
 
     if (mounted) {
       Navigator.pop(context);

@@ -1,6 +1,4 @@
-import '../../presentation/sales/model/cart_item.dart'
-    show CartItem;
-
+import '../../presentation/sales/model/cart_item.dart' show CartItem;
 import '../database/app_database.dart';
 
 class InvoiceItemRepository {
@@ -13,42 +11,30 @@ class InvoiceItemRepository {
     required List<CartItem> items,
   }) async {
     for (final item in items) {
-      await db.into(
-        db.invoiceItems,
-      ).insert(
-        InvoiceItemsCompanion.insert(
-          invoiceId: invoiceId,
+      await db
+          .into(db.invoiceItems)
+          .insert(
+            InvoiceItemsCompanion.insert(
+              invoiceId: invoiceId,
 
-          productId:
-          item.product.id,
+              productId: item.product.id,
 
-          productName:
-          item.product.name,
+              productName: item.product.name,
 
-          quantity: item.qty,
+              quantity: item.qty,
 
-          price: item.price,
+              price: item.price,
 
-          total: item.total,
-        ),
-      );
+              total: item.total,
+            ),
+          );
     }
   }
 
-  Future<List<InvoiceItem>>
-  getItemsByInvoice(
-      int invoiceId,
-      ) async {
-    final result =
-    await (db.select(
+  Future<List<InvoiceItem>> getItemsByInvoice(int invoiceId) async {
+    final result = await (db.select(
       db.invoiceItems,
-    )..where(
-          (tbl) =>
-          tbl.invoiceId.equals(
-            invoiceId,
-          ),
-    ))
-        .get();
+    )..where((tbl) => tbl.invoiceId.equals(invoiceId))).get();
 
     return result;
   }

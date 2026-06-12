@@ -1,8 +1,6 @@
 import '../../presentation/reports/model/customer_sales_model.dart';
 import '../../presentation/reports/model/monthly_sales_model.dart';
-
 import '../../presentation/reports/model/top_product_model.dart';
-
 import '../database/app_database.dart';
 
 class ReportsRepository {

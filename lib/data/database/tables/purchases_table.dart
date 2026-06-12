@@ -1,32 +1,23 @@
 import 'package:drift/drift.dart';
 
 class Purchases extends Table {
-  IntColumn get id =>
-      integer().autoIncrement()();
+  IntColumn get id => integer().autoIncrement()();
 
   /// PURCHASE NO
-  TextColumn get purchaseNo =>
-      text()();
+  TextColumn get purchaseNo => text()();
 
   /// SUPPLIER NAME
-  TextColumn get supplierName =>
-      text()();
+  TextColumn get supplierName => text()();
 
   /// PHONE
-  TextColumn get supplierPhone =>
-      text().nullable()();
+  TextColumn get supplierPhone => text().nullable()();
 
   /// TOTAL
-  RealColumn get total =>
-      real()();
+  RealColumn get total => real()();
 
   /// PDF PATH
-  TextColumn get pdfPath =>
-      text().nullable()();
+  TextColumn get pdfPath => text().nullable()();
 
   /// CREATED DATE
-  DateTimeColumn get createdAt =>
-      dateTime().withDefault(
-        currentDateAndTime,
-      )();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }

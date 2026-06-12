@@ -5,5 +5,7 @@ enum SidebarMenu {
   sales,
   purchases,
   reports,
-  settings, expenses, backup,
+  settings,
+  expenses,
+  backup,
 }

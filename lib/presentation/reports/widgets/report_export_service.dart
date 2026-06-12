@@ -9,30 +9,16 @@ class ReportExportService {
 
     final sheet = excel['Reports'];
 
-    sheet.appendRow([
-      TextCellValue('Type'),
-      TextCellValue('Amount'),
-    ]);
+    sheet.appendRow([TextCellValue('Type'), TextCellValue('Amount')]);
 
-    sheet.appendRow([
-      TextCellValue('Sales'),
-      DoubleCellValue(150000),
-    ]);
+    sheet.appendRow([TextCellValue('Sales'), DoubleCellValue(150000)]);
 
-    sheet.appendRow([
-      TextCellValue('Expenses'),
-      DoubleCellValue(50000),
-    ]);
+    sheet.appendRow([TextCellValue('Expenses'), DoubleCellValue(50000)]);
 
-    final dir =
-    await getApplicationDocumentsDirectory();
+    final dir = await getApplicationDocumentsDirectory();
 
-    final file = File(
-      '${dir.path}/report.xlsx',
-    );
+    final file = File('${dir.path}/report.xlsx');
 
-    await file.writeAsBytes(
-      excel.encode()!,
-    );
+    await file.writeAsBytes(excel.encode()!);
   }
 }
