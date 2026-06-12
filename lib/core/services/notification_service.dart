@@ -1,30 +1,43 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
-  static final _notification = FlutterLocalNotificationsPlugin();
+  NotificationService._();
 
-  static Future<void> init() async {
+  static final instance = NotificationService._();
+
+  final FlutterLocalNotificationsPlugin notifications =
+      FlutterLocalNotificationsPlugin();
+
+  Future<void> initialize() async {
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    const settings = InitializationSettings(android: android);
+    const ios = DarwinInitializationSettings();
 
-    await _notification.initialize(settings);
+    await notifications.initialize(
+      const InitializationSettings(android: android, iOS: ios),
+    );
   }
 
-  static Future<void> showNotification({
+  Future<void> showReminder({
+    required int id,
     required String title,
     required String body,
   }) async {
-    const androidDetails = AndroidNotificationDetails(
-      'inventory_channel',
-      'Inventory Notifications',
+    await notifications.show(
+      id,
+      title,
+      body,
 
-      importance: Importance.max,
-      priority: Priority.high,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'due_reminders',
+          'Due Reminders',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+
+        iOS: DarwinNotificationDetails(),
+      ),
     );
-
-    const details = NotificationDetails(android: androidDetails);
-
-    await _notification.show(0, title, body, details);
   }
 }

@@ -30,4 +30,6 @@ class Invoices extends Table {
   RealColumn get dueAmount => real().withDefault(const Constant(0))();
 
   DateTimeColumn get dueDate => dateTime().nullable()();
+
+  BoolColumn get reminderSent => boolean().withDefault(const Constant(false))();
 }

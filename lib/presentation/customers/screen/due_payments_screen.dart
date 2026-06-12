@@ -1,36 +1,9 @@
-import 'package:flutter/material.dart'
-    show
-        BuildContext,
-        Widget,
-        Text,
-        Icon,
-        Center,
-        AppBar,
-        ListView,
-        Icons,
-        Colors,
-        ListTile,
-        Card,
-        CircularProgressIndicator,
-        Scaffold,
-        Padding,
-        EdgeInsets,
-        SizedBox,
-        TextStyle,
-        CrossAxisAlignment,
-        FontWeight,
-        TextOverflow,
-        Column,
-        Expanded,
-        Row,
-        MainAxisAlignment,
-        OutlinedButton;
-import 'package:flutter_riverpod/flutter_riverpod.dart'
-    show ConsumerWidget, WidgetRef, AsyncValueX;
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/services/reminder_service.dart' show ReminderService;
-import '../../dashboard/provider/dashboard_stats_provider.dart'
-    show overdueInvoicesProvider;
+import '../../../core/services/reminder_service.dart';
+import '../../../data/database/app_database.dart';
+import '../../dashboard/provider/dashboard_stats_provider.dart';
 
 class DuePaymentsScreen extends ConsumerWidget {
   const DuePaymentsScreen({super.key});
@@ -39,103 +12,205 @@ class DuePaymentsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final overdue = ref.watch(overdueInvoicesProvider);
 
+    final upcoming = ref.watch(upcomingDueProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Due Payments')),
 
       body: overdue.when(
-        data: (items) {
-          return ListView.builder(
-            itemCount: items.length,
+        data: (overdueItems) {
+          return upcoming.when(
+            data: (upcomingItems) {
+              if (overdueItems.isEmpty && upcomingItems.isEmpty) {
+                return const Center(child: Text('No Due Payments'));
+              }
 
-            itemBuilder: (context, index) {
-              final invoice = items[index];
+              return ListView(
+                padding: const EdgeInsets.only(bottom: 20),
 
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                children: [
+                  /// OVERDUE PAYMENTS
+                  if (overdueItems.isNotEmpty) ...[
+                    const Padding(
+                      padding: EdgeInsets.all(16),
 
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
+                      child: Text(
+                        'Overdue Payments',
 
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                        style: TextStyle(
+                          fontSize: 18,
 
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.warning, color: Colors.red),
+                          fontWeight: FontWeight.bold,
 
-                          const SizedBox(width: 12),
-
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-
-                              children: [
-                                Text(
-                                  invoice.customerName,
-
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-
-                                Text(
-                                  invoice.invoiceNo,
-
-                                  maxLines: 2,
-
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-
-                                Text(
-                                  'Due: ${invoice.dueDate?.toString().split(' ').first ?? 'N/A'}',
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          Text(
-                            '₹${invoice.dueAmount.toStringAsFixed(0)}',
-
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                          color: Colors.red,
+                        ),
                       ),
+                    ),
 
-                      const SizedBox(height: 10),
+                    ...overdueItems.map(
+                      (invoice) =>
+                          _buildInvoiceCard(context, invoice, isOverdue: true),
+                    ),
+                  ],
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                  /// UPCOMING PAYMENTS
+                  if (upcomingItems.isNotEmpty) ...[
+                    const Padding(
+                      padding: EdgeInsets.all(16),
 
-                        children: [
-                          OutlinedButton.icon(
-                            icon: const Icon(Icons.message),
+                      child: Text(
+                        'Upcoming Payments',
 
-                            label: const Text('Remind'),
+                        style: TextStyle(
+                          fontSize: 18,
 
-                            onPressed: () async {
-                              await ReminderService.sendWhatsAppReminder(
-                                phone: invoice.customerPhone,
+                          fontWeight: FontWeight.bold,
 
-                                customerName: invoice.customerName,
-
-                                amount: invoice.dueAmount,
-                              );
-                            },
-                          ),
-                        ],
+                          color: Colors.orange,
+                        ),
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+
+                    ...upcomingItems.map(
+                      (invoice) =>
+                          _buildInvoiceCard(context, invoice, isOverdue: false),
+                    ),
+                  ],
+                ],
               );
             },
+
+            loading: () => const Center(child: CircularProgressIndicator()),
+
+            error: (e, _) => Center(child: Text(e.toString())),
           );
         },
 
         loading: () => const Center(child: CircularProgressIndicator()),
 
         error: (e, _) => Center(child: Text(e.toString())),
+      ),
+    );
+  }
+
+  Widget _buildInvoiceCard(
+    BuildContext context,
+    Invoice invoice, {
+    required bool isOverdue,
+  }) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+
+              children: [
+                Icon(
+                  Icons.warning,
+
+                  color: isOverdue ? Colors.red : Colors.orange,
+                ),
+
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+
+                    children: [
+                      Text(
+                        invoice.customerName,
+
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+
+                          fontSize: 16,
+                        ),
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      Text(
+                        invoice.invoiceNo,
+
+                        maxLines: 2,
+
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      Text(
+                        'Due Date: ${invoice.dueDate?.toString().split(' ').first ?? 'N/A'}',
+                      ),
+
+                      Text(
+                        isOverdue ? 'Status: OVERDUE' : 'Status: UPCOMING',
+
+                        style: TextStyle(
+                          color: isOverdue ? Colors.red : Colors.orange,
+
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+
+                  children: [
+                    Text(
+                      '₹${invoice.dueAmount.toStringAsFixed(0)}',
+
+                      style: const TextStyle(
+                        fontSize: 18,
+
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    Text('${invoice.paymentStatus}'),
+                  ],
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+
+              children: [
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.message),
+
+                  label: const Text('WhatsApp'),
+
+                  onPressed: () async {
+                    await ReminderService.sendWhatsAppReminder(
+                      phone: invoice.customerPhone,
+
+                      customerName: invoice.customerName,
+
+                      amount: invoice.dueAmount,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

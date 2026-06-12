@@ -57,7 +57,6 @@ dependencies:
   shared_preferences: ^2.5.3
 
   cupertino_icons: ^1.0.8
-  flutter_local_notifications: ^17.2.1
   mobile_scanner: ^5.1.1
   bitsdojo_window: ^0.1.6
   qr_flutter: ^4.1.0
@@ -73,7 +72,8 @@ dependencies:
   google_sign_in: ^6.2.1
   extension_google_sign_in_as_googleapis_auth: ^2.0.12
   rxdart: ^0.28.0
-
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.10.0
 flutter:
   assets:
     - assets/client_secret.json

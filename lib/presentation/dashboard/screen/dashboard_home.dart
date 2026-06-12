@@ -1,14 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'
+    show ConsumerStatefulWidget, ConsumerState;
 
+import '../../../core/services/reminder_scheduler.dart' show ReminderScheduler;
 import '../../../core/utils/responsive_helper.dart' show ResponsiveHelper;
 import '../widget/dashboard_kpi_grid.dart' show DashboardKpiGrid;
+import '../widget/due_payment_alert_widget.dart' show DuePaymentAlertWidget;
 import '../widget/low_stock_widget.dart';
 import '../widget/profit_card.dart' show ProfitCard;
 import '../widget/recent_sales_widget.dart';
 import '../widget/sales_overview_chart.dart';
 
-class DashboardHome extends StatelessWidget {
+class DashboardHome extends ConsumerStatefulWidget {
   const DashboardHome({super.key});
+
+  @override
+  ConsumerState<DashboardHome> createState() => _DashboardHomeState();
+}
+
+class _DashboardHomeState extends ConsumerState<DashboardHome> {
+  bool _checkedReminders = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_checkedReminders) {
+      _checkedReminders = true;
+
+      Future.microtask(() => ReminderScheduler.checkReminders(ref));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +63,9 @@ class DashboardHome extends StatelessWidget {
 
               const SizedBox(height: 20),
 
+              const DuePaymentAlertWidget(),
+
+              const SizedBox(height: 20),
               isMobile
                   ? const Column(
                       children: [

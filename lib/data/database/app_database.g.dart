@@ -4700,6 +4700,21 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _reminderSentMeta = const VerificationMeta(
+    'reminderSent',
+  );
+  @override
+  late final GeneratedColumn<bool> reminderSent = GeneratedColumn<bool>(
+    'reminder_sent',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("reminder_sent" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4717,6 +4732,7 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
     amountPaid,
     dueAmount,
     dueDate,
+    reminderSent,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4841,6 +4857,15 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
         dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta),
       );
     }
+    if (data.containsKey('reminder_sent')) {
+      context.handle(
+        _reminderSentMeta,
+        reminderSent.isAcceptableOrUnknown(
+          data['reminder_sent']!,
+          _reminderSentMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -4910,6 +4935,10 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}due_date'],
       ),
+      reminderSent: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}reminder_sent'],
+      )!,
     );
   }
 
@@ -4935,6 +4964,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
   final double amountPaid;
   final double dueAmount;
   final DateTime? dueDate;
+  final bool reminderSent;
   const Invoice({
     required this.id,
     required this.invoiceNo,
@@ -4951,6 +4981,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     required this.amountPaid,
     required this.dueAmount,
     this.dueDate,
+    required this.reminderSent,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4974,6 +5005,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     if (!nullToAbsent || dueDate != null) {
       map['due_date'] = Variable<DateTime>(dueDate);
     }
+    map['reminder_sent'] = Variable<bool>(reminderSent);
     return map;
   }
 
@@ -4998,6 +5030,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       dueDate: dueDate == null && nullToAbsent
           ? const Value.absent()
           : Value(dueDate),
+      reminderSent: Value(reminderSent),
     );
   }
 
@@ -5022,6 +5055,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       amountPaid: serializer.fromJson<double>(json['amountPaid']),
       dueAmount: serializer.fromJson<double>(json['dueAmount']),
       dueDate: serializer.fromJson<DateTime?>(json['dueDate']),
+      reminderSent: serializer.fromJson<bool>(json['reminderSent']),
     );
   }
   @override
@@ -5043,6 +5077,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       'amountPaid': serializer.toJson<double>(amountPaid),
       'dueAmount': serializer.toJson<double>(dueAmount),
       'dueDate': serializer.toJson<DateTime?>(dueDate),
+      'reminderSent': serializer.toJson<bool>(reminderSent),
     };
   }
 
@@ -5062,6 +5097,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     double? amountPaid,
     double? dueAmount,
     Value<DateTime?> dueDate = const Value.absent(),
+    bool? reminderSent,
   }) => Invoice(
     id: id ?? this.id,
     invoiceNo: invoiceNo ?? this.invoiceNo,
@@ -5078,6 +5114,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     amountPaid: amountPaid ?? this.amountPaid,
     dueAmount: dueAmount ?? this.dueAmount,
     dueDate: dueDate.present ? dueDate.value : this.dueDate,
+    reminderSent: reminderSent ?? this.reminderSent,
   );
   Invoice copyWithCompanion(InvoicesCompanion data) {
     return Invoice(
@@ -5108,6 +5145,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           : this.amountPaid,
       dueAmount: data.dueAmount.present ? data.dueAmount.value : this.dueAmount,
       dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
+      reminderSent: data.reminderSent.present
+          ? data.reminderSent.value
+          : this.reminderSent,
     );
   }
 
@@ -5128,7 +5168,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           ..write('pdfPath: $pdfPath, ')
           ..write('amountPaid: $amountPaid, ')
           ..write('dueAmount: $dueAmount, ')
-          ..write('dueDate: $dueDate')
+          ..write('dueDate: $dueDate, ')
+          ..write('reminderSent: $reminderSent')
           ..write(')'))
         .toString();
   }
@@ -5150,6 +5191,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     amountPaid,
     dueAmount,
     dueDate,
+    reminderSent,
   );
   @override
   bool operator ==(Object other) =>
@@ -5169,7 +5211,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           other.pdfPath == this.pdfPath &&
           other.amountPaid == this.amountPaid &&
           other.dueAmount == this.dueAmount &&
-          other.dueDate == this.dueDate);
+          other.dueDate == this.dueDate &&
+          other.reminderSent == this.reminderSent);
 }
 
 class InvoicesCompanion extends UpdateCompanion<Invoice> {
@@ -5188,6 +5231,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
   final Value<double> amountPaid;
   final Value<double> dueAmount;
   final Value<DateTime?> dueDate;
+  final Value<bool> reminderSent;
   const InvoicesCompanion({
     this.id = const Value.absent(),
     this.invoiceNo = const Value.absent(),
@@ -5204,6 +5248,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     this.amountPaid = const Value.absent(),
     this.dueAmount = const Value.absent(),
     this.dueDate = const Value.absent(),
+    this.reminderSent = const Value.absent(),
   });
   InvoicesCompanion.insert({
     this.id = const Value.absent(),
@@ -5221,6 +5266,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     this.amountPaid = const Value.absent(),
     this.dueAmount = const Value.absent(),
     this.dueDate = const Value.absent(),
+    this.reminderSent = const Value.absent(),
   }) : invoiceNo = Value(invoiceNo),
        customerName = Value(customerName),
        customerPhone = Value(customerPhone),
@@ -5243,6 +5289,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     Expression<double>? amountPaid,
     Expression<double>? dueAmount,
     Expression<DateTime>? dueDate,
+    Expression<bool>? reminderSent,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -5260,6 +5307,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
       if (amountPaid != null) 'amount_paid': amountPaid,
       if (dueAmount != null) 'due_amount': dueAmount,
       if (dueDate != null) 'due_date': dueDate,
+      if (reminderSent != null) 'reminder_sent': reminderSent,
     });
   }
 
@@ -5279,6 +5327,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     Value<double>? amountPaid,
     Value<double>? dueAmount,
     Value<DateTime?>? dueDate,
+    Value<bool>? reminderSent,
   }) {
     return InvoicesCompanion(
       id: id ?? this.id,
@@ -5296,6 +5345,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
       amountPaid: amountPaid ?? this.amountPaid,
       dueAmount: dueAmount ?? this.dueAmount,
       dueDate: dueDate ?? this.dueDate,
+      reminderSent: reminderSent ?? this.reminderSent,
     );
   }
 
@@ -5347,6 +5397,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     if (dueDate.present) {
       map['due_date'] = Variable<DateTime>(dueDate.value);
     }
+    if (reminderSent.present) {
+      map['reminder_sent'] = Variable<bool>(reminderSent.value);
+    }
     return map;
   }
 
@@ -5367,7 +5420,8 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
           ..write('pdfPath: $pdfPath, ')
           ..write('amountPaid: $amountPaid, ')
           ..write('dueAmount: $dueAmount, ')
-          ..write('dueDate: $dueDate')
+          ..write('dueDate: $dueDate, ')
+          ..write('reminderSent: $reminderSent')
           ..write(')'))
         .toString();
   }
@@ -8690,6 +8744,7 @@ typedef $$InvoicesTableCreateCompanionBuilder =
       Value<double> amountPaid,
       Value<double> dueAmount,
       Value<DateTime?> dueDate,
+      Value<bool> reminderSent,
     });
 typedef $$InvoicesTableUpdateCompanionBuilder =
     InvoicesCompanion Function({
@@ -8708,6 +8763,7 @@ typedef $$InvoicesTableUpdateCompanionBuilder =
       Value<double> amountPaid,
       Value<double> dueAmount,
       Value<DateTime?> dueDate,
+      Value<bool> reminderSent,
     });
 
 class $$InvoicesTableFilterComposer
@@ -8791,6 +8847,11 @@ class $$InvoicesTableFilterComposer
 
   ColumnFilters<DateTime> get dueDate => $composableBuilder(
     column: $table.dueDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get reminderSent => $composableBuilder(
+    column: $table.reminderSent,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -8878,6 +8939,11 @@ class $$InvoicesTableOrderingComposer
     column: $table.dueDate,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get reminderSent => $composableBuilder(
+    column: $table.reminderSent,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$InvoicesTableAnnotationComposer
@@ -8945,6 +9011,11 @@ class $$InvoicesTableAnnotationComposer
 
   GeneratedColumn<DateTime> get dueDate =>
       $composableBuilder(column: $table.dueDate, builder: (column) => column);
+
+  GeneratedColumn<bool> get reminderSent => $composableBuilder(
+    column: $table.reminderSent,
+    builder: (column) => column,
+  );
 }
 
 class $$InvoicesTableTableManager
@@ -8990,6 +9061,7 @@ class $$InvoicesTableTableManager
                 Value<double> amountPaid = const Value.absent(),
                 Value<double> dueAmount = const Value.absent(),
                 Value<DateTime?> dueDate = const Value.absent(),
+                Value<bool> reminderSent = const Value.absent(),
               }) => InvoicesCompanion(
                 id: id,
                 invoiceNo: invoiceNo,
@@ -9006,6 +9078,7 @@ class $$InvoicesTableTableManager
                 amountPaid: amountPaid,
                 dueAmount: dueAmount,
                 dueDate: dueDate,
+                reminderSent: reminderSent,
               ),
           createCompanionCallback:
               ({
@@ -9024,6 +9097,7 @@ class $$InvoicesTableTableManager
                 Value<double> amountPaid = const Value.absent(),
                 Value<double> dueAmount = const Value.absent(),
                 Value<DateTime?> dueDate = const Value.absent(),
+                Value<bool> reminderSent = const Value.absent(),
               }) => InvoicesCompanion.insert(
                 id: id,
                 invoiceNo: invoiceNo,
@@ -9040,6 +9114,7 @@ class $$InvoicesTableTableManager
                 amountPaid: amountPaid,
                 dueAmount: dueAmount,
                 dueDate: dueDate,
+                reminderSent: reminderSent,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

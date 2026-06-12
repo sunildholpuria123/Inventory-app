@@ -11,8 +11,9 @@ import 'presentation/auth/screens/splash_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await NotificationService.init();
-
+  await NotificationService
+      .instance
+      .initialize();
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     await windowManager.ensureInitialized();
 
