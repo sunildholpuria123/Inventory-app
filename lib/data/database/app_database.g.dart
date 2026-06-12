@@ -7,9 +7,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $UsersTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -74,7 +72,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -84,14 +81,11 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
     role,
     createdAt,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'users';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<User> instance, {
@@ -145,7 +139,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   User map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -190,7 +183,6 @@ class User extends DataClass implements Insertable<User> {
   final String password;
   final String role;
   final DateTime createdAt;
-
   const User({
     required this.id,
     required this.name,
@@ -199,7 +191,6 @@ class User extends DataClass implements Insertable<User> {
     required this.role,
     required this.createdAt,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -237,7 +228,6 @@ class User extends DataClass implements Insertable<User> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -266,7 +256,6 @@ class User extends DataClass implements Insertable<User> {
     role: role ?? this.role,
     createdAt: createdAt ?? this.createdAt,
   );
-
   User copyWithCompanion(UsersCompanion data) {
     return User(
       id: data.id.present ? data.id.value : this.id,
@@ -293,7 +282,6 @@ class User extends DataClass implements Insertable<User> {
 
   @override
   int get hashCode => Object.hash(id, name, email, password, role, createdAt);
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -313,7 +301,6 @@ class UsersCompanion extends UpdateCompanion<User> {
   final Value<String> password;
   final Value<String> role;
   final Value<DateTime> createdAt;
-
   const UsersCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -322,7 +309,6 @@ class UsersCompanion extends UpdateCompanion<User> {
     this.role = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
-
   UsersCompanion.insert({
     this.id = const Value.absent(),
     required String name,
@@ -334,7 +320,6 @@ class UsersCompanion extends UpdateCompanion<User> {
        email = Value(email),
        password = Value(password),
        role = Value(role);
-
   static Insertable<User> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -414,9 +399,7 @@ class $CategoriesTable extends Categories
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $CategoriesTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -450,17 +433,13 @@ class $CategoriesTable extends Categories
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-
   @override
   List<GeneratedColumn> get $columns => [id, name, description];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'categories';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<Category> instance, {
@@ -493,7 +472,6 @@ class $CategoriesTable extends Categories
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   Category map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -523,9 +501,7 @@ class Category extends DataClass implements Insertable<Category> {
   final int id;
   final String name;
   final String? description;
-
   const Category({required this.id, required this.name, this.description});
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -558,7 +534,6 @@ class Category extends DataClass implements Insertable<Category> {
       description: serializer.fromJson<String?>(json['description']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -578,7 +553,6 @@ class Category extends DataClass implements Insertable<Category> {
     name: name ?? this.name,
     description: description.present ? description.value : this.description,
   );
-
   Category copyWithCompanion(CategoriesCompanion data) {
     return Category(
       id: data.id.present ? data.id.value : this.id,
@@ -601,7 +575,6 @@ class Category extends DataClass implements Insertable<Category> {
 
   @override
   int get hashCode => Object.hash(id, name, description);
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -615,19 +588,16 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
   final Value<int> id;
   final Value<String> name;
   final Value<String?> description;
-
   const CategoriesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
   });
-
   CategoriesCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     this.description = const Value.absent(),
   }) : name = Value(name);
-
   static Insertable<Category> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -682,9 +652,7 @@ class $ProductsTable extends Products with TableInfo<$ProductsTable, Product> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $ProductsTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -805,7 +773,6 @@ class $ProductsTable extends Products with TableInfo<$ProductsTable, Product> {
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -820,14 +787,11 @@ class $ProductsTable extends Products with TableInfo<$ProductsTable, Product> {
     imagePath,
     createdAt,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'products';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<Product> instance, {
@@ -921,7 +885,6 @@ class $ProductsTable extends Products with TableInfo<$ProductsTable, Product> {
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   Product map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -991,7 +954,6 @@ class Product extends DataClass implements Insertable<Product> {
   final int minStock;
   final String? imagePath;
   final DateTime createdAt;
-
   const Product({
     required this.id,
     required this.categoryId,
@@ -1005,7 +967,6 @@ class Product extends DataClass implements Insertable<Product> {
     this.imagePath,
     required this.createdAt,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1068,7 +1029,6 @@ class Product extends DataClass implements Insertable<Product> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -1112,7 +1072,6 @@ class Product extends DataClass implements Insertable<Product> {
     imagePath: imagePath.present ? imagePath.value : this.imagePath,
     createdAt: createdAt ?? this.createdAt,
   );
-
   Product copyWithCompanion(ProductsCompanion data) {
     return Product(
       id: data.id.present ? data.id.value : this.id,
@@ -1167,7 +1126,6 @@ class Product extends DataClass implements Insertable<Product> {
     imagePath,
     createdAt,
   );
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1197,7 +1155,6 @@ class ProductsCompanion extends UpdateCompanion<Product> {
   final Value<int> minStock;
   final Value<String?> imagePath;
   final Value<DateTime> createdAt;
-
   const ProductsCompanion({
     this.id = const Value.absent(),
     this.categoryId = const Value.absent(),
@@ -1211,7 +1168,6 @@ class ProductsCompanion extends UpdateCompanion<Product> {
     this.imagePath = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
-
   ProductsCompanion.insert({
     this.id = const Value.absent(),
     required int categoryId,
@@ -1230,7 +1186,6 @@ class ProductsCompanion extends UpdateCompanion<Product> {
        sellingPrice = Value(sellingPrice),
        stockQty = Value(stockQty),
        minStock = Value(minStock);
-
   static Insertable<Product> custom({
     Expression<int>? id,
     Expression<int>? categoryId,
@@ -1350,9 +1305,7 @@ class $CustomersTable extends Customers
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $CustomersTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -1428,7 +1381,6 @@ class $CustomersTable extends Customers
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1439,14 +1391,11 @@ class $CustomersTable extends Customers
     creditBalance,
     createdAt,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'customers';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<Customer> instance, {
@@ -1505,7 +1454,6 @@ class $CustomersTable extends Customers
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   Customer map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -1555,7 +1503,6 @@ class Customer extends DataClass implements Insertable<Customer> {
   final String? address;
   final double creditBalance;
   final DateTime createdAt;
-
   const Customer({
     required this.id,
     required this.name,
@@ -1565,7 +1512,6 @@ class Customer extends DataClass implements Insertable<Customer> {
     required this.creditBalance,
     required this.createdAt,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1614,7 +1560,6 @@ class Customer extends DataClass implements Insertable<Customer> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -1646,7 +1591,6 @@ class Customer extends DataClass implements Insertable<Customer> {
     creditBalance: creditBalance ?? this.creditBalance,
     createdAt: createdAt ?? this.createdAt,
   );
-
   Customer copyWithCompanion(CustomersCompanion data) {
     return Customer(
       id: data.id.present ? data.id.value : this.id,
@@ -1678,7 +1622,6 @@ class Customer extends DataClass implements Insertable<Customer> {
   @override
   int get hashCode =>
       Object.hash(id, name, phone, email, address, creditBalance, createdAt);
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1700,7 +1643,6 @@ class CustomersCompanion extends UpdateCompanion<Customer> {
   final Value<String?> address;
   final Value<double> creditBalance;
   final Value<DateTime> createdAt;
-
   const CustomersCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -1710,7 +1652,6 @@ class CustomersCompanion extends UpdateCompanion<Customer> {
     this.creditBalance = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
-
   CustomersCompanion.insert({
     this.id = const Value.absent(),
     required String name,
@@ -1721,7 +1662,6 @@ class CustomersCompanion extends UpdateCompanion<Customer> {
     this.createdAt = const Value.absent(),
   }) : name = Value(name),
        phone = Value(phone);
-
   static Insertable<Customer> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -1809,9 +1749,7 @@ class $SuppliersTable extends Suppliers
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $SuppliersTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -1887,7 +1825,6 @@ class $SuppliersTable extends Suppliers
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1898,14 +1835,11 @@ class $SuppliersTable extends Suppliers
     creditBalance,
     createdAt,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'suppliers';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<Supplier> instance, {
@@ -1964,7 +1898,6 @@ class $SuppliersTable extends Suppliers
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   Supplier map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -2014,7 +1947,6 @@ class Supplier extends DataClass implements Insertable<Supplier> {
   final String? address;
   final double creditBalance;
   final DateTime createdAt;
-
   const Supplier({
     required this.id,
     required this.name,
@@ -2024,7 +1956,6 @@ class Supplier extends DataClass implements Insertable<Supplier> {
     required this.creditBalance,
     required this.createdAt,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2073,7 +2004,6 @@ class Supplier extends DataClass implements Insertable<Supplier> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -2105,7 +2035,6 @@ class Supplier extends DataClass implements Insertable<Supplier> {
     creditBalance: creditBalance ?? this.creditBalance,
     createdAt: createdAt ?? this.createdAt,
   );
-
   Supplier copyWithCompanion(SuppliersCompanion data) {
     return Supplier(
       id: data.id.present ? data.id.value : this.id,
@@ -2137,7 +2066,6 @@ class Supplier extends DataClass implements Insertable<Supplier> {
   @override
   int get hashCode =>
       Object.hash(id, name, phone, email, address, creditBalance, createdAt);
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2159,7 +2087,6 @@ class SuppliersCompanion extends UpdateCompanion<Supplier> {
   final Value<String?> address;
   final Value<double> creditBalance;
   final Value<DateTime> createdAt;
-
   const SuppliersCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -2169,7 +2096,6 @@ class SuppliersCompanion extends UpdateCompanion<Supplier> {
     this.creditBalance = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
-
   SuppliersCompanion.insert({
     this.id = const Value.absent(),
     required String name,
@@ -2180,7 +2106,6 @@ class SuppliersCompanion extends UpdateCompanion<Supplier> {
     this.createdAt = const Value.absent(),
   }) : name = Value(name),
        phone = Value(phone);
-
   static Insertable<Supplier> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -2267,9 +2192,7 @@ class $SalesTable extends Sales with TableInfo<$SalesTable, Sale> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $SalesTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -2368,7 +2291,6 @@ class $SalesTable extends Sales with TableInfo<$SalesTable, Sale> {
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2381,14 +2303,11 @@ class $SalesTable extends Sales with TableInfo<$SalesTable, Sale> {
     paymentStatus,
     createdAt,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'sales';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<Sale> instance, {
@@ -2469,7 +2388,6 @@ class $SalesTable extends Sales with TableInfo<$SalesTable, Sale> {
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   Sale map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -2529,7 +2447,6 @@ class Sale extends DataClass implements Insertable<Sale> {
   final double grandTotal;
   final String paymentStatus;
   final DateTime createdAt;
-
   const Sale({
     required this.id,
     required this.customerId,
@@ -2541,7 +2458,6 @@ class Sale extends DataClass implements Insertable<Sale> {
     required this.paymentStatus,
     required this.createdAt,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2588,7 +2504,6 @@ class Sale extends DataClass implements Insertable<Sale> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -2626,7 +2541,6 @@ class Sale extends DataClass implements Insertable<Sale> {
     paymentStatus: paymentStatus ?? this.paymentStatus,
     createdAt: createdAt ?? this.createdAt,
   );
-
   Sale copyWithCompanion(SalesCompanion data) {
     return Sale(
       id: data.id.present ? data.id.value : this.id,
@@ -2675,7 +2589,6 @@ class Sale extends DataClass implements Insertable<Sale> {
     paymentStatus,
     createdAt,
   );
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2701,7 +2614,6 @@ class SalesCompanion extends UpdateCompanion<Sale> {
   final Value<double> grandTotal;
   final Value<String> paymentStatus;
   final Value<DateTime> createdAt;
-
   const SalesCompanion({
     this.id = const Value.absent(),
     this.customerId = const Value.absent(),
@@ -2713,7 +2625,6 @@ class SalesCompanion extends UpdateCompanion<Sale> {
     this.paymentStatus = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
-
   SalesCompanion.insert({
     this.id = const Value.absent(),
     required int customerId,
@@ -2731,7 +2642,6 @@ class SalesCompanion extends UpdateCompanion<Sale> {
        tax = Value(tax),
        grandTotal = Value(grandTotal),
        paymentStatus = Value(paymentStatus);
-
   static Insertable<Sale> custom({
     Expression<int>? id,
     Expression<int>? customerId,
@@ -2835,9 +2745,7 @@ class $SaleItemsTable extends SaleItems
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $SaleItemsTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -2900,7 +2808,6 @@ class $SaleItemsTable extends SaleItems
     type: DriftSqlType.double,
     requiredDuringInsert: true,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2910,14 +2817,11 @@ class $SaleItemsTable extends SaleItems
     price,
     subtotal,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'sale_items';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<SaleItem> instance, {
@@ -2973,7 +2877,6 @@ class $SaleItemsTable extends SaleItems
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   SaleItem map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -3018,7 +2921,6 @@ class SaleItem extends DataClass implements Insertable<SaleItem> {
   final int qty;
   final double price;
   final double subtotal;
-
   const SaleItem({
     required this.id,
     required this.saleId,
@@ -3027,7 +2929,6 @@ class SaleItem extends DataClass implements Insertable<SaleItem> {
     required this.price,
     required this.subtotal,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3065,7 +2966,6 @@ class SaleItem extends DataClass implements Insertable<SaleItem> {
       subtotal: serializer.fromJson<double>(json['subtotal']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -3094,7 +2994,6 @@ class SaleItem extends DataClass implements Insertable<SaleItem> {
     price: price ?? this.price,
     subtotal: subtotal ?? this.subtotal,
   );
-
   SaleItem copyWithCompanion(SaleItemsCompanion data) {
     return SaleItem(
       id: data.id.present ? data.id.value : this.id,
@@ -3121,7 +3020,6 @@ class SaleItem extends DataClass implements Insertable<SaleItem> {
 
   @override
   int get hashCode => Object.hash(id, saleId, productId, qty, price, subtotal);
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3141,7 +3039,6 @@ class SaleItemsCompanion extends UpdateCompanion<SaleItem> {
   final Value<int> qty;
   final Value<double> price;
   final Value<double> subtotal;
-
   const SaleItemsCompanion({
     this.id = const Value.absent(),
     this.saleId = const Value.absent(),
@@ -3150,7 +3047,6 @@ class SaleItemsCompanion extends UpdateCompanion<SaleItem> {
     this.price = const Value.absent(),
     this.subtotal = const Value.absent(),
   });
-
   SaleItemsCompanion.insert({
     this.id = const Value.absent(),
     required int saleId,
@@ -3163,7 +3059,6 @@ class SaleItemsCompanion extends UpdateCompanion<SaleItem> {
        qty = Value(qty),
        price = Value(price),
        subtotal = Value(subtotal);
-
   static Insertable<SaleItem> custom({
     Expression<int>? id,
     Expression<int>? saleId,
@@ -3243,9 +3138,7 @@ class $PurchasesTable extends Purchases
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $PurchasesTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -3324,7 +3217,6 @@ class $PurchasesTable extends Purchases
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -3335,14 +3227,11 @@ class $PurchasesTable extends Purchases
     pdfPath,
     createdAt,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'purchases';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<Purchase> instance, {
@@ -3406,7 +3295,6 @@ class $PurchasesTable extends Purchases
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   Purchase map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -3468,7 +3356,6 @@ class Purchase extends DataClass implements Insertable<Purchase> {
 
   /// CREATED DATE
   final DateTime createdAt;
-
   const Purchase({
     required this.id,
     required this.purchaseNo,
@@ -3478,7 +3365,6 @@ class Purchase extends DataClass implements Insertable<Purchase> {
     this.pdfPath,
     required this.createdAt,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3527,7 +3413,6 @@ class Purchase extends DataClass implements Insertable<Purchase> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -3561,7 +3446,6 @@ class Purchase extends DataClass implements Insertable<Purchase> {
     pdfPath: pdfPath.present ? pdfPath.value : this.pdfPath,
     createdAt: createdAt ?? this.createdAt,
   );
-
   Purchase copyWithCompanion(PurchasesCompanion data) {
     return Purchase(
       id: data.id.present ? data.id.value : this.id,
@@ -3604,7 +3488,6 @@ class Purchase extends DataClass implements Insertable<Purchase> {
     pdfPath,
     createdAt,
   );
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3626,7 +3509,6 @@ class PurchasesCompanion extends UpdateCompanion<Purchase> {
   final Value<double> total;
   final Value<String?> pdfPath;
   final Value<DateTime> createdAt;
-
   const PurchasesCompanion({
     this.id = const Value.absent(),
     this.purchaseNo = const Value.absent(),
@@ -3636,7 +3518,6 @@ class PurchasesCompanion extends UpdateCompanion<Purchase> {
     this.pdfPath = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
-
   PurchasesCompanion.insert({
     this.id = const Value.absent(),
     required String purchaseNo,
@@ -3648,7 +3529,6 @@ class PurchasesCompanion extends UpdateCompanion<Purchase> {
   }) : purchaseNo = Value(purchaseNo),
        supplierName = Value(supplierName),
        total = Value(total);
-
   static Insertable<Purchase> custom({
     Expression<int>? id,
     Expression<String>? purchaseNo,
@@ -3736,9 +3616,7 @@ class $PurchaseItemsTable extends PurchaseItems
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $PurchaseItemsTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -3828,7 +3706,6 @@ class $PurchaseItemsTable extends PurchaseItems
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -3840,14 +3717,11 @@ class $PurchaseItemsTable extends PurchaseItems
     total,
     createdAt,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'purchase_items';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<PurchaseItem> instance, {
@@ -3923,7 +3797,6 @@ class $PurchaseItemsTable extends PurchaseItems
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   PurchaseItem map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -3992,7 +3865,6 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
 
   /// CREATED DATE
   final DateTime createdAt;
-
   const PurchaseItem({
     required this.id,
     required this.purchaseId,
@@ -4003,7 +3875,6 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
     required this.total,
     required this.createdAt,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4047,7 +3918,6 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -4082,7 +3952,6 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
     total: total ?? this.total,
     createdAt: createdAt ?? this.createdAt,
   );
-
   PurchaseItem copyWithCompanion(PurchaseItemsCompanion data) {
     return PurchaseItem(
       id: data.id.present ? data.id.value : this.id,
@@ -4128,7 +3997,6 @@ class PurchaseItem extends DataClass implements Insertable<PurchaseItem> {
     total,
     createdAt,
   );
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4152,7 +4020,6 @@ class PurchaseItemsCompanion extends UpdateCompanion<PurchaseItem> {
   final Value<double> purchasePrice;
   final Value<double> total;
   final Value<DateTime> createdAt;
-
   const PurchaseItemsCompanion({
     this.id = const Value.absent(),
     this.purchaseId = const Value.absent(),
@@ -4163,7 +4030,6 @@ class PurchaseItemsCompanion extends UpdateCompanion<PurchaseItem> {
     this.total = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
-
   PurchaseItemsCompanion.insert({
     this.id = const Value.absent(),
     required int purchaseId,
@@ -4179,7 +4045,6 @@ class PurchaseItemsCompanion extends UpdateCompanion<PurchaseItem> {
        quantity = Value(quantity),
        purchasePrice = Value(purchasePrice),
        total = Value(total);
-
   static Insertable<PurchaseItem> custom({
     Expression<int>? id,
     Expression<int>? purchaseId,
@@ -4274,9 +4139,7 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $ExpensesTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -4340,7 +4203,6 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4350,14 +4212,11 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
     note,
     createdAt,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'expenses';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<Expense> instance, {
@@ -4409,7 +4268,6 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   Expense map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -4454,7 +4312,6 @@ class Expense extends DataClass implements Insertable<Expense> {
   final String category;
   final String? note;
   final DateTime createdAt;
-
   const Expense({
     required this.id,
     required this.title,
@@ -4463,7 +4320,6 @@ class Expense extends DataClass implements Insertable<Expense> {
     this.note,
     required this.createdAt,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4503,7 +4359,6 @@ class Expense extends DataClass implements Insertable<Expense> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -4532,7 +4387,6 @@ class Expense extends DataClass implements Insertable<Expense> {
     note: note.present ? note.value : this.note,
     createdAt: createdAt ?? this.createdAt,
   );
-
   Expense copyWithCompanion(ExpensesCompanion data) {
     return Expense(
       id: data.id.present ? data.id.value : this.id,
@@ -4559,7 +4413,6 @@ class Expense extends DataClass implements Insertable<Expense> {
 
   @override
   int get hashCode => Object.hash(id, title, amount, category, note, createdAt);
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4579,7 +4432,6 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
   final Value<String> category;
   final Value<String?> note;
   final Value<DateTime> createdAt;
-
   const ExpensesCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -4588,7 +4440,6 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     this.note = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
-
   ExpensesCompanion.insert({
     this.id = const Value.absent(),
     required String title,
@@ -4599,7 +4450,6 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
   }) : title = Value(title),
        amount = Value(amount),
        category = Value(category);
-
   static Insertable<Expense> custom({
     Expression<int>? id,
     Expression<String>? title,
@@ -4678,9 +4528,7 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $InvoicesTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -4852,7 +4700,6 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4871,14 +4718,11 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
     dueAmount,
     dueDate,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'invoices';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<Invoice> instance, {
@@ -5002,7 +4846,6 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   Invoice map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -5092,7 +4935,6 @@ class Invoice extends DataClass implements Insertable<Invoice> {
   final double amountPaid;
   final double dueAmount;
   final DateTime? dueDate;
-
   const Invoice({
     required this.id,
     required this.invoiceNo,
@@ -5110,7 +4952,6 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     required this.dueAmount,
     this.dueDate,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -5183,7 +5024,6 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       dueDate: serializer.fromJson<DateTime?>(json['dueDate']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -5239,7 +5079,6 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     dueAmount: dueAmount ?? this.dueAmount,
     dueDate: dueDate.present ? dueDate.value : this.dueDate,
   );
-
   Invoice copyWithCompanion(InvoicesCompanion data) {
     return Invoice(
       id: data.id.present ? data.id.value : this.id,
@@ -5312,7 +5151,6 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     dueAmount,
     dueDate,
   );
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5350,7 +5188,6 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
   final Value<double> amountPaid;
   final Value<double> dueAmount;
   final Value<DateTime?> dueDate;
-
   const InvoicesCompanion({
     this.id = const Value.absent(),
     this.invoiceNo = const Value.absent(),
@@ -5368,7 +5205,6 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     this.dueAmount = const Value.absent(),
     this.dueDate = const Value.absent(),
   });
-
   InvoicesCompanion.insert({
     this.id = const Value.absent(),
     required String invoiceNo,
@@ -5391,7 +5227,6 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
        subtotal = Value(subtotal),
        tax = Value(tax),
        grandTotal = Value(grandTotal);
-
   static Insertable<Invoice> custom({
     Expression<int>? id,
     Expression<String>? invoiceNo,
@@ -5543,9 +5378,7 @@ class $InvoiceItemsTable extends InvoiceItems
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $InvoiceItemsTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -5633,7 +5466,6 @@ class $InvoiceItemsTable extends InvoiceItems
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -5645,14 +5477,11 @@ class $InvoiceItemsTable extends InvoiceItems
     total,
     createdAt,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'invoice_items';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<InvoiceItem> instance, {
@@ -5725,7 +5554,6 @@ class $InvoiceItemsTable extends InvoiceItems
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   InvoiceItem map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -5794,7 +5622,6 @@ class InvoiceItem extends DataClass implements Insertable<InvoiceItem> {
 
   /// CREATED DATE
   final DateTime createdAt;
-
   const InvoiceItem({
     required this.id,
     required this.invoiceId,
@@ -5805,7 +5632,6 @@ class InvoiceItem extends DataClass implements Insertable<InvoiceItem> {
     required this.total,
     required this.createdAt,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -5849,7 +5675,6 @@ class InvoiceItem extends DataClass implements Insertable<InvoiceItem> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -5884,7 +5709,6 @@ class InvoiceItem extends DataClass implements Insertable<InvoiceItem> {
     total: total ?? this.total,
     createdAt: createdAt ?? this.createdAt,
   );
-
   InvoiceItem copyWithCompanion(InvoiceItemsCompanion data) {
     return InvoiceItem(
       id: data.id.present ? data.id.value : this.id,
@@ -5926,7 +5750,6 @@ class InvoiceItem extends DataClass implements Insertable<InvoiceItem> {
     total,
     createdAt,
   );
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5950,7 +5773,6 @@ class InvoiceItemsCompanion extends UpdateCompanion<InvoiceItem> {
   final Value<double> price;
   final Value<double> total;
   final Value<DateTime> createdAt;
-
   const InvoiceItemsCompanion({
     this.id = const Value.absent(),
     this.invoiceId = const Value.absent(),
@@ -5961,7 +5783,6 @@ class InvoiceItemsCompanion extends UpdateCompanion<InvoiceItem> {
     this.total = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
-
   InvoiceItemsCompanion.insert({
     this.id = const Value.absent(),
     required int invoiceId,
@@ -5977,7 +5798,6 @@ class InvoiceItemsCompanion extends UpdateCompanion<InvoiceItem> {
        quantity = Value(quantity),
        price = Value(price),
        total = Value(total);
-
   static Insertable<InvoiceItem> custom({
     Expression<int>? id,
     Expression<int>? invoiceId,
@@ -6068,9 +5888,460 @@ class InvoiceItemsCompanion extends UpdateCompanion<InvoiceItem> {
   }
 }
 
+class $PaymentHistoriesTable extends PaymentHistories
+    with TableInfo<$PaymentHistoriesTable, PaymentHistory> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PaymentHistoriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _invoiceIdMeta = const VerificationMeta(
+    'invoiceId',
+  );
+  @override
+  late final GeneratedColumn<int> invoiceId = GeneratedColumn<int>(
+    'invoice_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _customerIdMeta = const VerificationMeta(
+    'customerId',
+  );
+  @override
+  late final GeneratedColumn<int> customerId = GeneratedColumn<int>(
+    'customer_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _paymentMethodMeta = const VerificationMeta(
+    'paymentMethod',
+  );
+  @override
+  late final GeneratedColumn<String> paymentMethod = GeneratedColumn<String>(
+    'payment_method',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('Cash'),
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _paidAtMeta = const VerificationMeta('paidAt');
+  @override
+  late final GeneratedColumn<DateTime> paidAt = GeneratedColumn<DateTime>(
+    'paid_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    invoiceId,
+    customerId,
+    amount,
+    paymentMethod,
+    notes,
+    paidAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'payment_histories';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PaymentHistory> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('invoice_id')) {
+      context.handle(
+        _invoiceIdMeta,
+        invoiceId.isAcceptableOrUnknown(data['invoice_id']!, _invoiceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_invoiceIdMeta);
+    }
+    if (data.containsKey('customer_id')) {
+      context.handle(
+        _customerIdMeta,
+        customerId.isAcceptableOrUnknown(data['customer_id']!, _customerIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_customerIdMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('payment_method')) {
+      context.handle(
+        _paymentMethodMeta,
+        paymentMethod.isAcceptableOrUnknown(
+          data['payment_method']!,
+          _paymentMethodMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('paid_at')) {
+      context.handle(
+        _paidAtMeta,
+        paidAt.isAcceptableOrUnknown(data['paid_at']!, _paidAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PaymentHistory map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PaymentHistory(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      invoiceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}invoice_id'],
+      )!,
+      customerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}customer_id'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}amount'],
+      )!,
+      paymentMethod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payment_method'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      paidAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}paid_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PaymentHistoriesTable createAlias(String alias) {
+    return $PaymentHistoriesTable(attachedDatabase, alias);
+  }
+}
+
+class PaymentHistory extends DataClass implements Insertable<PaymentHistory> {
+  final int id;
+  final int invoiceId;
+  final int customerId;
+  final double amount;
+  final String paymentMethod;
+  final String? notes;
+  final DateTime paidAt;
+  const PaymentHistory({
+    required this.id,
+    required this.invoiceId,
+    required this.customerId,
+    required this.amount,
+    required this.paymentMethod,
+    this.notes,
+    required this.paidAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['invoice_id'] = Variable<int>(invoiceId);
+    map['customer_id'] = Variable<int>(customerId);
+    map['amount'] = Variable<double>(amount);
+    map['payment_method'] = Variable<String>(paymentMethod);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['paid_at'] = Variable<DateTime>(paidAt);
+    return map;
+  }
+
+  PaymentHistoriesCompanion toCompanion(bool nullToAbsent) {
+    return PaymentHistoriesCompanion(
+      id: Value(id),
+      invoiceId: Value(invoiceId),
+      customerId: Value(customerId),
+      amount: Value(amount),
+      paymentMethod: Value(paymentMethod),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      paidAt: Value(paidAt),
+    );
+  }
+
+  factory PaymentHistory.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PaymentHistory(
+      id: serializer.fromJson<int>(json['id']),
+      invoiceId: serializer.fromJson<int>(json['invoiceId']),
+      customerId: serializer.fromJson<int>(json['customerId']),
+      amount: serializer.fromJson<double>(json['amount']),
+      paymentMethod: serializer.fromJson<String>(json['paymentMethod']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      paidAt: serializer.fromJson<DateTime>(json['paidAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'invoiceId': serializer.toJson<int>(invoiceId),
+      'customerId': serializer.toJson<int>(customerId),
+      'amount': serializer.toJson<double>(amount),
+      'paymentMethod': serializer.toJson<String>(paymentMethod),
+      'notes': serializer.toJson<String?>(notes),
+      'paidAt': serializer.toJson<DateTime>(paidAt),
+    };
+  }
+
+  PaymentHistory copyWith({
+    int? id,
+    int? invoiceId,
+    int? customerId,
+    double? amount,
+    String? paymentMethod,
+    Value<String?> notes = const Value.absent(),
+    DateTime? paidAt,
+  }) => PaymentHistory(
+    id: id ?? this.id,
+    invoiceId: invoiceId ?? this.invoiceId,
+    customerId: customerId ?? this.customerId,
+    amount: amount ?? this.amount,
+    paymentMethod: paymentMethod ?? this.paymentMethod,
+    notes: notes.present ? notes.value : this.notes,
+    paidAt: paidAt ?? this.paidAt,
+  );
+  PaymentHistory copyWithCompanion(PaymentHistoriesCompanion data) {
+    return PaymentHistory(
+      id: data.id.present ? data.id.value : this.id,
+      invoiceId: data.invoiceId.present ? data.invoiceId.value : this.invoiceId,
+      customerId: data.customerId.present
+          ? data.customerId.value
+          : this.customerId,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      paymentMethod: data.paymentMethod.present
+          ? data.paymentMethod.value
+          : this.paymentMethod,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      paidAt: data.paidAt.present ? data.paidAt.value : this.paidAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PaymentHistory(')
+          ..write('id: $id, ')
+          ..write('invoiceId: $invoiceId, ')
+          ..write('customerId: $customerId, ')
+          ..write('amount: $amount, ')
+          ..write('paymentMethod: $paymentMethod, ')
+          ..write('notes: $notes, ')
+          ..write('paidAt: $paidAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    invoiceId,
+    customerId,
+    amount,
+    paymentMethod,
+    notes,
+    paidAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PaymentHistory &&
+          other.id == this.id &&
+          other.invoiceId == this.invoiceId &&
+          other.customerId == this.customerId &&
+          other.amount == this.amount &&
+          other.paymentMethod == this.paymentMethod &&
+          other.notes == this.notes &&
+          other.paidAt == this.paidAt);
+}
+
+class PaymentHistoriesCompanion extends UpdateCompanion<PaymentHistory> {
+  final Value<int> id;
+  final Value<int> invoiceId;
+  final Value<int> customerId;
+  final Value<double> amount;
+  final Value<String> paymentMethod;
+  final Value<String?> notes;
+  final Value<DateTime> paidAt;
+  const PaymentHistoriesCompanion({
+    this.id = const Value.absent(),
+    this.invoiceId = const Value.absent(),
+    this.customerId = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.paymentMethod = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.paidAt = const Value.absent(),
+  });
+  PaymentHistoriesCompanion.insert({
+    this.id = const Value.absent(),
+    required int invoiceId,
+    required int customerId,
+    required double amount,
+    this.paymentMethod = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.paidAt = const Value.absent(),
+  }) : invoiceId = Value(invoiceId),
+       customerId = Value(customerId),
+       amount = Value(amount);
+  static Insertable<PaymentHistory> custom({
+    Expression<int>? id,
+    Expression<int>? invoiceId,
+    Expression<int>? customerId,
+    Expression<double>? amount,
+    Expression<String>? paymentMethod,
+    Expression<String>? notes,
+    Expression<DateTime>? paidAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (invoiceId != null) 'invoice_id': invoiceId,
+      if (customerId != null) 'customer_id': customerId,
+      if (amount != null) 'amount': amount,
+      if (paymentMethod != null) 'payment_method': paymentMethod,
+      if (notes != null) 'notes': notes,
+      if (paidAt != null) 'paid_at': paidAt,
+    });
+  }
+
+  PaymentHistoriesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? invoiceId,
+    Value<int>? customerId,
+    Value<double>? amount,
+    Value<String>? paymentMethod,
+    Value<String?>? notes,
+    Value<DateTime>? paidAt,
+  }) {
+    return PaymentHistoriesCompanion(
+      id: id ?? this.id,
+      invoiceId: invoiceId ?? this.invoiceId,
+      customerId: customerId ?? this.customerId,
+      amount: amount ?? this.amount,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      notes: notes ?? this.notes,
+      paidAt: paidAt ?? this.paidAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (invoiceId.present) {
+      map['invoice_id'] = Variable<int>(invoiceId.value);
+    }
+    if (customerId.present) {
+      map['customer_id'] = Variable<int>(customerId.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<double>(amount.value);
+    }
+    if (paymentMethod.present) {
+      map['payment_method'] = Variable<String>(paymentMethod.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (paidAt.present) {
+      map['paid_at'] = Variable<DateTime>(paidAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PaymentHistoriesCompanion(')
+          ..write('id: $id, ')
+          ..write('invoiceId: $invoiceId, ')
+          ..write('customerId: $customerId, ')
+          ..write('amount: $amount, ')
+          ..write('paymentMethod: $paymentMethod, ')
+          ..write('notes: $notes, ')
+          ..write('paidAt: $paidAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
-
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $UsersTable users = $UsersTable(this);
   late final $CategoriesTable categories = $CategoriesTable(this);
@@ -6084,11 +6355,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ExpensesTable expenses = $ExpensesTable(this);
   late final $InvoicesTable invoices = $InvoicesTable(this);
   late final $InvoiceItemsTable invoiceItems = $InvoiceItemsTable(this);
-
+  late final $PaymentHistoriesTable paymentHistories = $PaymentHistoriesTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
-
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     users,
@@ -6103,6 +6375,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     expenses,
     invoices,
     invoiceItems,
+    paymentHistories,
   ];
 }
 
@@ -6133,7 +6406,6 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -6174,7 +6446,6 @@ class $$UsersTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -6215,7 +6486,6 @@ class $$UsersTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -6337,7 +6607,6 @@ class $$CategoriesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -6363,7 +6632,6 @@ class $$CategoriesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -6389,7 +6657,6 @@ class $$CategoriesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -6508,7 +6775,6 @@ class $$ProductsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -6574,7 +6840,6 @@ class $$ProductsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -6640,7 +6905,6 @@ class $$ProductsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -6811,7 +7075,6 @@ class $$CustomersTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -6857,7 +7120,6 @@ class $$CustomersTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -6903,7 +7165,6 @@ class $$CustomersTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -7042,7 +7303,6 @@ class $$SuppliersTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -7088,7 +7348,6 @@ class $$SuppliersTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -7134,7 +7393,6 @@ class $$SuppliersTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -7276,7 +7534,6 @@ class $$SalesTableFilterComposer extends Composer<_$AppDatabase, $SalesTable> {
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -7332,7 +7589,6 @@ class $$SalesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -7388,7 +7644,6 @@ class $$SalesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -7543,7 +7798,6 @@ class $$SaleItemsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -7584,7 +7838,6 @@ class $$SaleItemsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -7625,7 +7878,6 @@ class $$SaleItemsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -7755,7 +8007,6 @@ class $$PurchasesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -7801,7 +8052,6 @@ class $$PurchasesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -7847,7 +8097,6 @@ class $$PurchasesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -7992,7 +8241,6 @@ class $$PurchaseItemsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -8043,7 +8291,6 @@ class $$PurchaseItemsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -8094,7 +8341,6 @@ class $$PurchaseItemsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -8248,7 +8494,6 @@ class $$ExpensesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -8289,7 +8534,6 @@ class $$ExpensesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -8330,7 +8574,6 @@ class $$ExpensesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -8476,7 +8719,6 @@ class $$InvoicesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -8562,7 +8804,6 @@ class $$InvoicesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -8648,7 +8889,6 @@ class $$InvoicesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -8855,7 +9095,6 @@ class $$InvoiceItemsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -8906,7 +9145,6 @@ class $$InvoiceItemsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -8957,7 +9195,6 @@ class $$InvoiceItemsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -9079,45 +9316,276 @@ typedef $$InvoiceItemsTableProcessedTableManager =
       InvoiceItem,
       PrefetchHooks Function()
     >;
+typedef $$PaymentHistoriesTableCreateCompanionBuilder =
+    PaymentHistoriesCompanion Function({
+      Value<int> id,
+      required int invoiceId,
+      required int customerId,
+      required double amount,
+      Value<String> paymentMethod,
+      Value<String?> notes,
+      Value<DateTime> paidAt,
+    });
+typedef $$PaymentHistoriesTableUpdateCompanionBuilder =
+    PaymentHistoriesCompanion Function({
+      Value<int> id,
+      Value<int> invoiceId,
+      Value<int> customerId,
+      Value<double> amount,
+      Value<String> paymentMethod,
+      Value<String?> notes,
+      Value<DateTime> paidAt,
+    });
+
+class $$PaymentHistoriesTableFilterComposer
+    extends Composer<_$AppDatabase, $PaymentHistoriesTable> {
+  $$PaymentHistoriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get invoiceId => $composableBuilder(
+    column: $table.invoiceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get paymentMethod => $composableBuilder(
+    column: $table.paymentMethod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get paidAt => $composableBuilder(
+    column: $table.paidAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PaymentHistoriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PaymentHistoriesTable> {
+  $$PaymentHistoriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get invoiceId => $composableBuilder(
+    column: $table.invoiceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get paymentMethod => $composableBuilder(
+    column: $table.paymentMethod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get paidAt => $composableBuilder(
+    column: $table.paidAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PaymentHistoriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PaymentHistoriesTable> {
+  $$PaymentHistoriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get invoiceId =>
+      $composableBuilder(column: $table.invoiceId, builder: (column) => column);
+
+  GeneratedColumn<int> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<String> get paymentMethod => $composableBuilder(
+    column: $table.paymentMethod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get paidAt =>
+      $composableBuilder(column: $table.paidAt, builder: (column) => column);
+}
+
+class $$PaymentHistoriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PaymentHistoriesTable,
+          PaymentHistory,
+          $$PaymentHistoriesTableFilterComposer,
+          $$PaymentHistoriesTableOrderingComposer,
+          $$PaymentHistoriesTableAnnotationComposer,
+          $$PaymentHistoriesTableCreateCompanionBuilder,
+          $$PaymentHistoriesTableUpdateCompanionBuilder,
+          (
+            PaymentHistory,
+            BaseReferences<
+              _$AppDatabase,
+              $PaymentHistoriesTable,
+              PaymentHistory
+            >,
+          ),
+          PaymentHistory,
+          PrefetchHooks Function()
+        > {
+  $$PaymentHistoriesTableTableManager(
+    _$AppDatabase db,
+    $PaymentHistoriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PaymentHistoriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PaymentHistoriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PaymentHistoriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> invoiceId = const Value.absent(),
+                Value<int> customerId = const Value.absent(),
+                Value<double> amount = const Value.absent(),
+                Value<String> paymentMethod = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> paidAt = const Value.absent(),
+              }) => PaymentHistoriesCompanion(
+                id: id,
+                invoiceId: invoiceId,
+                customerId: customerId,
+                amount: amount,
+                paymentMethod: paymentMethod,
+                notes: notes,
+                paidAt: paidAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int invoiceId,
+                required int customerId,
+                required double amount,
+                Value<String> paymentMethod = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> paidAt = const Value.absent(),
+              }) => PaymentHistoriesCompanion.insert(
+                id: id,
+                invoiceId: invoiceId,
+                customerId: customerId,
+                amount: amount,
+                paymentMethod: paymentMethod,
+                notes: notes,
+                paidAt: paidAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PaymentHistoriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PaymentHistoriesTable,
+      PaymentHistory,
+      $$PaymentHistoriesTableFilterComposer,
+      $$PaymentHistoriesTableOrderingComposer,
+      $$PaymentHistoriesTableAnnotationComposer,
+      $$PaymentHistoriesTableCreateCompanionBuilder,
+      $$PaymentHistoriesTableUpdateCompanionBuilder,
+      (
+        PaymentHistory,
+        BaseReferences<_$AppDatabase, $PaymentHistoriesTable, PaymentHistory>,
+      ),
+      PaymentHistory,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
-
   $AppDatabaseManager(this._db);
-
   $$UsersTableTableManager get users =>
       $$UsersTableTableManager(_db, _db.users);
-
   $$CategoriesTableTableManager get categories =>
       $$CategoriesTableTableManager(_db, _db.categories);
-
   $$ProductsTableTableManager get products =>
       $$ProductsTableTableManager(_db, _db.products);
-
   $$CustomersTableTableManager get customers =>
       $$CustomersTableTableManager(_db, _db.customers);
-
   $$SuppliersTableTableManager get suppliers =>
       $$SuppliersTableTableManager(_db, _db.suppliers);
-
   $$SalesTableTableManager get sales =>
       $$SalesTableTableManager(_db, _db.sales);
-
   $$SaleItemsTableTableManager get saleItems =>
       $$SaleItemsTableTableManager(_db, _db.saleItems);
-
   $$PurchasesTableTableManager get purchases =>
       $$PurchasesTableTableManager(_db, _db.purchases);
-
   $$PurchaseItemsTableTableManager get purchaseItems =>
       $$PurchaseItemsTableTableManager(_db, _db.purchaseItems);
-
   $$ExpensesTableTableManager get expenses =>
       $$ExpensesTableTableManager(_db, _db.expenses);
-
   $$InvoicesTableTableManager get invoices =>
       $$InvoicesTableTableManager(_db, _db.invoices);
-
   $$InvoiceItemsTableTableManager get invoiceItems =>
       $$InvoiceItemsTableTableManager(_db, _db.invoiceItems);
+  $$PaymentHistoriesTableTableManager get paymentHistories =>
+      $$PaymentHistoriesTableTableManager(_db, _db.paymentHistories);
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
 import '../provider/customer_ledger_provider.dart';
+import '../widget/payment_history_dialog.dart' show PaymentHistoryDialog;
 import '../widget/receive_payment_dialog.dart' show ReceivePaymentDialog;
 
 class CustomerLedgerScreen extends ConsumerWidget {
@@ -32,60 +33,146 @@ class CustomerLedgerScreen extends ConsumerWidget {
               final invoice = items[index];
 
               return Card(
-                margin: const EdgeInsets.only(bottom: 12),
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
 
-                child: ListTile(
-                  title: Text(invoice.invoiceNo),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
 
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-
-                    children: [
-                      Text('Status: ${invoice.paymentStatus}'),
-
-                      Text('Due: ₹${invoice.dueAmount.toStringAsFixed(2)}'),
-
-                      Text('Paid: ₹${invoice.amountPaid.toStringAsFixed(2)}'),
-                    ],
-                  ),
-
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
 
                     children: [
-                      Text(
-                        '₹${invoice.grandTotal.toStringAsFixed(2)}',
 
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      /// TOP ROW
+                      Row(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
+
+                        children: [
+
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+
+                              children: [
+
+                                Text(
+                                  invoice.invoiceNo,
+
+                                  maxLines: 2,
+
+                                  overflow:
+                                  TextOverflow.ellipsis,
+
+                                  style:
+                                  const TextStyle(
+                                    fontWeight:
+                                    FontWeight.bold,
+                                  ),
+                                ),
+
+                                const SizedBox(
+                                  height: 4,
+                                ),
+
+                                Text(
+                                  'Status: ${invoice.paymentStatus}',
+                                ),
+
+                                Text(
+                                  'Due: ₹${invoice.dueAmount.toStringAsFixed(2)}',
+                                ),
+
+                                Text(
+                                  'Paid: ₹${invoice.amountPaid.toStringAsFixed(2)}',
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(
+                            width: 12,
+                          ),
+
+                          Text(
+                            '₹${invoice.grandTotal.toStringAsFixed(2)}',
+
+                            style:
+                            const TextStyle(
+                              fontWeight:
+                              FontWeight.bold,
+
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
 
-                      if (invoice.dueAmount > 0)
-                        TextButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
+                      const SizedBox(
+                        height: 12,
+                      ),
 
-                              builder: (_) => ReceivePaymentDialog(
-                                invoice: invoice,
+                      /// ACTIONS
+                      Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.end,
 
-                                customer: customer,
+                        children: [
+
+                          if (invoice.dueAmount > 0)
+                            ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+
+                                  builder: (_) =>
+                                      ReceivePaymentDialog(
+                                        invoice:
+                                        invoice,
+
+                                        customer:
+                                        customer,
+                                      ),
+                                );
+                              },
+
+                              child: const Text(
+                                'Receive',
                               ),
-                            );
-                          },
+                            ),
 
-                          child: const Text('Receive'),
-                        )
-                      else
-                        const Text(
-                          'Paid',
+                          const SizedBox(
+                            width: 8,
+                          ),
 
-                          style: TextStyle(color: Colors.green),
-                        ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.history,
+                            ),
+
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+
+                                builder: (_) =>
+                                    PaymentHistoryDialog(
+                                      invoiceId:
+                                      invoice.id,
+                                    ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
-              );
-            },
+              );            },
           );
         },
 

@@ -78,7 +78,31 @@ class _ReceivePaymentDialogState extends ConsumerState<ReceivePaymentDialog> {
     )..where((tbl) => tbl.id.equals(widget.customer.id))).write(
       CustomersCompanion(creditBalance: Value(updatedCredit.toDouble())),
     );
+    await db.into(
+      db.paymentHistories,
+    ).insert(
+      PaymentHistoriesCompanion.insert(
 
+        invoiceId:
+        widget.invoice.id,
+
+        customerId:
+        widget.customer.id,
+
+        amount:
+        amount,
+
+        paymentMethod:
+        const Value(
+          'Cash',
+        ),
+
+        notes:
+        const Value(
+          null,
+        ),
+      ),
+    );
     if (mounted) {
       Navigator.pop(context);
 

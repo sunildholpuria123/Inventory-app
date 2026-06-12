@@ -17,6 +17,7 @@ import 'tables/sale_items_table.dart';
 import 'tables/purchases_table.dart';
 import 'tables/purchase_items_table.dart';
 import 'tables/expenses_table.dart';
+import 'tables/payment_histories.dart';
 
 part 'app_database.g.dart';
 
@@ -34,6 +35,7 @@ part 'app_database.g.dart';
     Expenses,
     Invoices,
     InvoiceItems,
+    PaymentHistories,
   ],
 )
 class AppDatabase extends _$AppDatabase {
