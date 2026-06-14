@@ -1,11 +1,14 @@
-import 'package:drift/drift.dart' show ComparableExpr, OrderingTerm, BooleanExpressionOperators;
+import 'package:drift/drift.dart'
+    show ComparableExpr, OrderingTerm, BooleanExpressionOperators;
 import 'package:rxdart/rxdart.dart' show Rx;
 
 import '../../presentation/dashboard/model/monthly_sales.dart'
     show MonthlySales;
 import '../../presentation/dashboard/model/profit_summary.dart'
     show ProfitSummary;
+import '../../presentation/dashboard/model/variant_inventory.dart';
 import '../database/app_database.dart';
+import '../../presentation/dashboard/model/variant_sales.dart';
 
 class DashboardRepository {
   final AppDatabase db;
@@ -147,7 +150,8 @@ class DashboardRepository {
     return (db.select(db.invoices)
           ..where(
             (tbl) =>
-                tbl.dueAmount.isBiggerThanValue(0) & tbl.dueDate.isSmallerThanValue(today),
+                tbl.dueAmount.isBiggerThanValue(0) &
+                tbl.dueDate.isSmallerThanValue(today),
           )
           ..orderBy([(tbl) => OrderingTerm.asc(tbl.dueDate)]))
         .watch();
@@ -166,5 +170,119 @@ class DashboardRepository {
           )
           ..orderBy([(tbl) => OrderingTerm.asc(tbl.dueDate)]))
         .watch();
+  }
+
+  Stream<List<VariantSales>> getVariantSalesAnalytics() {
+    return db
+        .customSelect('''
+    SELECT
+      ii.product_name,
+      COALESCE(
+        ii.variant_name,
+        'Standard'
+      ) AS variant_name,
+
+      SUM(
+        ii.quantity
+      ) AS qty_sold,
+
+      COALESCE(
+        SUM(ii.area),
+        0
+      ) AS area_sold,
+
+      SUM(
+        ii.total
+      ) AS revenue
+
+    FROM invoice_items ii
+
+    GROUP BY
+      ii.product_name,
+      ii.variant_name
+
+    ORDER BY revenue DESC
+    ''')
+        .watch()
+        .map((rows) {
+          return rows.map((row) {
+            return VariantSales(
+              productName: row.data['product_name'].toString(),
+
+              variantName: row.data['variant_name'].toString(),
+
+              quantitySold: (row.data['qty_sold'] as num).toDouble(),
+
+              areaSold: (row.data['area_sold'] as num).toDouble(),
+
+              revenue: (row.data['revenue'] as num).toDouble(),
+            );
+          }).toList();
+        });
+  }
+
+  Stream<List<VariantInventory>> getVariantInventoryAnalytics() {
+    return db
+        .customSelect('''
+    SELECT
+
+      pv.variant_name,
+
+      p.name AS product_name,
+
+      pv.stock_qty,
+
+      COALESCE(
+        sales.sold,
+        0
+      ) AS sold
+
+    FROM product_variants pv
+
+    INNER JOIN products p
+      ON p.id = pv.product_id
+
+    LEFT JOIN (
+
+      SELECT
+
+        variant_id,
+
+        SUM(quantity) sold
+
+      FROM invoice_items
+
+      WHERE variant_id IS NOT NULL
+
+      GROUP BY variant_id
+
+    ) sales
+
+    ON sales.variant_id = pv.id
+    ''')
+        .watch()
+        .map((rows) {
+          return rows.map((row) {
+            final stock = (row.data['stock_qty'] as num).toDouble();
+
+            final sold = (row.data['sold'] as num).toDouble();
+
+            return VariantInventory(
+              productName: row.data['product_name'].toString(),
+
+              variantName: row.data['variant_name'].toString(),
+
+              stock: stock,
+
+              sold: sold,
+
+              lowStock: stock <= 10,
+
+              deadStock: sold == 0,
+
+              fastMoving: sold >= 50,
+            );
+          }).toList();
+        });
   }
 }

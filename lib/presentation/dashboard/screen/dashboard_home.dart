@@ -10,6 +10,8 @@ import '../widget/low_stock_widget.dart';
 import '../widget/profit_card.dart' show ProfitCard;
 import '../widget/recent_sales_widget.dart';
 import '../widget/sales_overview_chart.dart';
+import '../widget/variant_inventory_widget.dart';
+import '../widget/variant_sales_widget.dart';
 
 class DashboardHome extends ConsumerStatefulWidget {
   const DashboardHome({super.key});
@@ -75,8 +77,12 @@ class _DashboardHomeState extends ConsumerState<DashboardHome> {
 
                         SizedBox(height: 250, child: RecentSalesWidget()),
 
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
 
+                        const VariantSalesWidget(),
+                        const SizedBox(height: 20),
+
+                        const VariantInventoryWidget(),
                         SizedBox(height: 250, child: LowStockWidget()),
                       ],
                     )

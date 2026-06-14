@@ -4,6 +4,8 @@ import '../../../data/database/app_database.dart' show Invoice, Product;
 import '../../../data/repositories/dashboard_repository.dart';
 import '../model/monthly_sales.dart' show MonthlySales;
 import '../model/profit_summary.dart' show ProfitSummary;
+import '../model/variant_inventory.dart';
+import '../model/variant_sales.dart';
 import 'dashboard_provider.dart';
 
 final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
@@ -77,4 +79,16 @@ final upcomingDueProvider = StreamProvider<List<Invoice>>((ref) {
   final repo = ref.watch(dashboardRepositoryProvider);
 
   return repo.getUpcomingDueInvoices();
+});
+
+final variantSalesProvider = StreamProvider<List<VariantSales>>((ref) {
+  final repo = ref.watch(dashboardRepositoryProvider);
+
+  return repo.getVariantSalesAnalytics();
+});
+
+final variantInventoryProvider = StreamProvider<List<VariantInventory>>((ref) {
+  final repo = ref.watch(dashboardRepositoryProvider);
+
+  return repo.getVariantInventoryAnalytics();
 });
