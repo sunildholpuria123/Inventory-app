@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../products/provider/product_provider.dart'
     show productRepositoryProvider;
 import '../../products/provider/product_variant_provider.dart';
+import '../../settings/provider/settings_provider.dart';
 import '../model/invoice_item_model.dart';
 import '../provider/invoice_item_provider.dart';
 import '../provider/sales_provider.dart';
@@ -224,6 +225,20 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
 
       /// GENERATE PDF
       final pdfService = InvoicePdfService();
+      final settingsRepo = ref.read(
+        businessSettingsRepositoryProvider,
+      );
+
+      final settings =
+      await settingsRepo.getSettings();
+
+      if (settings == null) {
+        showMessage(
+          'Please configure Business Settings first',
+        );
+
+        return;
+      }
 
       final pdfPath = await pdfService.generateInvoice(
         invoiceNo: invoiceNo,
@@ -267,6 +282,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
         dueAmount: dueAmount,
 
         paymentStatus: paymentStatus,
+        businessSettings: settings,
 
         dueDate: dueDate,
       );

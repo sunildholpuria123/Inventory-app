@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_linux
+  file_selector_linux
   printing
   screen_retriever_linux
   sqlite3_flutter_libs

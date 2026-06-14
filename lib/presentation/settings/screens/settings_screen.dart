@@ -7,6 +7,7 @@ import '../../../data/repositories/backup_repository.dart'
     show BackupRepository;
 import '../../categories/screen/category_management_screen.dart';
 import '../provider/settings_provider.dart';
+import 'business_settings_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -140,6 +141,25 @@ class SettingsScreen extends ConsumerWidget {
               Card(
                 child: Column(
                   children: [
+                    ListTile(
+                      leading: const Icon(Icons.inventory),
+
+                      title: const Text('Invoice settings'),
+
+                      trailing: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                              const BusinessSettingsScreen(),
+                            ),
+                          );
+                        },
+
+                        child: const Text('Category'),
+                      ),
+                    ),
                     ListTile(
                       leading: const Icon(Icons.backup),
 

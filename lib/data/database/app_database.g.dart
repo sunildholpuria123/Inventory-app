@@ -9410,6 +9410,770 @@ class SalesReturnsCompanion extends UpdateCompanion<SalesReturn> {
   }
 }
 
+class $BusinessSettingsTable extends BusinessSettings
+    with TableInfo<$BusinessSettingsTable, BusinessSetting> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BusinessSettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _companyNameMeta = const VerificationMeta(
+    'companyName',
+  );
+  @override
+  late final GeneratedColumn<String> companyName = GeneratedColumn<String>(
+    'company_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ownerNameMeta = const VerificationMeta(
+    'ownerName',
+  );
+  @override
+  late final GeneratedColumn<String> ownerName = GeneratedColumn<String>(
+    'owner_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+    'email',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _addressMeta = const VerificationMeta(
+    'address',
+  );
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+    'address',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _gstNoMeta = const VerificationMeta('gstNo');
+  @override
+  late final GeneratedColumn<String> gstNo = GeneratedColumn<String>(
+    'gst_no',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _logoPathMeta = const VerificationMeta(
+    'logoPath',
+  );
+  @override
+  late final GeneratedColumn<String> logoPath = GeneratedColumn<String>(
+    'logo_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bankNameMeta = const VerificationMeta(
+    'bankName',
+  );
+  @override
+  late final GeneratedColumn<String> bankName = GeneratedColumn<String>(
+    'bank_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _accountNumberMeta = const VerificationMeta(
+    'accountNumber',
+  );
+  @override
+  late final GeneratedColumn<String> accountNumber = GeneratedColumn<String>(
+    'account_number',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _ifscCodeMeta = const VerificationMeta(
+    'ifscCode',
+  );
+  @override
+  late final GeneratedColumn<String> ifscCode = GeneratedColumn<String>(
+    'ifsc_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _upiIdMeta = const VerificationMeta('upiId');
+  @override
+  late final GeneratedColumn<String> upiId = GeneratedColumn<String>(
+    'upi_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _footerMessageMeta = const VerificationMeta(
+    'footerMessage',
+  );
+  @override
+  late final GeneratedColumn<String> footerMessage = GeneratedColumn<String>(
+    'footer_message',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    companyName,
+    ownerName,
+    phone,
+    email,
+    address,
+    gstNo,
+    logoPath,
+    bankName,
+    accountNumber,
+    ifscCode,
+    upiId,
+    footerMessage,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'business_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BusinessSetting> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('company_name')) {
+      context.handle(
+        _companyNameMeta,
+        companyName.isAcceptableOrUnknown(
+          data['company_name']!,
+          _companyNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_companyNameMeta);
+    }
+    if (data.containsKey('owner_name')) {
+      context.handle(
+        _ownerNameMeta,
+        ownerName.isAcceptableOrUnknown(data['owner_name']!, _ownerNameMeta),
+      );
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+        _emailMeta,
+        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
+      );
+    }
+    if (data.containsKey('address')) {
+      context.handle(
+        _addressMeta,
+        address.isAcceptableOrUnknown(data['address']!, _addressMeta),
+      );
+    }
+    if (data.containsKey('gst_no')) {
+      context.handle(
+        _gstNoMeta,
+        gstNo.isAcceptableOrUnknown(data['gst_no']!, _gstNoMeta),
+      );
+    }
+    if (data.containsKey('logo_path')) {
+      context.handle(
+        _logoPathMeta,
+        logoPath.isAcceptableOrUnknown(data['logo_path']!, _logoPathMeta),
+      );
+    }
+    if (data.containsKey('bank_name')) {
+      context.handle(
+        _bankNameMeta,
+        bankName.isAcceptableOrUnknown(data['bank_name']!, _bankNameMeta),
+      );
+    }
+    if (data.containsKey('account_number')) {
+      context.handle(
+        _accountNumberMeta,
+        accountNumber.isAcceptableOrUnknown(
+          data['account_number']!,
+          _accountNumberMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ifsc_code')) {
+      context.handle(
+        _ifscCodeMeta,
+        ifscCode.isAcceptableOrUnknown(data['ifsc_code']!, _ifscCodeMeta),
+      );
+    }
+    if (data.containsKey('upi_id')) {
+      context.handle(
+        _upiIdMeta,
+        upiId.isAcceptableOrUnknown(data['upi_id']!, _upiIdMeta),
+      );
+    }
+    if (data.containsKey('footer_message')) {
+      context.handle(
+        _footerMessageMeta,
+        footerMessage.isAcceptableOrUnknown(
+          data['footer_message']!,
+          _footerMessageMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BusinessSetting map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BusinessSetting(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      companyName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}company_name'],
+      )!,
+      ownerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}owner_name'],
+      ),
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      ),
+      email: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}email'],
+      ),
+      address: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}address'],
+      ),
+      gstNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}gst_no'],
+      ),
+      logoPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}logo_path'],
+      ),
+      bankName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bank_name'],
+      ),
+      accountNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}account_number'],
+      ),
+      ifscCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ifsc_code'],
+      ),
+      upiId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}upi_id'],
+      ),
+      footerMessage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}footer_message'],
+      ),
+    );
+  }
+
+  @override
+  $BusinessSettingsTable createAlias(String alias) {
+    return $BusinessSettingsTable(attachedDatabase, alias);
+  }
+}
+
+class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
+  final int id;
+  final String companyName;
+  final String? ownerName;
+  final String? phone;
+  final String? email;
+  final String? address;
+  final String? gstNo;
+  final String? logoPath;
+  final String? bankName;
+  final String? accountNumber;
+  final String? ifscCode;
+  final String? upiId;
+  final String? footerMessage;
+  const BusinessSetting({
+    required this.id,
+    required this.companyName,
+    this.ownerName,
+    this.phone,
+    this.email,
+    this.address,
+    this.gstNo,
+    this.logoPath,
+    this.bankName,
+    this.accountNumber,
+    this.ifscCode,
+    this.upiId,
+    this.footerMessage,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['company_name'] = Variable<String>(companyName);
+    if (!nullToAbsent || ownerName != null) {
+      map['owner_name'] = Variable<String>(ownerName);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || email != null) {
+      map['email'] = Variable<String>(email);
+    }
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || gstNo != null) {
+      map['gst_no'] = Variable<String>(gstNo);
+    }
+    if (!nullToAbsent || logoPath != null) {
+      map['logo_path'] = Variable<String>(logoPath);
+    }
+    if (!nullToAbsent || bankName != null) {
+      map['bank_name'] = Variable<String>(bankName);
+    }
+    if (!nullToAbsent || accountNumber != null) {
+      map['account_number'] = Variable<String>(accountNumber);
+    }
+    if (!nullToAbsent || ifscCode != null) {
+      map['ifsc_code'] = Variable<String>(ifscCode);
+    }
+    if (!nullToAbsent || upiId != null) {
+      map['upi_id'] = Variable<String>(upiId);
+    }
+    if (!nullToAbsent || footerMessage != null) {
+      map['footer_message'] = Variable<String>(footerMessage);
+    }
+    return map;
+  }
+
+  BusinessSettingsCompanion toCompanion(bool nullToAbsent) {
+    return BusinessSettingsCompanion(
+      id: Value(id),
+      companyName: Value(companyName),
+      ownerName: ownerName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ownerName),
+      phone: phone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phone),
+      email: email == null && nullToAbsent
+          ? const Value.absent()
+          : Value(email),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      gstNo: gstNo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(gstNo),
+      logoPath: logoPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(logoPath),
+      bankName: bankName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bankName),
+      accountNumber: accountNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(accountNumber),
+      ifscCode: ifscCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ifscCode),
+      upiId: upiId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(upiId),
+      footerMessage: footerMessage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(footerMessage),
+    );
+  }
+
+  factory BusinessSetting.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BusinessSetting(
+      id: serializer.fromJson<int>(json['id']),
+      companyName: serializer.fromJson<String>(json['companyName']),
+      ownerName: serializer.fromJson<String?>(json['ownerName']),
+      phone: serializer.fromJson<String?>(json['phone']),
+      email: serializer.fromJson<String?>(json['email']),
+      address: serializer.fromJson<String?>(json['address']),
+      gstNo: serializer.fromJson<String?>(json['gstNo']),
+      logoPath: serializer.fromJson<String?>(json['logoPath']),
+      bankName: serializer.fromJson<String?>(json['bankName']),
+      accountNumber: serializer.fromJson<String?>(json['accountNumber']),
+      ifscCode: serializer.fromJson<String?>(json['ifscCode']),
+      upiId: serializer.fromJson<String?>(json['upiId']),
+      footerMessage: serializer.fromJson<String?>(json['footerMessage']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'companyName': serializer.toJson<String>(companyName),
+      'ownerName': serializer.toJson<String?>(ownerName),
+      'phone': serializer.toJson<String?>(phone),
+      'email': serializer.toJson<String?>(email),
+      'address': serializer.toJson<String?>(address),
+      'gstNo': serializer.toJson<String?>(gstNo),
+      'logoPath': serializer.toJson<String?>(logoPath),
+      'bankName': serializer.toJson<String?>(bankName),
+      'accountNumber': serializer.toJson<String?>(accountNumber),
+      'ifscCode': serializer.toJson<String?>(ifscCode),
+      'upiId': serializer.toJson<String?>(upiId),
+      'footerMessage': serializer.toJson<String?>(footerMessage),
+    };
+  }
+
+  BusinessSetting copyWith({
+    int? id,
+    String? companyName,
+    Value<String?> ownerName = const Value.absent(),
+    Value<String?> phone = const Value.absent(),
+    Value<String?> email = const Value.absent(),
+    Value<String?> address = const Value.absent(),
+    Value<String?> gstNo = const Value.absent(),
+    Value<String?> logoPath = const Value.absent(),
+    Value<String?> bankName = const Value.absent(),
+    Value<String?> accountNumber = const Value.absent(),
+    Value<String?> ifscCode = const Value.absent(),
+    Value<String?> upiId = const Value.absent(),
+    Value<String?> footerMessage = const Value.absent(),
+  }) => BusinessSetting(
+    id: id ?? this.id,
+    companyName: companyName ?? this.companyName,
+    ownerName: ownerName.present ? ownerName.value : this.ownerName,
+    phone: phone.present ? phone.value : this.phone,
+    email: email.present ? email.value : this.email,
+    address: address.present ? address.value : this.address,
+    gstNo: gstNo.present ? gstNo.value : this.gstNo,
+    logoPath: logoPath.present ? logoPath.value : this.logoPath,
+    bankName: bankName.present ? bankName.value : this.bankName,
+    accountNumber: accountNumber.present
+        ? accountNumber.value
+        : this.accountNumber,
+    ifscCode: ifscCode.present ? ifscCode.value : this.ifscCode,
+    upiId: upiId.present ? upiId.value : this.upiId,
+    footerMessage: footerMessage.present
+        ? footerMessage.value
+        : this.footerMessage,
+  );
+  BusinessSetting copyWithCompanion(BusinessSettingsCompanion data) {
+    return BusinessSetting(
+      id: data.id.present ? data.id.value : this.id,
+      companyName: data.companyName.present
+          ? data.companyName.value
+          : this.companyName,
+      ownerName: data.ownerName.present ? data.ownerName.value : this.ownerName,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      email: data.email.present ? data.email.value : this.email,
+      address: data.address.present ? data.address.value : this.address,
+      gstNo: data.gstNo.present ? data.gstNo.value : this.gstNo,
+      logoPath: data.logoPath.present ? data.logoPath.value : this.logoPath,
+      bankName: data.bankName.present ? data.bankName.value : this.bankName,
+      accountNumber: data.accountNumber.present
+          ? data.accountNumber.value
+          : this.accountNumber,
+      ifscCode: data.ifscCode.present ? data.ifscCode.value : this.ifscCode,
+      upiId: data.upiId.present ? data.upiId.value : this.upiId,
+      footerMessage: data.footerMessage.present
+          ? data.footerMessage.value
+          : this.footerMessage,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BusinessSetting(')
+          ..write('id: $id, ')
+          ..write('companyName: $companyName, ')
+          ..write('ownerName: $ownerName, ')
+          ..write('phone: $phone, ')
+          ..write('email: $email, ')
+          ..write('address: $address, ')
+          ..write('gstNo: $gstNo, ')
+          ..write('logoPath: $logoPath, ')
+          ..write('bankName: $bankName, ')
+          ..write('accountNumber: $accountNumber, ')
+          ..write('ifscCode: $ifscCode, ')
+          ..write('upiId: $upiId, ')
+          ..write('footerMessage: $footerMessage')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    companyName,
+    ownerName,
+    phone,
+    email,
+    address,
+    gstNo,
+    logoPath,
+    bankName,
+    accountNumber,
+    ifscCode,
+    upiId,
+    footerMessage,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BusinessSetting &&
+          other.id == this.id &&
+          other.companyName == this.companyName &&
+          other.ownerName == this.ownerName &&
+          other.phone == this.phone &&
+          other.email == this.email &&
+          other.address == this.address &&
+          other.gstNo == this.gstNo &&
+          other.logoPath == this.logoPath &&
+          other.bankName == this.bankName &&
+          other.accountNumber == this.accountNumber &&
+          other.ifscCode == this.ifscCode &&
+          other.upiId == this.upiId &&
+          other.footerMessage == this.footerMessage);
+}
+
+class BusinessSettingsCompanion extends UpdateCompanion<BusinessSetting> {
+  final Value<int> id;
+  final Value<String> companyName;
+  final Value<String?> ownerName;
+  final Value<String?> phone;
+  final Value<String?> email;
+  final Value<String?> address;
+  final Value<String?> gstNo;
+  final Value<String?> logoPath;
+  final Value<String?> bankName;
+  final Value<String?> accountNumber;
+  final Value<String?> ifscCode;
+  final Value<String?> upiId;
+  final Value<String?> footerMessage;
+  const BusinessSettingsCompanion({
+    this.id = const Value.absent(),
+    this.companyName = const Value.absent(),
+    this.ownerName = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.email = const Value.absent(),
+    this.address = const Value.absent(),
+    this.gstNo = const Value.absent(),
+    this.logoPath = const Value.absent(),
+    this.bankName = const Value.absent(),
+    this.accountNumber = const Value.absent(),
+    this.ifscCode = const Value.absent(),
+    this.upiId = const Value.absent(),
+    this.footerMessage = const Value.absent(),
+  });
+  BusinessSettingsCompanion.insert({
+    this.id = const Value.absent(),
+    required String companyName,
+    this.ownerName = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.email = const Value.absent(),
+    this.address = const Value.absent(),
+    this.gstNo = const Value.absent(),
+    this.logoPath = const Value.absent(),
+    this.bankName = const Value.absent(),
+    this.accountNumber = const Value.absent(),
+    this.ifscCode = const Value.absent(),
+    this.upiId = const Value.absent(),
+    this.footerMessage = const Value.absent(),
+  }) : companyName = Value(companyName);
+  static Insertable<BusinessSetting> custom({
+    Expression<int>? id,
+    Expression<String>? companyName,
+    Expression<String>? ownerName,
+    Expression<String>? phone,
+    Expression<String>? email,
+    Expression<String>? address,
+    Expression<String>? gstNo,
+    Expression<String>? logoPath,
+    Expression<String>? bankName,
+    Expression<String>? accountNumber,
+    Expression<String>? ifscCode,
+    Expression<String>? upiId,
+    Expression<String>? footerMessage,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (companyName != null) 'company_name': companyName,
+      if (ownerName != null) 'owner_name': ownerName,
+      if (phone != null) 'phone': phone,
+      if (email != null) 'email': email,
+      if (address != null) 'address': address,
+      if (gstNo != null) 'gst_no': gstNo,
+      if (logoPath != null) 'logo_path': logoPath,
+      if (bankName != null) 'bank_name': bankName,
+      if (accountNumber != null) 'account_number': accountNumber,
+      if (ifscCode != null) 'ifsc_code': ifscCode,
+      if (upiId != null) 'upi_id': upiId,
+      if (footerMessage != null) 'footer_message': footerMessage,
+    });
+  }
+
+  BusinessSettingsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? companyName,
+    Value<String?>? ownerName,
+    Value<String?>? phone,
+    Value<String?>? email,
+    Value<String?>? address,
+    Value<String?>? gstNo,
+    Value<String?>? logoPath,
+    Value<String?>? bankName,
+    Value<String?>? accountNumber,
+    Value<String?>? ifscCode,
+    Value<String?>? upiId,
+    Value<String?>? footerMessage,
+  }) {
+    return BusinessSettingsCompanion(
+      id: id ?? this.id,
+      companyName: companyName ?? this.companyName,
+      ownerName: ownerName ?? this.ownerName,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
+      address: address ?? this.address,
+      gstNo: gstNo ?? this.gstNo,
+      logoPath: logoPath ?? this.logoPath,
+      bankName: bankName ?? this.bankName,
+      accountNumber: accountNumber ?? this.accountNumber,
+      ifscCode: ifscCode ?? this.ifscCode,
+      upiId: upiId ?? this.upiId,
+      footerMessage: footerMessage ?? this.footerMessage,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (companyName.present) {
+      map['company_name'] = Variable<String>(companyName.value);
+    }
+    if (ownerName.present) {
+      map['owner_name'] = Variable<String>(ownerName.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (gstNo.present) {
+      map['gst_no'] = Variable<String>(gstNo.value);
+    }
+    if (logoPath.present) {
+      map['logo_path'] = Variable<String>(logoPath.value);
+    }
+    if (bankName.present) {
+      map['bank_name'] = Variable<String>(bankName.value);
+    }
+    if (accountNumber.present) {
+      map['account_number'] = Variable<String>(accountNumber.value);
+    }
+    if (ifscCode.present) {
+      map['ifsc_code'] = Variable<String>(ifscCode.value);
+    }
+    if (upiId.present) {
+      map['upi_id'] = Variable<String>(upiId.value);
+    }
+    if (footerMessage.present) {
+      map['footer_message'] = Variable<String>(footerMessage.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BusinessSettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('companyName: $companyName, ')
+          ..write('ownerName: $ownerName, ')
+          ..write('phone: $phone, ')
+          ..write('email: $email, ')
+          ..write('address: $address, ')
+          ..write('gstNo: $gstNo, ')
+          ..write('logoPath: $logoPath, ')
+          ..write('bankName: $bankName, ')
+          ..write('accountNumber: $accountNumber, ')
+          ..write('ifscCode: $ifscCode, ')
+          ..write('upiId: $upiId, ')
+          ..write('footerMessage: $footerMessage')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -9437,6 +10201,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $SalesReturnsTable salesReturns = $SalesReturnsTable(this);
+  late final $BusinessSettingsTable businessSettings = $BusinessSettingsTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -9459,6 +10226,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     supplierPaymentHistories,
     purchaseReturns,
     salesReturns,
+    businessSettings,
   ];
 }
 
@@ -14338,6 +15106,364 @@ typedef $$SalesReturnsTableProcessedTableManager =
       SalesReturn,
       PrefetchHooks Function()
     >;
+typedef $$BusinessSettingsTableCreateCompanionBuilder =
+    BusinessSettingsCompanion Function({
+      Value<int> id,
+      required String companyName,
+      Value<String?> ownerName,
+      Value<String?> phone,
+      Value<String?> email,
+      Value<String?> address,
+      Value<String?> gstNo,
+      Value<String?> logoPath,
+      Value<String?> bankName,
+      Value<String?> accountNumber,
+      Value<String?> ifscCode,
+      Value<String?> upiId,
+      Value<String?> footerMessage,
+    });
+typedef $$BusinessSettingsTableUpdateCompanionBuilder =
+    BusinessSettingsCompanion Function({
+      Value<int> id,
+      Value<String> companyName,
+      Value<String?> ownerName,
+      Value<String?> phone,
+      Value<String?> email,
+      Value<String?> address,
+      Value<String?> gstNo,
+      Value<String?> logoPath,
+      Value<String?> bankName,
+      Value<String?> accountNumber,
+      Value<String?> ifscCode,
+      Value<String?> upiId,
+      Value<String?> footerMessage,
+    });
+
+class $$BusinessSettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $BusinessSettingsTable> {
+  $$BusinessSettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get companyName => $composableBuilder(
+    column: $table.companyName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ownerName => $composableBuilder(
+    column: $table.ownerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get gstNo => $composableBuilder(
+    column: $table.gstNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get logoPath => $composableBuilder(
+    column: $table.logoPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bankName => $composableBuilder(
+    column: $table.bankName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get accountNumber => $composableBuilder(
+    column: $table.accountNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ifscCode => $composableBuilder(
+    column: $table.ifscCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get upiId => $composableBuilder(
+    column: $table.upiId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get footerMessage => $composableBuilder(
+    column: $table.footerMessage,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BusinessSettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BusinessSettingsTable> {
+  $$BusinessSettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get companyName => $composableBuilder(
+    column: $table.companyName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ownerName => $composableBuilder(
+    column: $table.ownerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get gstNo => $composableBuilder(
+    column: $table.gstNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get logoPath => $composableBuilder(
+    column: $table.logoPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bankName => $composableBuilder(
+    column: $table.bankName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get accountNumber => $composableBuilder(
+    column: $table.accountNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ifscCode => $composableBuilder(
+    column: $table.ifscCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get upiId => $composableBuilder(
+    column: $table.upiId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get footerMessage => $composableBuilder(
+    column: $table.footerMessage,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BusinessSettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BusinessSettingsTable> {
+  $$BusinessSettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get companyName => $composableBuilder(
+    column: $table.companyName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get ownerName =>
+      $composableBuilder(column: $table.ownerName, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get email =>
+      $composableBuilder(column: $table.email, builder: (column) => column);
+
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumn<String> get gstNo =>
+      $composableBuilder(column: $table.gstNo, builder: (column) => column);
+
+  GeneratedColumn<String> get logoPath =>
+      $composableBuilder(column: $table.logoPath, builder: (column) => column);
+
+  GeneratedColumn<String> get bankName =>
+      $composableBuilder(column: $table.bankName, builder: (column) => column);
+
+  GeneratedColumn<String> get accountNumber => $composableBuilder(
+    column: $table.accountNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get ifscCode =>
+      $composableBuilder(column: $table.ifscCode, builder: (column) => column);
+
+  GeneratedColumn<String> get upiId =>
+      $composableBuilder(column: $table.upiId, builder: (column) => column);
+
+  GeneratedColumn<String> get footerMessage => $composableBuilder(
+    column: $table.footerMessage,
+    builder: (column) => column,
+  );
+}
+
+class $$BusinessSettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BusinessSettingsTable,
+          BusinessSetting,
+          $$BusinessSettingsTableFilterComposer,
+          $$BusinessSettingsTableOrderingComposer,
+          $$BusinessSettingsTableAnnotationComposer,
+          $$BusinessSettingsTableCreateCompanionBuilder,
+          $$BusinessSettingsTableUpdateCompanionBuilder,
+          (
+            BusinessSetting,
+            BaseReferences<
+              _$AppDatabase,
+              $BusinessSettingsTable,
+              BusinessSetting
+            >,
+          ),
+          BusinessSetting,
+          PrefetchHooks Function()
+        > {
+  $$BusinessSettingsTableTableManager(
+    _$AppDatabase db,
+    $BusinessSettingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BusinessSettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BusinessSettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BusinessSettingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> companyName = const Value.absent(),
+                Value<String?> ownerName = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> email = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> gstNo = const Value.absent(),
+                Value<String?> logoPath = const Value.absent(),
+                Value<String?> bankName = const Value.absent(),
+                Value<String?> accountNumber = const Value.absent(),
+                Value<String?> ifscCode = const Value.absent(),
+                Value<String?> upiId = const Value.absent(),
+                Value<String?> footerMessage = const Value.absent(),
+              }) => BusinessSettingsCompanion(
+                id: id,
+                companyName: companyName,
+                ownerName: ownerName,
+                phone: phone,
+                email: email,
+                address: address,
+                gstNo: gstNo,
+                logoPath: logoPath,
+                bankName: bankName,
+                accountNumber: accountNumber,
+                ifscCode: ifscCode,
+                upiId: upiId,
+                footerMessage: footerMessage,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String companyName,
+                Value<String?> ownerName = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> email = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> gstNo = const Value.absent(),
+                Value<String?> logoPath = const Value.absent(),
+                Value<String?> bankName = const Value.absent(),
+                Value<String?> accountNumber = const Value.absent(),
+                Value<String?> ifscCode = const Value.absent(),
+                Value<String?> upiId = const Value.absent(),
+                Value<String?> footerMessage = const Value.absent(),
+              }) => BusinessSettingsCompanion.insert(
+                id: id,
+                companyName: companyName,
+                ownerName: ownerName,
+                phone: phone,
+                email: email,
+                address: address,
+                gstNo: gstNo,
+                logoPath: logoPath,
+                bankName: bankName,
+                accountNumber: accountNumber,
+                ifscCode: ifscCode,
+                upiId: upiId,
+                footerMessage: footerMessage,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BusinessSettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BusinessSettingsTable,
+      BusinessSetting,
+      $$BusinessSettingsTableFilterComposer,
+      $$BusinessSettingsTableOrderingComposer,
+      $$BusinessSettingsTableAnnotationComposer,
+      $$BusinessSettingsTableCreateCompanionBuilder,
+      $$BusinessSettingsTableUpdateCompanionBuilder,
+      (
+        BusinessSetting,
+        BaseReferences<_$AppDatabase, $BusinessSettingsTable, BusinessSetting>,
+      ),
+      BusinessSetting,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -14379,4 +15505,6 @@ class $AppDatabaseManager {
       $$PurchaseReturnsTableTableManager(_db, _db.purchaseReturns);
   $$SalesReturnsTableTableManager get salesReturns =>
       $$SalesReturnsTableTableManager(_db, _db.salesReturns);
+  $$BusinessSettingsTableTableManager get businessSettings =>
+      $$BusinessSettingsTableTableManager(_db, _db.businessSettings);
 }
