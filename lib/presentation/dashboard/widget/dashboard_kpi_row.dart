@@ -26,7 +26,7 @@ class DashboardKpiRow extends ConsumerWidget {
             title: 'Revenue',
 
             value: revenue.when(
-              data: (value) => '₹${value.toStringAsFixed(0)}',
+              data: (value) => 'Rs.${value.toStringAsFixed(0)}',
 
               loading: () => '...',
 

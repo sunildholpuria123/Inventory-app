@@ -165,11 +165,11 @@ class InvoicePdfService {
                   productName,
 
                   e.isAreaBased ? '${e.qty} Slab' : e.qty.toString(),
-                  '₹${e.price.toStringAsFixed(2)}',
+                  'Rs.${e.price.toStringAsFixed(2)}',
 
                   areaText,
 
-                  '₹${e.total.toStringAsFixed(2)}',
+                  'Rs.${e.total.toStringAsFixed(2)}',
                 ];
               }).toList(),
             ),
@@ -334,7 +334,7 @@ class InvoicePdfService {
         ),
 
         pw.Text(
-          '₹${amount.toStringAsFixed(2)}',
+          'Rs.${amount.toStringAsFixed(2)}',
 
           style: pw.TextStyle(fontWeight: bold ? pw.FontWeight.bold : null),
         ),

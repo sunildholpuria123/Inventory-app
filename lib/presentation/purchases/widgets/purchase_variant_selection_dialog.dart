@@ -40,7 +40,7 @@ class PurchaseVariantSelectionDialog extends ConsumerWidget {
                     '${variant.stockQty}',
                   ),
 
-                  trailing: Text('₹${variant.purchasePrice}'),
+                  trailing: Text('Rs.${variant.purchasePrice}'),
 
                   onTap: () {
                     Navigator.pop(context, variant);

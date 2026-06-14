@@ -27,13 +27,13 @@ class InvoiceDetailsDialog extends StatelessWidget {
 
             buildRow('Phone', invoice.customerPhone),
 
-            buildRow('Subtotal', '₹${invoice.subtotal}'),
+            buildRow('Subtotal', 'Rs.${invoice.subtotal}'),
 
-            buildRow('Tax', '₹${invoice.tax}'),
+            buildRow('Tax', 'Rs.${invoice.tax}'),
 
-            buildRow('Discount', '₹${invoice.discount}'),
+            buildRow('Discount', 'Rs.${invoice.discount}'),
 
-            buildRow('Grand Total', '₹${invoice.grandTotal}'),
+            buildRow('Grand Total', 'Rs.${invoice.grandTotal}'),
 
             buildRow('Payment', invoice.paymentMethod),
 

@@ -30,7 +30,7 @@ class _SupplierPaymentDialogState extends ConsumerState<SupplierPaymentDialog> {
         children: [
           Text(
             'Outstanding: '
-            '₹${widget.supplier.creditBalance.toStringAsFixed(2)}',
+            'Rs.${widget.supplier.creditBalance.toStringAsFixed(2)}',
           ),
 
           const SizedBox(height: 16),

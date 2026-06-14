@@ -74,9 +74,9 @@ class ProductDetailScreen extends ConsumerWidget {
 
                     Text('Stock: ${product.stockQty}'),
 
-                    Text('Purchase: ₹${product.purchasePrice}'),
+                    Text('Purchase: Rs.${product.purchasePrice}'),
 
-                    Text('Selling: ₹${product.sellingPrice}'),
+                    Text('Selling: Rs.${product.sellingPrice}'),
                   ],
                 ),
               ),

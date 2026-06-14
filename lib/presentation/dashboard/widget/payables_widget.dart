@@ -16,7 +16,7 @@ class PayablesWidget extends ConsumerWidget {
       data: (amount) {
         return  DashboardStatCard(
           title: 'Payables',
-          value: '₹${amount.toStringAsFixed(0)}',
+          value: 'Rs.${amount.toStringAsFixed(0)}',
           icon: Icons.account_balance,
           color: Colors.red,
         );
@@ -34,7 +34,7 @@ class PayablesWidget extends ConsumerWidget {
       error: (_, __) {
         return  DashboardStatCard(
           title: 'Payables',
-          value: '₹0',
+          value: 'Rs.0',
           icon: Icons.account_balance,
           color: Colors.red,
         );

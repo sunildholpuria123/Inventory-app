@@ -7,7 +7,7 @@ import '../model/app_settings.dart';
 final settingsProvider = StateProvider<AppSettings>((ref) {
   return const AppSettings(
     darkMode: false,
-    currency: '₹',
+    currency: 'Rs.',
     taxPercent: 18,
     companyName: 'Inventory ERP',
     companyAddress: 'Kota Rajasthan',

@@ -147,7 +147,7 @@ class SalesHistoryScreen extends ConsumerWidget {
                                 children: [
 
                                   Text(
-                                    '₹${invoice.grandTotal.toStringAsFixed(0)}',
+                                    'Rs.${invoice.grandTotal.toStringAsFixed(0)}',
 
                                     style:
                                     const TextStyle(

@@ -70,7 +70,7 @@ class SupplierPurchaseWidget extends ConsumerWidget {
                       subtitle: const Text('Purchases'),
 
                       trailing: Text(
-                        '₹${supplier.value.toStringAsFixed(0)}',
+                        'Rs.${supplier.value.toStringAsFixed(0)}',
 
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),

@@ -118,7 +118,7 @@ class _InvoiceSummaryState extends ConsumerState<InvoiceSummary> {
         ),
 
         Text(
-          '₹${value.toStringAsFixed(2)}',
+          'Rs.${value.toStringAsFixed(2)}',
 
           style: TextStyle(
             fontSize: bold ? 20 : 18,

@@ -48,7 +48,7 @@ class VariantSalesWidget extends ConsumerWidget {
                                   '${item.quantitySold.toStringAsFixed(0)}',
                       ),
 
-                      trailing: Text('₹${item.revenue.toStringAsFixed(0)}'),
+                      trailing: Text('Rs.${item.revenue.toStringAsFixed(0)}'),
                     );
                   }).toList(),
                 );

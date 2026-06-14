@@ -16,7 +16,7 @@ class PendingRefundsCard extends ConsumerWidget {
         return DashboardStatCard(
           title: 'Pending Refunds',
 
-          value: '₹${amount.toStringAsFixed(0)}',
+          value: 'Rs.${amount.toStringAsFixed(0)}',
 
           icon: Icons.pending_actions,
 

@@ -34,7 +34,7 @@ class PaymentHistoryDialog extends ConsumerWidget {
                 return ListTile(
                   leading: const Icon(Icons.payments),
 
-                  title: Text('₹${payment.amount}'),
+                  title: Text('Rs.${payment.amount}'),
 
                   subtitle: Text(payment.paidAt.toString()),
 

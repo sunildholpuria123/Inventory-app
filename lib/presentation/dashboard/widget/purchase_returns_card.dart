@@ -16,7 +16,7 @@ class PurchaseReturnsCard extends ConsumerWidget {
         return DashboardStatCard(
           title: 'Purchase Returns',
 
-          value: '₹${amount.toStringAsFixed(0)}',
+          value: 'Rs.${amount.toStringAsFixed(0)}',
 
           icon: Icons.assignment_return,
 

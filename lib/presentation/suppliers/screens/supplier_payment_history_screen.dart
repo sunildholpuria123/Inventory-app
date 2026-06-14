@@ -33,7 +33,7 @@ class SupplierPaymentHistoryScreen extends ConsumerWidget {
               final payment = payments[index];
 
               return ListTile(
-                title: Text('₹${payment.amount}'),
+                title: Text('Rs.${payment.amount}'),
 
                 subtitle: Text(payment.paymentMethod),
 

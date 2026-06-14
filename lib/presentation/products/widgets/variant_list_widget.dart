@@ -43,7 +43,7 @@ class VariantListWidget extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
 
                   children: [
-                    Text('₹${variant.sellingPrice}'),
+                    Text('Rs.${variant.sellingPrice}'),
 
                     Text('Stock: ${variant.stockQty}'),
                   ],

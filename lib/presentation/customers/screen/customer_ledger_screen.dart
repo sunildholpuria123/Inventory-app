@@ -70,11 +70,11 @@ class CustomerLedgerScreen extends ConsumerWidget {
                                 Text('Status: ${invoice.paymentStatus}'),
 
                                 Text(
-                                  'Due: ₹${invoice.dueAmount.toStringAsFixed(2)}',
+                                  'Due: Rs.${invoice.dueAmount.toStringAsFixed(2)}',
                                 ),
 
                                 Text(
-                                  'Paid: ₹${invoice.amountPaid.toStringAsFixed(2)}',
+                                  'Paid: Rs.${invoice.amountPaid.toStringAsFixed(2)}',
                                 ),
                               ],
                             ),
@@ -83,7 +83,7 @@ class CustomerLedgerScreen extends ConsumerWidget {
                           const SizedBox(width: 12),
 
                           Text(
-                            '₹${invoice.grandTotal.toStringAsFixed(2)}',
+                            'Rs.${invoice.grandTotal.toStringAsFixed(2)}',
 
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,

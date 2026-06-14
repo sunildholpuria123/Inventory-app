@@ -45,7 +45,7 @@ class TopProductsWidget extends ConsumerWidget {
 
                       subtitle: Text('Qty Sold: ${product.totalQty}'),
 
-                      trailing: Text('₹${product.revenue.toStringAsFixed(0)}'),
+                      trailing: Text('Rs.${product.revenue.toStringAsFixed(0)}'),
                     );
                   },
                 );

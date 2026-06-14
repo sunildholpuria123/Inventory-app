@@ -49,7 +49,7 @@ class DashboardKpiGrid extends ConsumerWidget {
             revenue.when(
               data: (value) => DashboardKpiCard(
                 title: 'Revenue',
-                value: '₹${value.toStringAsFixed(0)}',
+                value: 'Rs.${value.toStringAsFixed(0)}',
                 icon: Icons.currency_rupee,
               ),
 
@@ -97,7 +97,7 @@ class DashboardKpiGrid extends ConsumerWidget {
               data: (value) => DashboardKpiCard(
                 title: 'Outstanding',
 
-                value: '₹${value.toStringAsFixed(0)}',
+                value: 'Rs.${value.toStringAsFixed(0)}',
 
                 icon: Icons.pending_actions,
               ),

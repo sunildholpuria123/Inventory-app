@@ -38,7 +38,7 @@ class CustomerTable extends ConsumerWidget {
 
                 DataCell(
                   Text(
-                    '₹${customer.creditBalance ?? 0}',
+                    'Rs.${customer.creditBalance ?? 0}',
 
                     style: TextStyle(
                       color: (customer.creditBalance ?? 0) > 0

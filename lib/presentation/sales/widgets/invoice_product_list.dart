@@ -46,7 +46,7 @@ class InvoiceProductList extends ConsumerWidget {
 
                       const SizedBox(height: 4),
 
-                      Text('Rate: ₹${item.unitPrice.toStringAsFixed(2)}'),
+                      Text('Rate: Rs.${item.unitPrice.toStringAsFixed(2)}'),
 
                       /// AREA DETAILS
                       if (item.isAreaBased)
@@ -119,7 +119,7 @@ class InvoiceProductList extends ConsumerWidget {
                 Column(
                   children: [
                     Text(
-                      '₹${item.total.toStringAsFixed(2)}',
+                      'Rs.${item.total.toStringAsFixed(2)}',
 
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),

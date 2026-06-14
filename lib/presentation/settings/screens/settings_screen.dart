@@ -58,7 +58,7 @@ class SettingsScreen extends ConsumerWidget {
                 value: settings.currency,
 
                 items: const [
-                  DropdownMenuItem(value: '₹', child: Text('Indian Rupee ₹')),
+                  DropdownMenuItem(value: 'Rs.', child: Text('Indian Rupee Rs.')),
 
                   DropdownMenuItem(value: '\$', child: Text('Dollar \$')),
 

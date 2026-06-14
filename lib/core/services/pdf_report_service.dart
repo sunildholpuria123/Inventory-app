@@ -31,7 +31,7 @@ class PdfReportService {
                 return [
                   e.invoiceNo,
                   e.customerName,
-                  '₹${e.grandTotal}',
+                  'Rs.${e.grandTotal}',
                   e.createdAt.toString(),
                 ];
               }).toList(),

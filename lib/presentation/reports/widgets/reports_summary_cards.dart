@@ -20,7 +20,7 @@ class ReportsSummaryCards extends ConsumerWidget {
             'Profit',
 
             profit.when(
-              data: (value) => '₹${value.toStringAsFixed(0)}',
+              data: (value) => 'Rs.${value.toStringAsFixed(0)}',
 
               loading: () => '...',
 
@@ -38,7 +38,7 @@ class ReportsSummaryCards extends ConsumerWidget {
             'Inventory Value',
 
             inventory.when(
-              data: (value) => '₹${value.toStringAsFixed(0)}',
+              data: (value) => 'Rs.${value.toStringAsFixed(0)}',
 
               loading: () => '...',
 

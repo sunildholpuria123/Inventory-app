@@ -8,7 +8,7 @@ class DashboardStats extends StatelessWidget {
     return Row(
       children: const [
         Expanded(
-          child: StatCard(title: 'Revenue', value: '₹50,000'),
+          child: StatCard(title: 'Revenue', value: 'Rs.50,000'),
         ),
 
         SizedBox(width: 20),

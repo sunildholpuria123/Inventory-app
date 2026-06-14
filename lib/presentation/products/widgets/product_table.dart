@@ -115,10 +115,10 @@ class ProductTable extends ConsumerWidget {
                   ),
 
                   /// PURCHASE PRICE
-                  DataCell(Text('₹${product.purchasePrice}')),
+                  DataCell(Text('Rs.${product.purchasePrice}')),
 
                   /// SELLING PRICE
-                  DataCell(Text('₹${product.sellingPrice}')),
+                  DataCell(Text('Rs.${product.sellingPrice}')),
 
                   /// ACTIONS
                   DataCell(

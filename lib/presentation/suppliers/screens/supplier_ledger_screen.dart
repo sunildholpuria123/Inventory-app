@@ -73,7 +73,7 @@ class SupplierLedgerScreen extends ConsumerWidget {
 
                       Text(
                         'Outstanding: '
-                        '₹${supplier.creditBalance.toStringAsFixed(2)}',
+                        'Rs.${supplier.creditBalance.toStringAsFixed(2)}',
 
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
@@ -84,7 +84,7 @@ class SupplierLedgerScreen extends ConsumerWidget {
 
                       Text(
                         'Total Purchases: '
-                        '₹${totalPurchases.toStringAsFixed(2)}',
+                        'Rs.${totalPurchases.toStringAsFixed(2)}',
                       ),
                     ],
                   ),
@@ -119,7 +119,7 @@ class SupplierLedgerScreen extends ConsumerWidget {
 
                                 children: [
                                   Text(
-                                    '₹${purchase.total.toStringAsFixed(0)}',
+                                    'Rs.${purchase.total.toStringAsFixed(0)}',
 
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,

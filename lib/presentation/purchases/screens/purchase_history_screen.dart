@@ -42,7 +42,7 @@ class PurchaseHistoryScreen extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
 
                   children: [
-                    Text('₹${purchase.total.toStringAsFixed(0)}'),
+                    Text('Rs.${purchase.total.toStringAsFixed(0)}'),
 
                     IconButton(
                       onPressed: () async {

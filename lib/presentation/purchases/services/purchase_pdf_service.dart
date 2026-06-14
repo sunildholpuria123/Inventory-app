@@ -58,9 +58,9 @@ class PurchasePdfService {
 
                 e.quantity.toString(),
 
-                '₹${e.purchasePrice}',
+                'Rs.${e.purchasePrice}',
 
-                '₹${e.total}',
+                'Rs.${e.total}',
               ];
             }).toList(),
           ),
@@ -72,7 +72,7 @@ class PurchasePdfService {
 
             child: pw.Text(
               'Grand Total: '
-              '₹${purchase.total}',
+              'Rs.${purchase.total}',
 
               style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
             ),

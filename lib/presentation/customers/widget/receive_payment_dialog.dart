@@ -138,7 +138,7 @@ class _ReceivePaymentDialogState extends ConsumerState<ReceivePaymentDialog> {
 
           const SizedBox(height: 10),
 
-          Text('Outstanding: ₹${widget.invoice.dueAmount.toStringAsFixed(2)}'),
+          Text('Outstanding: Rs.${widget.invoice.dueAmount.toStringAsFixed(2)}'),
 
           const SizedBox(height: 20),
 

@@ -20,7 +20,7 @@ class ReminderScheduler {
 
         title: 'Payment Due Tomorrow',
 
-        body: '${invoice.customerName} - ₹${invoice.dueAmount}',
+        body: '${invoice.customerName} - Rs.${invoice.dueAmount}',
       );
 
       /// MARK AS REMINDER SENT

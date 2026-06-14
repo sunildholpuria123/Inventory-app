@@ -169,7 +169,7 @@ class DuePaymentsScreen extends ConsumerWidget {
 
                   children: [
                     Text(
-                      '₹${invoice.dueAmount.toStringAsFixed(0)}',
+                      'Rs.${invoice.dueAmount.toStringAsFixed(0)}',
 
                       style: const TextStyle(
                         fontSize: 18,

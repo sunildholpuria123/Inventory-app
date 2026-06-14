@@ -33,7 +33,7 @@ class PurchaseDetailDialog extends StatelessWidget {
 
               subtitle: Text('Qty: ${item.quantity}'),
 
-              trailing: Text('₹${item.total.toStringAsFixed(0)}'),
+              trailing: Text('Rs.${item.total.toStringAsFixed(0)}'),
             );
           },
         ),

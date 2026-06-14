@@ -22,14 +22,14 @@ class PurchaseItemList extends ConsumerWidget {
 
             subtitle: Text(
               'Qty: ${item.qty}'
-              '\n₹${item.price.toStringAsFixed(2)}',
+              '\nRs.${item.price.toStringAsFixed(2)}',
             ),
 
             trailing: Column(
               mainAxisAlignment: MainAxisAlignment.center,
 
               children: [
-                Text('₹${item.total.toStringAsFixed(2)}'),
+                Text('Rs.${item.total.toStringAsFixed(2)}'),
 
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),

@@ -70,7 +70,7 @@ class CustomerCardList extends ConsumerWidget {
 
                   children: [
                     Text(
-                      'Credit: ₹${customer.creditBalance.toStringAsFixed(2)}',
+                      'Credit: Rs.${customer.creditBalance.toStringAsFixed(2)}',
 
                       style: TextStyle(
                         color: customer.creditBalance > 0

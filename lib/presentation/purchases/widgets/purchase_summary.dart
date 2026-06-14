@@ -21,7 +21,7 @@ class PurchaseSummary extends ConsumerWidget {
             const Text('Purchase Total', style: TextStyle(fontSize: 18)),
 
             Text(
-              '₹${subtotal.toStringAsFixed(2)}',
+              'Rs.${subtotal.toStringAsFixed(2)}',
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
           ],

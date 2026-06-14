@@ -36,13 +36,13 @@ class SupplierTable extends ConsumerWidget {
 
                 DataCell(Text(s.email ?? '')),
 
-                DataCell(Text('₹${s.creditBalance}')),
+                DataCell(Text('Rs.${s.creditBalance}')),
 
                 DataCell(Text(s.gstNumber ?? '-')),
 
                 DataCell(
                   Text(
-                    '₹${s.creditBalance.toStringAsFixed(2)}',
+                    'Rs.${s.creditBalance.toStringAsFixed(2)}',
 
                     style: TextStyle(
                       color: s.creditBalance > 0 ? Colors.red : Colors.green,
