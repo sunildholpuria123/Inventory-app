@@ -14,4 +14,8 @@ class Suppliers extends Table {
   RealColumn get creditBalance => real().withDefault(const Constant(0))();
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  TextColumn get gstNumber => text().nullable()();
+
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
 }

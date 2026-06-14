@@ -18,11 +18,32 @@ class PurchaseItemList extends ConsumerWidget {
           final item = items[index];
 
           return ListTile(
-            title: Text(item.product.name),
+            title: Text(item.displayName),
 
-            subtitle: Text('Qty: ${item.qty}'),
+            subtitle: Text(
+              'Qty: ${item.qty}'
+              '\n₹${item.price.toStringAsFixed(2)}',
+            ),
 
-            trailing: Text('₹${item.subtotal}'),
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+
+              children: [
+                Text('₹${item.total.toStringAsFixed(2)}'),
+
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+
+                  onPressed: () {
+                    final updated = [...items];
+
+                    updated.removeAt(index);
+
+                    ref.read(purchaseItemsProvider.notifier).state = updated;
+                  },
+                ),
+              ],
+            ),
           );
         },
       ),

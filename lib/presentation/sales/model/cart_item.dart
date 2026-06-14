@@ -37,7 +37,7 @@ class CartItem {
     if (isAreaBased) {
       final rate = variant?.sellingPrice ?? unitPrice;
 
-      return area * rate;
+      return area * rate * quantity;
     }
 
     return quantity * unitPrice;

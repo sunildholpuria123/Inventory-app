@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
 import '../provider/supplier_provider.dart';
+import '../screens/supplier_ledger_screen.dart';
 
 class SupplierTable extends ConsumerWidget {
   final List<Supplier> suppliers;
@@ -16,9 +17,13 @@ class SupplierTable extends ConsumerWidget {
         child: DataTable(
           columns: const [
             DataColumn(label: Text('Name')),
+
             DataColumn(label: Text('Phone')),
-            DataColumn(label: Text('Email')),
-            DataColumn(label: Text('Credit')),
+
+            DataColumn(label: Text('GST')),
+
+            DataColumn(label: Text('Balance')),
+
             DataColumn(label: Text('Actions')),
           ],
 
@@ -32,6 +37,18 @@ class SupplierTable extends ConsumerWidget {
                 DataCell(Text(s.email ?? '')),
 
                 DataCell(Text('₹${s.creditBalance}')),
+
+                DataCell(Text(s.gstNumber ?? '-')),
+
+                DataCell(
+                  Text(
+                    '₹${s.creditBalance.toStringAsFixed(2)}',
+
+                    style: TextStyle(
+                      color: s.creditBalance > 0 ? Colors.red : Colors.green,
+                    ),
+                  ),
+                ),
 
                 DataCell(
                   Row(
@@ -49,6 +66,20 @@ class SupplierTable extends ConsumerWidget {
                         },
 
                         icon: const Icon(Icons.delete, color: Colors.red),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.history),
+
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  SupplierLedgerScreen(supplier: s),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

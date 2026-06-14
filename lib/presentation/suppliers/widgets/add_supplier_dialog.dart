@@ -18,6 +18,26 @@ class _AddSupplierDialogState extends ConsumerState<AddSupplierDialog> {
   final emailController = TextEditingController();
 
   final addressController = TextEditingController();
+  final gstController = TextEditingController();
+
+  final balanceController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameController.dispose();
+
+    phoneController.dispose();
+
+    emailController.dispose();
+
+    addressController.dispose();
+
+    gstController.dispose();
+
+    balanceController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +80,23 @@ class _AddSupplierDialogState extends ConsumerState<AddSupplierDialog> {
 
               decoration: const InputDecoration(labelText: 'Address'),
             ),
+            const SizedBox(height: 15),
+
+            TextField(
+              controller: gstController,
+
+              decoration: const InputDecoration(labelText: 'GST Number'),
+            ),
+
+            const SizedBox(height: 15),
+
+            TextField(
+              controller: balanceController,
+
+              keyboardType: TextInputType.number,
+
+              decoration: const InputDecoration(labelText: 'Opening Balance'),
+            ),
           ],
         ),
       ),
@@ -71,9 +108,22 @@ class _AddSupplierDialogState extends ConsumerState<AddSupplierDialog> {
 
             await repo.addSupplier(
               name: nameController.text,
+
               phone: phoneController.text,
-              email: emailController.text,
-              address: addressController.text,
+
+              email: emailController.text.trim().isEmpty
+                  ? null
+                  : emailController.text,
+
+              address: addressController.text.trim().isEmpty
+                  ? null
+                  : addressController.text,
+
+              gstNumber: gstController.text.trim().isEmpty
+                  ? null
+                  : gstController.text,
+
+              creditBalance: double.tryParse(balanceController.text) ?? 0,
             );
 
             if (mounted) {

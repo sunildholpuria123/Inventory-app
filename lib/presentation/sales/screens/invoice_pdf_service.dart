@@ -109,8 +109,7 @@ class InvoicePdfService {
 
               cellStyle: const pw.TextStyle(fontSize: 10),
 
-              headers: ['Product', 'Qty', 'Rate', 'Area', 'Total'],
-
+              headers: ['Product', 'Qty', 'Rate/Sqft', 'Measurement', 'Total'],
               data: items.map((e) {
                 final productName = e.variantName != null
                     ? '${e.product.name}\n'
@@ -119,15 +118,15 @@ class InvoicePdfService {
 
                 final areaText = e.isAreaBased
                     ? '${e.height?.toStringAsFixed(2)} × '
-                          '${e.width?.toStringAsFixed(2)}\n'
-                          '= ${e.area?.toStringAsFixed(2)} sqft'
+                          '${e.width?.toStringAsFixed(2)}'
+                          ' × ${e.qty}\n'
+                          '= ${(e.area! * e.qty).toStringAsFixed(2)} sqft'
                     : '-';
 
                 return [
                   productName,
 
-                  e.qty.toString(),
-
+                  e.isAreaBased ? '${e.qty} Slab' : e.qty.toString(),
                   '₹${e.price.toStringAsFixed(2)}',
 
                   areaText,

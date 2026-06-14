@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:inventory_desktop/data/database/tables/product_variants.dart';
+import 'package:inventory_desktop/data/database/tables/purchase_returns_table.dart';
+import 'package:inventory_desktop/data/database/tables/sales_returns_table.dart';
+import 'package:inventory_desktop/data/database/tables/supplier_payment_histories.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -38,6 +41,9 @@ part 'app_database.g.dart';
     InvoiceItems,
     PaymentHistories,
     ProductVariants,
+    SupplierPaymentHistories,
+    PurchaseReturns,
+    SalesReturns,
   ],
 )
 class AppDatabase extends _$AppDatabase {

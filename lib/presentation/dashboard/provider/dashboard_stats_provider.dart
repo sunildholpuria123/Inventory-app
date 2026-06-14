@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart' show Invoice, Product;
 import '../../../data/repositories/dashboard_repository.dart';
+import '../../purchases/provider/purchase_provider.dart';
 import '../model/monthly_sales.dart' show MonthlySales;
 import '../model/profit_summary.dart' show ProfitSummary;
 import '../model/variant_inventory.dart';
@@ -91,4 +92,10 @@ final variantInventoryProvider = StreamProvider<List<VariantInventory>>((ref) {
   final repo = ref.watch(dashboardRepositoryProvider);
 
   return repo.getVariantInventoryAnalytics();
+});
+
+final totalPurchaseProvider = StreamProvider<double>((ref) {
+  final repo = ref.watch(purchaseRepositoryProvider);
+
+  return repo.watchTotalPurchases();
 });

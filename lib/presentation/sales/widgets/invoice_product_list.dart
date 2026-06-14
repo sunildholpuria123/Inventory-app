@@ -55,8 +55,9 @@ class InvoiceProductList extends ConsumerWidget {
 
                           child: Text(
                             '${item.height} × '
-                            '${item.width} = '
-                            '${item.area.toStringAsFixed(2)} sqft',
+                            '${item.width} × '
+                            '${item.quantity} = '
+                            '${(item.area * item.quantity).toStringAsFixed(2)} sqft',
 
                             style: const TextStyle(color: Colors.blueGrey),
                           ),

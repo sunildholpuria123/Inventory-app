@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/providers/database_provider.dart';
-import '../provider/purchase_provider.dart';
+import '../../purchases/provider/purchase_provider.dart';
 
 class SupplierDropdown extends ConsumerWidget {
   const SupplierDropdown({super.key});

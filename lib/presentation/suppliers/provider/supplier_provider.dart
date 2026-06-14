@@ -17,3 +17,4 @@ final suppliersProvider = StreamProvider<List<Supplier>>((ref) {
 });
 
 final supplierSearchProvider = StateProvider<String>((ref) => '');
+

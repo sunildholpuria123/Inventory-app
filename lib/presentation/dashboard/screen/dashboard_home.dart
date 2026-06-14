@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'
-    show ConsumerStatefulWidget, ConsumerState;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/services/reminder_scheduler.dart' show ReminderScheduler;
-import '../../../core/utils/responsive_helper.dart' show ResponsiveHelper;
-import '../widget/dashboard_kpi_grid.dart' show DashboardKpiGrid;
-import '../widget/due_payment_alert_widget.dart' show DuePaymentAlertWidget;
+import '../../../core/services/reminder_scheduler.dart';
+import '../../../core/utils/responsive_helper.dart';
+import '../widget/dashboard_kpi_grid.dart';
+import '../widget/due_payment_alert_widget.dart';
 import '../widget/low_stock_widget.dart';
-import '../widget/profit_card.dart' show ProfitCard;
+import '../widget/payables_widget.dart';
+import '../widget/profit_card.dart';
+import '../widget/purchase_return_dashboard_section.dart';
 import '../widget/recent_sales_widget.dart';
 import '../widget/sales_overview_chart.dart';
+import '../widget/supplier_purchase_widget.dart';
 import '../widget/variant_inventory_widget.dart';
 import '../widget/variant_sales_widget.dart';
 
@@ -44,7 +46,10 @@ class _DashboardHomeState extends ConsumerState<DashboardHome> {
 
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+
             children: [
+              /// HEADER
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
@@ -61,57 +66,101 @@ class _DashboardHomeState extends ConsumerState<DashboardHome> {
 
               const SizedBox(height: 20),
 
+              /// KPI
               const DashboardKpiGrid(),
 
               const SizedBox(height: 20),
 
-              const DuePaymentAlertWidget(),
+              /// DUE ALERTS
+              // const DuePaymentAlertWidget(),
 
               const SizedBox(height: 20),
-              isMobile
-                  ? const Column(
-                      children: [
-                        SizedBox(height: 250, child: SalesOverviewChart()),
 
-                        SizedBox(height: 20),
+              if (isMobile) ...[
+                const SizedBox(height: 250, child: SalesOverviewChart()),
 
-                        SizedBox(height: 250, child: RecentSalesWidget()),
+                const SizedBox(height: 20),
 
-                        const SizedBox(height: 20),
 
-                        const VariantSalesWidget(),
-                        const SizedBox(height: 20),
+                const SizedBox(height: 250, child: RecentSalesWidget()),
 
-                        const VariantInventoryWidget(),
-                        SizedBox(height: 250, child: LowStockWidget()),
-                      ],
-                    )
-                  : SizedBox(
-                      height: 500,
+                const SizedBox(height: 20),
 
-                      child: Row(
-                        children: [
-                          const Expanded(flex: 2, child: SalesOverviewChart()),
+                const VariantSalesWidget(),
 
-                          const SizedBox(width: 20),
+                const SizedBox(height: 20),
 
-                          Expanded(
-                            child: Column(
-                              children: const [
-                                Expanded(child: RecentSalesWidget()),
+                const VariantInventoryWidget(),
 
-                                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-                                Expanded(child: LowStockWidget()),
-                              ],
-                            ),
-                          ),
-                        ],
+                const SupplierPurchaseWidget(),
+
+                const SizedBox(height: 20),
+
+                const PayablesWidget(),
+
+                const SizedBox(height: 20),
+
+                const PurchaseReturnDashboardSection(),
+
+                const SizedBox(height: 20),
+
+                const SizedBox(height: 250, child: LowStockWidget()),
+
+              ] else ...[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                  children: [
+                    const Expanded(
+                      flex: 2,
+
+                      child: SizedBox(height: 400, child: SalesOverviewChart()),
+                    ),
+
+                    const SizedBox(width: 20),
+
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: const [
+                            SizedBox(height: 250, child: RecentSalesWidget()),
+
+                            SizedBox(height: 20),
+
+                            VariantSalesWidget(),
+
+                            SizedBox(height: 20),
+
+                            SupplierPurchaseWidget(),
+
+                            SizedBox(height: 20),
+
+                            PayablesWidget(),
+
+                            SizedBox(height: 20),
+
+                            PurchaseReturnDashboardSection(),
+
+                            SizedBox(height: 20),
+
+                            SizedBox(height: 250, child: LowStockWidget()),
+                          ],
+                        ),
                       ),
                     ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                // const VariantInventoryWidget(),
+              ],
+
               const SizedBox(height: 20),
 
-              const ProfitCard(),
+              // const ProfitCard(),
             ],
           ),
         ),
