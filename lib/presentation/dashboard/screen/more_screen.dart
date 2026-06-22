@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:inventory_desktop/presentation/analytics/screens/purchase_ai_dashboard_screen.dart';
 
+import '../../analytics/screens/analytics_dashboard_screen.dart';
 import '../../categories/screen/category_management_screen.dart';
 import '../../customers/screen/due_payments_screen.dart';
 import '../../expenses/screens/expense_screen.dart';
@@ -30,6 +32,8 @@ class MoreScreen extends StatelessWidget {
           _item(context, Icons.money_off, 'Expenses', const ExpenseScreen()),
 
           _item(context, Icons.analytics, 'Reports', const ReportsScreen()),
+          _item(context, Icons.sync_problem_sharp, 'Purchase AI', const PurchaseAiDashboardScreen()),
+          _item(context, Icons.report, 'Analytics', const AnalyticsDashboardScreen()),
 
           _item(
             context,
