@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_windows
   file_selector_windows
+  permission_handler_windows
   printing
   screen_retriever_windows
   share_plus

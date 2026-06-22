@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/provider/theme_provider.dart';
+import '../../../core/services/demo_data_service.dart';
+import '../../../core/services/notification_service.dart';
 import '../../../data/providers/database_provider.dart';
 import '../../../data/repositories/backup_repository.dart'
     show BackupRepository;
@@ -141,6 +143,43 @@ class SettingsScreen extends ConsumerWidget {
               Card(
                 child: Column(
                   children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        await NotificationService.instance.showReminder(
+                          id: 999,
+                          title: 'Test Reminder',
+                          body: 'Reminder functionality is working.',
+                        );
+                      },
+                      child: const Text('Test Reminder'),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.science),
+                      title: const Text(
+                        'Generate Demo Data',
+                      ),
+                      onTap: () async {
+                        final db = ref.read(
+                          databaseProvider,
+                        );
+
+                        await DemoDataService(
+                          db,
+                        ).generate();
+
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Demo data generated successfully',
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
                     ListTile(
                       leading: const Icon(Icons.inventory),
 

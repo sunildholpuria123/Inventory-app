@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class NotificationService {
   NotificationService._();
@@ -9,8 +10,20 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   Future<void> initialize() async {
+    await requestNotificationPermission();
+    final plugin = FlutterLocalNotificationsPlugin();
+
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
 
+    const settings = InitializationSettings(android: android);
+
+    await plugin.initialize(settings);
+
+    await plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.requestNotificationsPermission();
     const ios = DarwinInitializationSettings();
 
     await notifications.initialize(
@@ -18,6 +31,12 @@ class NotificationService {
     );
   }
 
+  Future<void> requestNotificationPermission() async {
+    final status =
+    await Permission.notification.request();
+
+    print(status);
+  }
   Future<void> showReminder({
     required int id,
     required String title,
