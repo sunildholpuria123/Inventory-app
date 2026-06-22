@@ -10327,6 +10327,634 @@ class BusinessSettingsCompanion extends UpdateCompanion<BusinessSetting> {
   }
 }
 
+class $ProductPriceHistoriesTable extends ProductPriceHistories
+    with TableInfo<$ProductPriceHistoriesTable, ProductPriceHistory> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProductPriceHistoriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _productIdMeta = const VerificationMeta(
+    'productId',
+  );
+  @override
+  late final GeneratedColumn<int> productId = GeneratedColumn<int>(
+    'product_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _supplierIdMeta = const VerificationMeta(
+    'supplierId',
+  );
+  @override
+  late final GeneratedColumn<int> supplierId = GeneratedColumn<int>(
+    'supplier_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _oldPurchasePriceMeta = const VerificationMeta(
+    'oldPurchasePrice',
+  );
+  @override
+  late final GeneratedColumn<double> oldPurchasePrice = GeneratedColumn<double>(
+    'old_purchase_price',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _newPurchasePriceMeta = const VerificationMeta(
+    'newPurchasePrice',
+  );
+  @override
+  late final GeneratedColumn<double> newPurchasePrice = GeneratedColumn<double>(
+    'new_purchase_price',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _oldSellingPriceMeta = const VerificationMeta(
+    'oldSellingPrice',
+  );
+  @override
+  late final GeneratedColumn<double> oldSellingPrice = GeneratedColumn<double>(
+    'old_selling_price',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _newSellingPriceMeta = const VerificationMeta(
+    'newSellingPrice',
+  );
+  @override
+  late final GeneratedColumn<double> newSellingPrice = GeneratedColumn<double>(
+    'new_selling_price',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _inflationPercentageMeta =
+      const VerificationMeta('inflationPercentage');
+  @override
+  late final GeneratedColumn<double> inflationPercentage =
+      GeneratedColumn<double>(
+        'inflation_percentage',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0),
+      );
+  static const VerificationMeta _changedAtMeta = const VerificationMeta(
+    'changedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> changedAt = GeneratedColumn<DateTime>(
+    'changed_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _remarksMeta = const VerificationMeta(
+    'remarks',
+  );
+  @override
+  late final GeneratedColumn<String> remarks = GeneratedColumn<String>(
+    'remarks',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    productId,
+    supplierId,
+    oldPurchasePrice,
+    newPurchasePrice,
+    oldSellingPrice,
+    newSellingPrice,
+    inflationPercentage,
+    changedAt,
+    remarks,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'product_price_histories';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProductPriceHistory> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('product_id')) {
+      context.handle(
+        _productIdMeta,
+        productId.isAcceptableOrUnknown(data['product_id']!, _productIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_productIdMeta);
+    }
+    if (data.containsKey('supplier_id')) {
+      context.handle(
+        _supplierIdMeta,
+        supplierId.isAcceptableOrUnknown(data['supplier_id']!, _supplierIdMeta),
+      );
+    }
+    if (data.containsKey('old_purchase_price')) {
+      context.handle(
+        _oldPurchasePriceMeta,
+        oldPurchasePrice.isAcceptableOrUnknown(
+          data['old_purchase_price']!,
+          _oldPurchasePriceMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_oldPurchasePriceMeta);
+    }
+    if (data.containsKey('new_purchase_price')) {
+      context.handle(
+        _newPurchasePriceMeta,
+        newPurchasePrice.isAcceptableOrUnknown(
+          data['new_purchase_price']!,
+          _newPurchasePriceMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_newPurchasePriceMeta);
+    }
+    if (data.containsKey('old_selling_price')) {
+      context.handle(
+        _oldSellingPriceMeta,
+        oldSellingPrice.isAcceptableOrUnknown(
+          data['old_selling_price']!,
+          _oldSellingPriceMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_oldSellingPriceMeta);
+    }
+    if (data.containsKey('new_selling_price')) {
+      context.handle(
+        _newSellingPriceMeta,
+        newSellingPrice.isAcceptableOrUnknown(
+          data['new_selling_price']!,
+          _newSellingPriceMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_newSellingPriceMeta);
+    }
+    if (data.containsKey('inflation_percentage')) {
+      context.handle(
+        _inflationPercentageMeta,
+        inflationPercentage.isAcceptableOrUnknown(
+          data['inflation_percentage']!,
+          _inflationPercentageMeta,
+        ),
+      );
+    }
+    if (data.containsKey('changed_at')) {
+      context.handle(
+        _changedAtMeta,
+        changedAt.isAcceptableOrUnknown(data['changed_at']!, _changedAtMeta),
+      );
+    }
+    if (data.containsKey('remarks')) {
+      context.handle(
+        _remarksMeta,
+        remarks.isAcceptableOrUnknown(data['remarks']!, _remarksMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProductPriceHistory map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProductPriceHistory(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      productId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}product_id'],
+      )!,
+      supplierId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}supplier_id'],
+      ),
+      oldPurchasePrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}old_purchase_price'],
+      )!,
+      newPurchasePrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}new_purchase_price'],
+      )!,
+      oldSellingPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}old_selling_price'],
+      )!,
+      newSellingPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}new_selling_price'],
+      )!,
+      inflationPercentage: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}inflation_percentage'],
+      )!,
+      changedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}changed_at'],
+      )!,
+      remarks: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}remarks'],
+      ),
+    );
+  }
+
+  @override
+  $ProductPriceHistoriesTable createAlias(String alias) {
+    return $ProductPriceHistoriesTable(attachedDatabase, alias);
+  }
+}
+
+class ProductPriceHistory extends DataClass
+    implements Insertable<ProductPriceHistory> {
+  final int id;
+  final int productId;
+  final int? supplierId;
+  final double oldPurchasePrice;
+  final double newPurchasePrice;
+  final double oldSellingPrice;
+  final double newSellingPrice;
+  final double inflationPercentage;
+  final DateTime changedAt;
+  final String? remarks;
+  const ProductPriceHistory({
+    required this.id,
+    required this.productId,
+    this.supplierId,
+    required this.oldPurchasePrice,
+    required this.newPurchasePrice,
+    required this.oldSellingPrice,
+    required this.newSellingPrice,
+    required this.inflationPercentage,
+    required this.changedAt,
+    this.remarks,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['product_id'] = Variable<int>(productId);
+    if (!nullToAbsent || supplierId != null) {
+      map['supplier_id'] = Variable<int>(supplierId);
+    }
+    map['old_purchase_price'] = Variable<double>(oldPurchasePrice);
+    map['new_purchase_price'] = Variable<double>(newPurchasePrice);
+    map['old_selling_price'] = Variable<double>(oldSellingPrice);
+    map['new_selling_price'] = Variable<double>(newSellingPrice);
+    map['inflation_percentage'] = Variable<double>(inflationPercentage);
+    map['changed_at'] = Variable<DateTime>(changedAt);
+    if (!nullToAbsent || remarks != null) {
+      map['remarks'] = Variable<String>(remarks);
+    }
+    return map;
+  }
+
+  ProductPriceHistoriesCompanion toCompanion(bool nullToAbsent) {
+    return ProductPriceHistoriesCompanion(
+      id: Value(id),
+      productId: Value(productId),
+      supplierId: supplierId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supplierId),
+      oldPurchasePrice: Value(oldPurchasePrice),
+      newPurchasePrice: Value(newPurchasePrice),
+      oldSellingPrice: Value(oldSellingPrice),
+      newSellingPrice: Value(newSellingPrice),
+      inflationPercentage: Value(inflationPercentage),
+      changedAt: Value(changedAt),
+      remarks: remarks == null && nullToAbsent
+          ? const Value.absent()
+          : Value(remarks),
+    );
+  }
+
+  factory ProductPriceHistory.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProductPriceHistory(
+      id: serializer.fromJson<int>(json['id']),
+      productId: serializer.fromJson<int>(json['productId']),
+      supplierId: serializer.fromJson<int?>(json['supplierId']),
+      oldPurchasePrice: serializer.fromJson<double>(json['oldPurchasePrice']),
+      newPurchasePrice: serializer.fromJson<double>(json['newPurchasePrice']),
+      oldSellingPrice: serializer.fromJson<double>(json['oldSellingPrice']),
+      newSellingPrice: serializer.fromJson<double>(json['newSellingPrice']),
+      inflationPercentage: serializer.fromJson<double>(
+        json['inflationPercentage'],
+      ),
+      changedAt: serializer.fromJson<DateTime>(json['changedAt']),
+      remarks: serializer.fromJson<String?>(json['remarks']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'productId': serializer.toJson<int>(productId),
+      'supplierId': serializer.toJson<int?>(supplierId),
+      'oldPurchasePrice': serializer.toJson<double>(oldPurchasePrice),
+      'newPurchasePrice': serializer.toJson<double>(newPurchasePrice),
+      'oldSellingPrice': serializer.toJson<double>(oldSellingPrice),
+      'newSellingPrice': serializer.toJson<double>(newSellingPrice),
+      'inflationPercentage': serializer.toJson<double>(inflationPercentage),
+      'changedAt': serializer.toJson<DateTime>(changedAt),
+      'remarks': serializer.toJson<String?>(remarks),
+    };
+  }
+
+  ProductPriceHistory copyWith({
+    int? id,
+    int? productId,
+    Value<int?> supplierId = const Value.absent(),
+    double? oldPurchasePrice,
+    double? newPurchasePrice,
+    double? oldSellingPrice,
+    double? newSellingPrice,
+    double? inflationPercentage,
+    DateTime? changedAt,
+    Value<String?> remarks = const Value.absent(),
+  }) => ProductPriceHistory(
+    id: id ?? this.id,
+    productId: productId ?? this.productId,
+    supplierId: supplierId.present ? supplierId.value : this.supplierId,
+    oldPurchasePrice: oldPurchasePrice ?? this.oldPurchasePrice,
+    newPurchasePrice: newPurchasePrice ?? this.newPurchasePrice,
+    oldSellingPrice: oldSellingPrice ?? this.oldSellingPrice,
+    newSellingPrice: newSellingPrice ?? this.newSellingPrice,
+    inflationPercentage: inflationPercentage ?? this.inflationPercentage,
+    changedAt: changedAt ?? this.changedAt,
+    remarks: remarks.present ? remarks.value : this.remarks,
+  );
+  ProductPriceHistory copyWithCompanion(ProductPriceHistoriesCompanion data) {
+    return ProductPriceHistory(
+      id: data.id.present ? data.id.value : this.id,
+      productId: data.productId.present ? data.productId.value : this.productId,
+      supplierId: data.supplierId.present
+          ? data.supplierId.value
+          : this.supplierId,
+      oldPurchasePrice: data.oldPurchasePrice.present
+          ? data.oldPurchasePrice.value
+          : this.oldPurchasePrice,
+      newPurchasePrice: data.newPurchasePrice.present
+          ? data.newPurchasePrice.value
+          : this.newPurchasePrice,
+      oldSellingPrice: data.oldSellingPrice.present
+          ? data.oldSellingPrice.value
+          : this.oldSellingPrice,
+      newSellingPrice: data.newSellingPrice.present
+          ? data.newSellingPrice.value
+          : this.newSellingPrice,
+      inflationPercentage: data.inflationPercentage.present
+          ? data.inflationPercentage.value
+          : this.inflationPercentage,
+      changedAt: data.changedAt.present ? data.changedAt.value : this.changedAt,
+      remarks: data.remarks.present ? data.remarks.value : this.remarks,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProductPriceHistory(')
+          ..write('id: $id, ')
+          ..write('productId: $productId, ')
+          ..write('supplierId: $supplierId, ')
+          ..write('oldPurchasePrice: $oldPurchasePrice, ')
+          ..write('newPurchasePrice: $newPurchasePrice, ')
+          ..write('oldSellingPrice: $oldSellingPrice, ')
+          ..write('newSellingPrice: $newSellingPrice, ')
+          ..write('inflationPercentage: $inflationPercentage, ')
+          ..write('changedAt: $changedAt, ')
+          ..write('remarks: $remarks')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    productId,
+    supplierId,
+    oldPurchasePrice,
+    newPurchasePrice,
+    oldSellingPrice,
+    newSellingPrice,
+    inflationPercentage,
+    changedAt,
+    remarks,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProductPriceHistory &&
+          other.id == this.id &&
+          other.productId == this.productId &&
+          other.supplierId == this.supplierId &&
+          other.oldPurchasePrice == this.oldPurchasePrice &&
+          other.newPurchasePrice == this.newPurchasePrice &&
+          other.oldSellingPrice == this.oldSellingPrice &&
+          other.newSellingPrice == this.newSellingPrice &&
+          other.inflationPercentage == this.inflationPercentage &&
+          other.changedAt == this.changedAt &&
+          other.remarks == this.remarks);
+}
+
+class ProductPriceHistoriesCompanion
+    extends UpdateCompanion<ProductPriceHistory> {
+  final Value<int> id;
+  final Value<int> productId;
+  final Value<int?> supplierId;
+  final Value<double> oldPurchasePrice;
+  final Value<double> newPurchasePrice;
+  final Value<double> oldSellingPrice;
+  final Value<double> newSellingPrice;
+  final Value<double> inflationPercentage;
+  final Value<DateTime> changedAt;
+  final Value<String?> remarks;
+  const ProductPriceHistoriesCompanion({
+    this.id = const Value.absent(),
+    this.productId = const Value.absent(),
+    this.supplierId = const Value.absent(),
+    this.oldPurchasePrice = const Value.absent(),
+    this.newPurchasePrice = const Value.absent(),
+    this.oldSellingPrice = const Value.absent(),
+    this.newSellingPrice = const Value.absent(),
+    this.inflationPercentage = const Value.absent(),
+    this.changedAt = const Value.absent(),
+    this.remarks = const Value.absent(),
+  });
+  ProductPriceHistoriesCompanion.insert({
+    this.id = const Value.absent(),
+    required int productId,
+    this.supplierId = const Value.absent(),
+    required double oldPurchasePrice,
+    required double newPurchasePrice,
+    required double oldSellingPrice,
+    required double newSellingPrice,
+    this.inflationPercentage = const Value.absent(),
+    this.changedAt = const Value.absent(),
+    this.remarks = const Value.absent(),
+  }) : productId = Value(productId),
+       oldPurchasePrice = Value(oldPurchasePrice),
+       newPurchasePrice = Value(newPurchasePrice),
+       oldSellingPrice = Value(oldSellingPrice),
+       newSellingPrice = Value(newSellingPrice);
+  static Insertable<ProductPriceHistory> custom({
+    Expression<int>? id,
+    Expression<int>? productId,
+    Expression<int>? supplierId,
+    Expression<double>? oldPurchasePrice,
+    Expression<double>? newPurchasePrice,
+    Expression<double>? oldSellingPrice,
+    Expression<double>? newSellingPrice,
+    Expression<double>? inflationPercentage,
+    Expression<DateTime>? changedAt,
+    Expression<String>? remarks,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (productId != null) 'product_id': productId,
+      if (supplierId != null) 'supplier_id': supplierId,
+      if (oldPurchasePrice != null) 'old_purchase_price': oldPurchasePrice,
+      if (newPurchasePrice != null) 'new_purchase_price': newPurchasePrice,
+      if (oldSellingPrice != null) 'old_selling_price': oldSellingPrice,
+      if (newSellingPrice != null) 'new_selling_price': newSellingPrice,
+      if (inflationPercentage != null)
+        'inflation_percentage': inflationPercentage,
+      if (changedAt != null) 'changed_at': changedAt,
+      if (remarks != null) 'remarks': remarks,
+    });
+  }
+
+  ProductPriceHistoriesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? productId,
+    Value<int?>? supplierId,
+    Value<double>? oldPurchasePrice,
+    Value<double>? newPurchasePrice,
+    Value<double>? oldSellingPrice,
+    Value<double>? newSellingPrice,
+    Value<double>? inflationPercentage,
+    Value<DateTime>? changedAt,
+    Value<String?>? remarks,
+  }) {
+    return ProductPriceHistoriesCompanion(
+      id: id ?? this.id,
+      productId: productId ?? this.productId,
+      supplierId: supplierId ?? this.supplierId,
+      oldPurchasePrice: oldPurchasePrice ?? this.oldPurchasePrice,
+      newPurchasePrice: newPurchasePrice ?? this.newPurchasePrice,
+      oldSellingPrice: oldSellingPrice ?? this.oldSellingPrice,
+      newSellingPrice: newSellingPrice ?? this.newSellingPrice,
+      inflationPercentage: inflationPercentage ?? this.inflationPercentage,
+      changedAt: changedAt ?? this.changedAt,
+      remarks: remarks ?? this.remarks,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (productId.present) {
+      map['product_id'] = Variable<int>(productId.value);
+    }
+    if (supplierId.present) {
+      map['supplier_id'] = Variable<int>(supplierId.value);
+    }
+    if (oldPurchasePrice.present) {
+      map['old_purchase_price'] = Variable<double>(oldPurchasePrice.value);
+    }
+    if (newPurchasePrice.present) {
+      map['new_purchase_price'] = Variable<double>(newPurchasePrice.value);
+    }
+    if (oldSellingPrice.present) {
+      map['old_selling_price'] = Variable<double>(oldSellingPrice.value);
+    }
+    if (newSellingPrice.present) {
+      map['new_selling_price'] = Variable<double>(newSellingPrice.value);
+    }
+    if (inflationPercentage.present) {
+      map['inflation_percentage'] = Variable<double>(inflationPercentage.value);
+    }
+    if (changedAt.present) {
+      map['changed_at'] = Variable<DateTime>(changedAt.value);
+    }
+    if (remarks.present) {
+      map['remarks'] = Variable<String>(remarks.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProductPriceHistoriesCompanion(')
+          ..write('id: $id, ')
+          ..write('productId: $productId, ')
+          ..write('supplierId: $supplierId, ')
+          ..write('oldPurchasePrice: $oldPurchasePrice, ')
+          ..write('newPurchasePrice: $newPurchasePrice, ')
+          ..write('oldSellingPrice: $oldSellingPrice, ')
+          ..write('newSellingPrice: $newSellingPrice, ')
+          ..write('inflationPercentage: $inflationPercentage, ')
+          ..write('changedAt: $changedAt, ')
+          ..write('remarks: $remarks')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -10357,6 +10985,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $BusinessSettingsTable businessSettings = $BusinessSettingsTable(
     this,
   );
+  late final $ProductPriceHistoriesTable productPriceHistories =
+      $ProductPriceHistoriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10380,6 +11010,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     purchaseReturns,
     salesReturns,
     businessSettings,
+    productPriceHistories,
   ];
 }
 
@@ -15680,6 +16311,326 @@ typedef $$BusinessSettingsTableProcessedTableManager =
       BusinessSetting,
       PrefetchHooks Function()
     >;
+typedef $$ProductPriceHistoriesTableCreateCompanionBuilder =
+    ProductPriceHistoriesCompanion Function({
+      Value<int> id,
+      required int productId,
+      Value<int?> supplierId,
+      required double oldPurchasePrice,
+      required double newPurchasePrice,
+      required double oldSellingPrice,
+      required double newSellingPrice,
+      Value<double> inflationPercentage,
+      Value<DateTime> changedAt,
+      Value<String?> remarks,
+    });
+typedef $$ProductPriceHistoriesTableUpdateCompanionBuilder =
+    ProductPriceHistoriesCompanion Function({
+      Value<int> id,
+      Value<int> productId,
+      Value<int?> supplierId,
+      Value<double> oldPurchasePrice,
+      Value<double> newPurchasePrice,
+      Value<double> oldSellingPrice,
+      Value<double> newSellingPrice,
+      Value<double> inflationPercentage,
+      Value<DateTime> changedAt,
+      Value<String?> remarks,
+    });
+
+class $$ProductPriceHistoriesTableFilterComposer
+    extends Composer<_$AppDatabase, $ProductPriceHistoriesTable> {
+  $$ProductPriceHistoriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get productId => $composableBuilder(
+    column: $table.productId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get supplierId => $composableBuilder(
+    column: $table.supplierId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get oldPurchasePrice => $composableBuilder(
+    column: $table.oldPurchasePrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get newPurchasePrice => $composableBuilder(
+    column: $table.newPurchasePrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get oldSellingPrice => $composableBuilder(
+    column: $table.oldSellingPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get newSellingPrice => $composableBuilder(
+    column: $table.newSellingPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get inflationPercentage => $composableBuilder(
+    column: $table.inflationPercentage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get changedAt => $composableBuilder(
+    column: $table.changedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get remarks => $composableBuilder(
+    column: $table.remarks,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProductPriceHistoriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProductPriceHistoriesTable> {
+  $$ProductPriceHistoriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get productId => $composableBuilder(
+    column: $table.productId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get supplierId => $composableBuilder(
+    column: $table.supplierId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get oldPurchasePrice => $composableBuilder(
+    column: $table.oldPurchasePrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get newPurchasePrice => $composableBuilder(
+    column: $table.newPurchasePrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get oldSellingPrice => $composableBuilder(
+    column: $table.oldSellingPrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get newSellingPrice => $composableBuilder(
+    column: $table.newSellingPrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get inflationPercentage => $composableBuilder(
+    column: $table.inflationPercentage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get changedAt => $composableBuilder(
+    column: $table.changedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get remarks => $composableBuilder(
+    column: $table.remarks,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProductPriceHistoriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProductPriceHistoriesTable> {
+  $$ProductPriceHistoriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get productId =>
+      $composableBuilder(column: $table.productId, builder: (column) => column);
+
+  GeneratedColumn<int> get supplierId => $composableBuilder(
+    column: $table.supplierId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get oldPurchasePrice => $composableBuilder(
+    column: $table.oldPurchasePrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get newPurchasePrice => $composableBuilder(
+    column: $table.newPurchasePrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get oldSellingPrice => $composableBuilder(
+    column: $table.oldSellingPrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get newSellingPrice => $composableBuilder(
+    column: $table.newSellingPrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get inflationPercentage => $composableBuilder(
+    column: $table.inflationPercentage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get changedAt =>
+      $composableBuilder(column: $table.changedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get remarks =>
+      $composableBuilder(column: $table.remarks, builder: (column) => column);
+}
+
+class $$ProductPriceHistoriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProductPriceHistoriesTable,
+          ProductPriceHistory,
+          $$ProductPriceHistoriesTableFilterComposer,
+          $$ProductPriceHistoriesTableOrderingComposer,
+          $$ProductPriceHistoriesTableAnnotationComposer,
+          $$ProductPriceHistoriesTableCreateCompanionBuilder,
+          $$ProductPriceHistoriesTableUpdateCompanionBuilder,
+          (
+            ProductPriceHistory,
+            BaseReferences<
+              _$AppDatabase,
+              $ProductPriceHistoriesTable,
+              ProductPriceHistory
+            >,
+          ),
+          ProductPriceHistory,
+          PrefetchHooks Function()
+        > {
+  $$ProductPriceHistoriesTableTableManager(
+    _$AppDatabase db,
+    $ProductPriceHistoriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProductPriceHistoriesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ProductPriceHistoriesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ProductPriceHistoriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> productId = const Value.absent(),
+                Value<int?> supplierId = const Value.absent(),
+                Value<double> oldPurchasePrice = const Value.absent(),
+                Value<double> newPurchasePrice = const Value.absent(),
+                Value<double> oldSellingPrice = const Value.absent(),
+                Value<double> newSellingPrice = const Value.absent(),
+                Value<double> inflationPercentage = const Value.absent(),
+                Value<DateTime> changedAt = const Value.absent(),
+                Value<String?> remarks = const Value.absent(),
+              }) => ProductPriceHistoriesCompanion(
+                id: id,
+                productId: productId,
+                supplierId: supplierId,
+                oldPurchasePrice: oldPurchasePrice,
+                newPurchasePrice: newPurchasePrice,
+                oldSellingPrice: oldSellingPrice,
+                newSellingPrice: newSellingPrice,
+                inflationPercentage: inflationPercentage,
+                changedAt: changedAt,
+                remarks: remarks,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int productId,
+                Value<int?> supplierId = const Value.absent(),
+                required double oldPurchasePrice,
+                required double newPurchasePrice,
+                required double oldSellingPrice,
+                required double newSellingPrice,
+                Value<double> inflationPercentage = const Value.absent(),
+                Value<DateTime> changedAt = const Value.absent(),
+                Value<String?> remarks = const Value.absent(),
+              }) => ProductPriceHistoriesCompanion.insert(
+                id: id,
+                productId: productId,
+                supplierId: supplierId,
+                oldPurchasePrice: oldPurchasePrice,
+                newPurchasePrice: newPurchasePrice,
+                oldSellingPrice: oldSellingPrice,
+                newSellingPrice: newSellingPrice,
+                inflationPercentage: inflationPercentage,
+                changedAt: changedAt,
+                remarks: remarks,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProductPriceHistoriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProductPriceHistoriesTable,
+      ProductPriceHistory,
+      $$ProductPriceHistoriesTableFilterComposer,
+      $$ProductPriceHistoriesTableOrderingComposer,
+      $$ProductPriceHistoriesTableAnnotationComposer,
+      $$ProductPriceHistoriesTableCreateCompanionBuilder,
+      $$ProductPriceHistoriesTableUpdateCompanionBuilder,
+      (
+        ProductPriceHistory,
+        BaseReferences<
+          _$AppDatabase,
+          $ProductPriceHistoriesTable,
+          ProductPriceHistory
+        >,
+      ),
+      ProductPriceHistory,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -15723,4 +16674,6 @@ class $AppDatabaseManager {
       $$SalesReturnsTableTableManager(_db, _db.salesReturns);
   $$BusinessSettingsTableTableManager get businessSettings =>
       $$BusinessSettingsTableTableManager(_db, _db.businessSettings);
+  $$ProductPriceHistoriesTableTableManager get productPriceHistories =>
+      $$ProductPriceHistoriesTableTableManager(_db, _db.productPriceHistories);
 }

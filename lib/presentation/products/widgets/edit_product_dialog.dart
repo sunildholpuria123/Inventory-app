@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/services/product_image_service.dart';
 import '../../../data/database/app_database.dart';
 import '../../categories/provider/category_provider.dart';
+import '../provider/product_price_provider.dart';
 import '../provider/product_provider.dart';
 
 class EditProductDialog extends ConsumerStatefulWidget {
@@ -299,22 +300,126 @@ class _EditProductDialogState extends ConsumerState<EditProductDialog> {
                   try {
                     final repo = ref.read(productRepositoryProvider);
 
+                    final priceHistoryRepo = ref.read(
+                      productPriceHistoryRepositoryProvider,
+                    );
+
+                    final newPurchasePrice = double.parse(
+                      purchaseController.text,
+                    );
+
+                    final newSellingPrice = double.parse(
+                      sellingController.text,
+                    );
+
+                    /// PRICE CHANGE CONFIRMATION
+                    if (widget.product.purchasePrice != newPurchasePrice) {
+                      final percent = widget.product.purchasePrice == 0
+                          ? 100
+                          : ((newPurchasePrice - widget.product.purchasePrice) /
+                                    widget.product.purchasePrice) *
+                                100;
+
+                      final shouldContinue = await showDialog<bool>(
+                        context: context,
+                        builder: (_) {
+                          return AlertDialog(
+                            title: const Text('Purchase Price Changed'),
+
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Old Price : ₹${widget.product.purchasePrice.toStringAsFixed(2)}',
+                                ),
+
+                                const SizedBox(height: 8),
+
+                                Text(
+                                  'New Price : ₹${newPurchasePrice.toStringAsFixed(2)}',
+                                ),
+
+                                const SizedBox(height: 8),
+
+                                Text(
+                                  percent >= 0
+                                      ? 'Price Increased by ${percent.toStringAsFixed(2)}%'
+                                      : 'Price Decreased by ${percent.abs().toStringAsFixed(2)}%',
+                                  style: TextStyle(
+                                    color: percent >= 0
+                                        ? Colors.red
+                                        : Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                const Text(
+                                  'Do you want to update the product price?',
+                                ),
+                              ],
+                            ),
+
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, false);
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context, true);
+                                },
+                                child: const Text('Update'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (shouldContinue != true) {
+                        if (mounted) {
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
+                        return;
+                      }
+                    }
+
+                    /// SAVE PRICE HISTORY
+                    if (widget.product.purchasePrice != newPurchasePrice ||
+                        widget.product.sellingPrice != newSellingPrice) {
+                      await priceHistoryRepo.addPriceHistory(
+                        productId: widget.product.id,
+
+                        oldPurchase: widget.product.purchasePrice,
+
+                        newPurchase: newPurchasePrice,
+
+                        oldSelling: widget.product.sellingPrice,
+
+                        newSelling: newSellingPrice,
+
+                        remarks: 'Manual Product Update',
+                      );
+                    }
+
+                    /// UPDATE PRODUCT
                     await repo.updateProduct(
                       id: widget.product.id,
                       categoryId: selectedCategoryId!,
-
                       name: nameController.text.trim(),
-
-                      purchasePrice: double.parse(purchaseController.text),
-
-                      sellingPrice: double.parse(sellingController.text),
-
+                      purchasePrice: newPurchasePrice,
+                      sellingPrice: newSellingPrice,
                       stockQty: int.parse(stockController.text),
-
                       imagePath: selectedImagePath,
                     );
 
-                    if (context.mounted) {
+                    if (mounted) {
                       Navigator.pop(context);
 
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -324,9 +429,11 @@ class _EditProductDialogState extends ConsumerState<EditProductDialog> {
                       );
                     }
                   } catch (e) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(e.toString())));
+                    if (mounted) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(e.toString())));
+                    }
                   } finally {
                     if (mounted) {
                       setState(() {

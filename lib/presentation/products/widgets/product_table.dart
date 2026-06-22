@@ -7,6 +7,7 @@ import '../../../data/database/app_database.dart';
 import '../../categories/provider/category_provider.dart';
 import '../provider/product_provider.dart';
 import '../screens/product_detail_screen.dart';
+import '../screens/product_price_history_screen.dart';
 import 'edit_product_dialog.dart';
 
 class ProductTable extends ConsumerWidget {
@@ -126,6 +127,21 @@ class ProductTable extends ConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
 
                       children: [
+                        //History
+                        IconButton(
+                          icon: const Icon(Icons.history),
+
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    ProductPriceHistoryScreen(product: product),
+                              ),
+                            );
+                          },
+                        ),
+
                         /// EDIT
                         IconButton(
                           onPressed: () {
@@ -151,9 +167,7 @@ class ProductTable extends ConsumerWidget {
                           icon: const Icon(Icons.delete, color: Colors.red),
                         ),
                         IconButton(
-                          icon: const Icon(
-                            Icons.info_outline,
-                          ),
+                          icon: const Icon(Icons.info_outline),
 
                           onPressed: () {
                             Navigator.push(
@@ -161,9 +175,7 @@ class ProductTable extends ConsumerWidget {
 
                               MaterialPageRoute(
                                 builder: (_) =>
-                                    ProductDetailScreen(
-                                      product: product,
-                                    ),
+                                    ProductDetailScreen(product: product),
                               ),
                             );
                           },
