@@ -37,13 +37,26 @@ final taxProvider = Provider<double>((ref) {
 /// GRAND TOTAL
 final grandTotalProvider = Provider<double>((ref) {
   final subtotal = ref.watch(subtotalProvider);
-
   final tax = ref.watch(taxProvider);
-
   final discount = ref.watch(discountProvider);
 
-  return subtotal + tax - discount;
+  final loading = ref.watch(loadingChargeProvider);
+
+  final unloading = ref.watch(unloadingChargeProvider);
+
+  final transport = ref.watch(transportChargeProvider);
+
+  return subtotal + tax + loading + unloading + transport - discount;
 });
+
+final loadingChargeProvider =
+StateProvider<double>((ref) => 0);
+
+final unloadingChargeProvider =
+StateProvider<double>((ref) => 0);
+
+final transportChargeProvider =
+StateProvider<double>((ref) => 0);
 
 final amountPaidProvider = StateProvider<double>((ref) => 0);
 

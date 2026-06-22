@@ -32,4 +32,10 @@ class Invoices extends Table {
   DateTimeColumn get dueDate => dateTime().nullable()();
 
   BoolColumn get reminderSent => boolean().withDefault(const Constant(false))();
+
+  RealColumn get loadingCharge => real().withDefault(const Constant(0))();
+
+  RealColumn get unloadingCharge => real().withDefault(const Constant(0))();
+
+  RealColumn get transportCharge => real().withDefault(const Constant(0))();
 }

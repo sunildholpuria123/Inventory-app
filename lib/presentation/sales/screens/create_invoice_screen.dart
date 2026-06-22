@@ -170,6 +170,12 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
       final paymentMethod = ref.read(paymentMethodProvider);
       final amountPaid = ref.read(amountPaidProvider);
 
+      final loadingCharge = ref.read(loadingChargeProvider);
+
+      final unloadingCharge = ref.read(unloadingChargeProvider);
+
+      final transportCharge = ref.read(transportChargeProvider);
+
       final dueDate = ref.read(dueDateProvider);
       final dueAmount = total - amountPaid;
       final paymentStatus = dueAmount <= 0
@@ -225,17 +231,12 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
 
       /// GENERATE PDF
       final pdfService = InvoicePdfService();
-      final settingsRepo = ref.read(
-        businessSettingsRepositoryProvider,
-      );
+      final settingsRepo = ref.read(businessSettingsRepositoryProvider);
 
-      final settings =
-      await settingsRepo.getSettings();
+      final settings = await settingsRepo.getSettings();
 
       if (settings == null) {
-        showMessage(
-          'Please configure Business Settings first',
-        );
+        showMessage('Please configure Business Settings first');
 
         return;
       }
@@ -285,6 +286,9 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
         businessSettings: settings,
 
         dueDate: dueDate,
+        loadingCharge: loadingCharge,
+        unloadingCharge: unloadingCharge,
+        transportCharge: transportCharge,
       );
 
       /// SAVE INVOICE
@@ -348,6 +352,11 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
       /// CLEAR CART
       ref.read(invoiceItemsProvider.notifier).state = [];
       ref.read(amountPaidProvider.notifier).state = 0;
+      ref.read(loadingChargeProvider.notifier).state = 0;
+
+      ref.read(unloadingChargeProvider.notifier).state = 0;
+
+      ref.read(transportChargeProvider.notifier).state = 0;
       ref.read(dueDateProvider.notifier).state = null;
       ref.read(selectedCustomerProvider.notifier).state = null;
 

@@ -26,6 +26,9 @@ class InvoicePdfService {
     required double dueAmount,
     required String paymentStatus,
     required BusinessSetting businessSettings,
+    required double loadingCharge,
+    required double unloadingCharge,
+    required double transportCharge,
 
     DateTime? dueDate,
   }) async {
@@ -49,9 +52,7 @@ class InvoicePdfService {
                     if (businessSettings.logoPath != null)
                       pw.Image(
                         pw.MemoryImage(
-                          File(
-                            businessSettings.logoPath!,
-                          ).readAsBytesSync(),
+                          File(businessSettings.logoPath!).readAsBytesSync(),
                         ),
 
                         width: 80,
@@ -196,6 +197,21 @@ class InvoicePdfService {
 
                     buildAmountRow('Tax', tax),
 
+                    if (loadingCharge > 0) ...[
+                      pw.SizedBox(height: 8),
+                      buildAmountRow('Loading Charges', loadingCharge),
+                    ],
+
+                    if (unloadingCharge > 0) ...[
+                      pw.SizedBox(height: 8),
+                      buildAmountRow('Unloading Charges', unloadingCharge),
+                    ],
+
+                    if (transportCharge > 0) ...[
+                      pw.SizedBox(height: 8),
+                      buildAmountRow('Transport Charges', transportCharge),
+                    ],
+
                     pw.SizedBox(height: 8),
 
                     buildAmountRow('Discount', discount),
@@ -203,7 +219,9 @@ class InvoicePdfService {
                     pw.Divider(),
 
                     buildAmountRow('Grand Total', grandTotal, bold: true),
+
                     buildAmountRow('Amount Paid', amountPaid),
+
                     buildAmountRow('Due Amount', dueAmount),
 
                     pw.Text(

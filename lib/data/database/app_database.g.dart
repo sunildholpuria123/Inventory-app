@@ -5070,6 +5070,42 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _loadingChargeMeta = const VerificationMeta(
+    'loadingCharge',
+  );
+  @override
+  late final GeneratedColumn<double> loadingCharge = GeneratedColumn<double>(
+    'loading_charge',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _unloadingChargeMeta = const VerificationMeta(
+    'unloadingCharge',
+  );
+  @override
+  late final GeneratedColumn<double> unloadingCharge = GeneratedColumn<double>(
+    'unloading_charge',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _transportChargeMeta = const VerificationMeta(
+    'transportCharge',
+  );
+  @override
+  late final GeneratedColumn<double> transportCharge = GeneratedColumn<double>(
+    'transport_charge',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -5088,6 +5124,9 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
     dueAmount,
     dueDate,
     reminderSent,
+    loadingCharge,
+    unloadingCharge,
+    transportCharge,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -5221,6 +5260,33 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
         ),
       );
     }
+    if (data.containsKey('loading_charge')) {
+      context.handle(
+        _loadingChargeMeta,
+        loadingCharge.isAcceptableOrUnknown(
+          data['loading_charge']!,
+          _loadingChargeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('unloading_charge')) {
+      context.handle(
+        _unloadingChargeMeta,
+        unloadingCharge.isAcceptableOrUnknown(
+          data['unloading_charge']!,
+          _unloadingChargeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('transport_charge')) {
+      context.handle(
+        _transportChargeMeta,
+        transportCharge.isAcceptableOrUnknown(
+          data['transport_charge']!,
+          _transportChargeMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -5294,6 +5360,18 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
         DriftSqlType.bool,
         data['${effectivePrefix}reminder_sent'],
       )!,
+      loadingCharge: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}loading_charge'],
+      )!,
+      unloadingCharge: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}unloading_charge'],
+      )!,
+      transportCharge: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}transport_charge'],
+      )!,
     );
   }
 
@@ -5320,6 +5398,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
   final double dueAmount;
   final DateTime? dueDate;
   final bool reminderSent;
+  final double loadingCharge;
+  final double unloadingCharge;
+  final double transportCharge;
   const Invoice({
     required this.id,
     required this.invoiceNo,
@@ -5337,6 +5418,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     required this.dueAmount,
     this.dueDate,
     required this.reminderSent,
+    required this.loadingCharge,
+    required this.unloadingCharge,
+    required this.transportCharge,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5361,6 +5445,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       map['due_date'] = Variable<DateTime>(dueDate);
     }
     map['reminder_sent'] = Variable<bool>(reminderSent);
+    map['loading_charge'] = Variable<double>(loadingCharge);
+    map['unloading_charge'] = Variable<double>(unloadingCharge);
+    map['transport_charge'] = Variable<double>(transportCharge);
     return map;
   }
 
@@ -5386,6 +5473,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           ? const Value.absent()
           : Value(dueDate),
       reminderSent: Value(reminderSent),
+      loadingCharge: Value(loadingCharge),
+      unloadingCharge: Value(unloadingCharge),
+      transportCharge: Value(transportCharge),
     );
   }
 
@@ -5411,6 +5501,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       dueAmount: serializer.fromJson<double>(json['dueAmount']),
       dueDate: serializer.fromJson<DateTime?>(json['dueDate']),
       reminderSent: serializer.fromJson<bool>(json['reminderSent']),
+      loadingCharge: serializer.fromJson<double>(json['loadingCharge']),
+      unloadingCharge: serializer.fromJson<double>(json['unloadingCharge']),
+      transportCharge: serializer.fromJson<double>(json['transportCharge']),
     );
   }
   @override
@@ -5433,6 +5526,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       'dueAmount': serializer.toJson<double>(dueAmount),
       'dueDate': serializer.toJson<DateTime?>(dueDate),
       'reminderSent': serializer.toJson<bool>(reminderSent),
+      'loadingCharge': serializer.toJson<double>(loadingCharge),
+      'unloadingCharge': serializer.toJson<double>(unloadingCharge),
+      'transportCharge': serializer.toJson<double>(transportCharge),
     };
   }
 
@@ -5453,6 +5549,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     double? dueAmount,
     Value<DateTime?> dueDate = const Value.absent(),
     bool? reminderSent,
+    double? loadingCharge,
+    double? unloadingCharge,
+    double? transportCharge,
   }) => Invoice(
     id: id ?? this.id,
     invoiceNo: invoiceNo ?? this.invoiceNo,
@@ -5470,6 +5569,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     dueAmount: dueAmount ?? this.dueAmount,
     dueDate: dueDate.present ? dueDate.value : this.dueDate,
     reminderSent: reminderSent ?? this.reminderSent,
+    loadingCharge: loadingCharge ?? this.loadingCharge,
+    unloadingCharge: unloadingCharge ?? this.unloadingCharge,
+    transportCharge: transportCharge ?? this.transportCharge,
   );
   Invoice copyWithCompanion(InvoicesCompanion data) {
     return Invoice(
@@ -5503,6 +5605,15 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       reminderSent: data.reminderSent.present
           ? data.reminderSent.value
           : this.reminderSent,
+      loadingCharge: data.loadingCharge.present
+          ? data.loadingCharge.value
+          : this.loadingCharge,
+      unloadingCharge: data.unloadingCharge.present
+          ? data.unloadingCharge.value
+          : this.unloadingCharge,
+      transportCharge: data.transportCharge.present
+          ? data.transportCharge.value
+          : this.transportCharge,
     );
   }
 
@@ -5524,7 +5635,10 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           ..write('amountPaid: $amountPaid, ')
           ..write('dueAmount: $dueAmount, ')
           ..write('dueDate: $dueDate, ')
-          ..write('reminderSent: $reminderSent')
+          ..write('reminderSent: $reminderSent, ')
+          ..write('loadingCharge: $loadingCharge, ')
+          ..write('unloadingCharge: $unloadingCharge, ')
+          ..write('transportCharge: $transportCharge')
           ..write(')'))
         .toString();
   }
@@ -5547,6 +5661,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     dueAmount,
     dueDate,
     reminderSent,
+    loadingCharge,
+    unloadingCharge,
+    transportCharge,
   );
   @override
   bool operator ==(Object other) =>
@@ -5567,7 +5684,10 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           other.amountPaid == this.amountPaid &&
           other.dueAmount == this.dueAmount &&
           other.dueDate == this.dueDate &&
-          other.reminderSent == this.reminderSent);
+          other.reminderSent == this.reminderSent &&
+          other.loadingCharge == this.loadingCharge &&
+          other.unloadingCharge == this.unloadingCharge &&
+          other.transportCharge == this.transportCharge);
 }
 
 class InvoicesCompanion extends UpdateCompanion<Invoice> {
@@ -5587,6 +5707,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
   final Value<double> dueAmount;
   final Value<DateTime?> dueDate;
   final Value<bool> reminderSent;
+  final Value<double> loadingCharge;
+  final Value<double> unloadingCharge;
+  final Value<double> transportCharge;
   const InvoicesCompanion({
     this.id = const Value.absent(),
     this.invoiceNo = const Value.absent(),
@@ -5604,6 +5727,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     this.dueAmount = const Value.absent(),
     this.dueDate = const Value.absent(),
     this.reminderSent = const Value.absent(),
+    this.loadingCharge = const Value.absent(),
+    this.unloadingCharge = const Value.absent(),
+    this.transportCharge = const Value.absent(),
   });
   InvoicesCompanion.insert({
     this.id = const Value.absent(),
@@ -5622,6 +5748,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     this.dueAmount = const Value.absent(),
     this.dueDate = const Value.absent(),
     this.reminderSent = const Value.absent(),
+    this.loadingCharge = const Value.absent(),
+    this.unloadingCharge = const Value.absent(),
+    this.transportCharge = const Value.absent(),
   }) : invoiceNo = Value(invoiceNo),
        customerName = Value(customerName),
        customerPhone = Value(customerPhone),
@@ -5645,6 +5774,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     Expression<double>? dueAmount,
     Expression<DateTime>? dueDate,
     Expression<bool>? reminderSent,
+    Expression<double>? loadingCharge,
+    Expression<double>? unloadingCharge,
+    Expression<double>? transportCharge,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -5663,6 +5795,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
       if (dueAmount != null) 'due_amount': dueAmount,
       if (dueDate != null) 'due_date': dueDate,
       if (reminderSent != null) 'reminder_sent': reminderSent,
+      if (loadingCharge != null) 'loading_charge': loadingCharge,
+      if (unloadingCharge != null) 'unloading_charge': unloadingCharge,
+      if (transportCharge != null) 'transport_charge': transportCharge,
     });
   }
 
@@ -5683,6 +5818,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     Value<double>? dueAmount,
     Value<DateTime?>? dueDate,
     Value<bool>? reminderSent,
+    Value<double>? loadingCharge,
+    Value<double>? unloadingCharge,
+    Value<double>? transportCharge,
   }) {
     return InvoicesCompanion(
       id: id ?? this.id,
@@ -5701,6 +5839,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
       dueAmount: dueAmount ?? this.dueAmount,
       dueDate: dueDate ?? this.dueDate,
       reminderSent: reminderSent ?? this.reminderSent,
+      loadingCharge: loadingCharge ?? this.loadingCharge,
+      unloadingCharge: unloadingCharge ?? this.unloadingCharge,
+      transportCharge: transportCharge ?? this.transportCharge,
     );
   }
 
@@ -5755,6 +5896,15 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     if (reminderSent.present) {
       map['reminder_sent'] = Variable<bool>(reminderSent.value);
     }
+    if (loadingCharge.present) {
+      map['loading_charge'] = Variable<double>(loadingCharge.value);
+    }
+    if (unloadingCharge.present) {
+      map['unloading_charge'] = Variable<double>(unloadingCharge.value);
+    }
+    if (transportCharge.present) {
+      map['transport_charge'] = Variable<double>(transportCharge.value);
+    }
     return map;
   }
 
@@ -5776,7 +5926,10 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
           ..write('amountPaid: $amountPaid, ')
           ..write('dueAmount: $dueAmount, ')
           ..write('dueDate: $dueDate, ')
-          ..write('reminderSent: $reminderSent')
+          ..write('reminderSent: $reminderSent, ')
+          ..write('loadingCharge: $loadingCharge, ')
+          ..write('unloadingCharge: $unloadingCharge, ')
+          ..write('transportCharge: $transportCharge')
           ..write(')'))
         .toString();
   }
@@ -12790,6 +12943,9 @@ typedef $$InvoicesTableCreateCompanionBuilder =
       Value<double> dueAmount,
       Value<DateTime?> dueDate,
       Value<bool> reminderSent,
+      Value<double> loadingCharge,
+      Value<double> unloadingCharge,
+      Value<double> transportCharge,
     });
 typedef $$InvoicesTableUpdateCompanionBuilder =
     InvoicesCompanion Function({
@@ -12809,6 +12965,9 @@ typedef $$InvoicesTableUpdateCompanionBuilder =
       Value<double> dueAmount,
       Value<DateTime?> dueDate,
       Value<bool> reminderSent,
+      Value<double> loadingCharge,
+      Value<double> unloadingCharge,
+      Value<double> transportCharge,
     });
 
 class $$InvoicesTableFilterComposer
@@ -12897,6 +13056,21 @@ class $$InvoicesTableFilterComposer
 
   ColumnFilters<bool> get reminderSent => $composableBuilder(
     column: $table.reminderSent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get loadingCharge => $composableBuilder(
+    column: $table.loadingCharge,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get unloadingCharge => $composableBuilder(
+    column: $table.unloadingCharge,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get transportCharge => $composableBuilder(
+    column: $table.transportCharge,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -12989,6 +13163,21 @@ class $$InvoicesTableOrderingComposer
     column: $table.reminderSent,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<double> get loadingCharge => $composableBuilder(
+    column: $table.loadingCharge,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get unloadingCharge => $composableBuilder(
+    column: $table.unloadingCharge,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get transportCharge => $composableBuilder(
+    column: $table.transportCharge,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$InvoicesTableAnnotationComposer
@@ -13061,6 +13250,21 @@ class $$InvoicesTableAnnotationComposer
     column: $table.reminderSent,
     builder: (column) => column,
   );
+
+  GeneratedColumn<double> get loadingCharge => $composableBuilder(
+    column: $table.loadingCharge,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get unloadingCharge => $composableBuilder(
+    column: $table.unloadingCharge,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get transportCharge => $composableBuilder(
+    column: $table.transportCharge,
+    builder: (column) => column,
+  );
 }
 
 class $$InvoicesTableTableManager
@@ -13107,6 +13311,9 @@ class $$InvoicesTableTableManager
                 Value<double> dueAmount = const Value.absent(),
                 Value<DateTime?> dueDate = const Value.absent(),
                 Value<bool> reminderSent = const Value.absent(),
+                Value<double> loadingCharge = const Value.absent(),
+                Value<double> unloadingCharge = const Value.absent(),
+                Value<double> transportCharge = const Value.absent(),
               }) => InvoicesCompanion(
                 id: id,
                 invoiceNo: invoiceNo,
@@ -13124,6 +13331,9 @@ class $$InvoicesTableTableManager
                 dueAmount: dueAmount,
                 dueDate: dueDate,
                 reminderSent: reminderSent,
+                loadingCharge: loadingCharge,
+                unloadingCharge: unloadingCharge,
+                transportCharge: transportCharge,
               ),
           createCompanionCallback:
               ({
@@ -13143,6 +13353,9 @@ class $$InvoicesTableTableManager
                 Value<double> dueAmount = const Value.absent(),
                 Value<DateTime?> dueDate = const Value.absent(),
                 Value<bool> reminderSent = const Value.absent(),
+                Value<double> loadingCharge = const Value.absent(),
+                Value<double> unloadingCharge = const Value.absent(),
+                Value<double> transportCharge = const Value.absent(),
               }) => InvoicesCompanion.insert(
                 id: id,
                 invoiceNo: invoiceNo,
@@ -13160,6 +13373,9 @@ class $$InvoicesTableTableManager
                 dueAmount: dueAmount,
                 dueDate: dueDate,
                 reminderSent: reminderSent,
+                loadingCharge: loadingCharge,
+                unloadingCharge: unloadingCharge,
+                transportCharge: transportCharge,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
