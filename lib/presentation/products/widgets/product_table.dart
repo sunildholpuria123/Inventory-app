@@ -106,7 +106,8 @@ class ProductTable extends ConsumerWidget {
                       product.stockQty.toString(),
 
                       style: TextStyle(
-                        color: product.stockQty <= 5
+                        color:product.stockQty <=
+                            product.minStock
                             ? Colors.red
                             : Colors.green,
 
