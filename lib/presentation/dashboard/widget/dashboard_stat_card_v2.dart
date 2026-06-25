@@ -1,7 +1,7 @@
+
 import 'package:flutter/material.dart';
 
-class DashboardStatCardV2
-    extends StatelessWidget {
+class DashboardStatCardV2 extends StatelessWidget {
   final String title;
   final String value;
   final IconData icon;
@@ -18,79 +18,51 @@ class DashboardStatCardV2
   });
 
   @override
-  Widget build(
-      BuildContext context,
-      ) {
+  Widget build(BuildContext context) {
     return Card(
-      child: Padding(
-        padding:
-        const EdgeInsets.all(
-          20,
-        ),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+
         child: Column(
-          crossAxisAlignment:
-          CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
                 Container(
                   width: 48,
                   height: 48,
-                  decoration:
-                  BoxDecoration(
-                    color:
-                    color.withOpacity(
-                      .12,
-                    ),
-                    borderRadius:
-                    BorderRadius.circular(
-                      14,
-                    ),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(.12),
+                    borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(
-                    icon,
-                    color: color,
-                  ),
+                  child: Icon(icon, color: color),
                 ),
 
                 const Spacer(),
 
-                Icon(
-                  Icons.trending_up,
-                  color:
-                  Colors.green,
-                ),
+                const Icon(Icons.trending_up, color: Colors.green),
               ],
             ),
 
-            const Spacer(),
+            const SizedBox(height: 20),
 
             Text(
               value,
-              style:
-              Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(
-                fontWeight:
-                FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
 
-            const SizedBox(
-              height: 6,
-            ),
+            const SizedBox(height: 6),
 
             Text(title),
 
-            if (subtitle != null)
-              Text(
-                subtitle!,
-                style:
-                Theme.of(context)
-                    .textTheme
-                    .bodySmall,
-              ),
+            if (subtitle != null) ...[
+              const SizedBox(height: 4),
+              Text(subtitle!, style: Theme.of(context).textTheme.bodySmall),
+            ],
           ],
         ),
       ),

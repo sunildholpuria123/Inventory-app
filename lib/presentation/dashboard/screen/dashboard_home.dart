@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/reminder_scheduler.dart';
 import '../../../core/utils/responsive_helper.dart';
-import '../widget/dash_board_grid.dart';
 import '../widget/dashboard_header.dart';
 import '../widget/dashboard_kpi_grid.dart';
 import '../widget/dashboard_quick_actions.dart';
@@ -46,16 +45,16 @@ class _DashboardHomeState extends ConsumerState<DashboardHome> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(20),
-
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-
             children: [
-
               /// HEADER
               const DashboardHeader(),
-              const SizedBox(height: 20),
+
+              const SizedBox(height: 24),
+
+              /// QUICK ACTIONS
               const DashboardQuickActions(),
 
               const SizedBox(height: 24),
@@ -63,110 +62,107 @@ class _DashboardHomeState extends ConsumerState<DashboardHome> {
               /// KPI
               const DashboardKpiGrid(),
 
-              const SizedBox(height: 20),
-
-              /// DUE ALERTS
-              // const DuePaymentAlertWidget(),
-
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
               if (isMobile) ...[
-                const SizedBox(
-                  height: 260,
-                  child: SalesOverviewChart(),
-                ),
+                /// SALES CHART
+                const SizedBox(height: 260, child: SalesOverviewChart()),
 
                 const SizedBox(height: 20),
 
+                /// ALERTS
                 const DuePaymentAlertWidget(),
 
                 const SizedBox(height: 20),
 
-                const SizedBox(
-                  height: 250,
-                  child: RecentSalesWidget(),
-                ),
+                /// RECENT SALES
+                const SizedBox(height: 250, child: RecentSalesWidget()),
 
                 const SizedBox(height: 20),
 
+                /// ANALYTICS
+                const VariantSalesWidget(),
+
+                const SizedBox(height: 20),
+
+                const SupplierPurchaseWidget(),
+
+                const SizedBox(height: 20),
+
+                const PayablesWidget(),
+
+                const SizedBox(height: 20),
+
+                const PurchaseReturnDashboardSection(),
+
+                const SizedBox(height: 20),
+
+                /// INVENTORY
                 const VariantInventoryWidget(),
 
                 const SizedBox(height: 20),
 
-                const SizedBox(
-                  height: 250,
-                  child: LowStockWidget(),
-                ),
-              ] else
-                ...[
-                  Column(
+                /// LOW STOCK
+                const SizedBox(height: 250, child: LowStockWidget()),
+              ] else ...[
+                /// TOP SECTION
+                SizedBox(
+                  height: 450,
+                  child: Row(
                     children: [
-                      SizedBox(
-                        height: 450,
-                        child: Row(
-                          children: [
-                            const Expanded(
-                              flex: 2,
-                              child: SalesOverviewChart(),
-                            ),
+                      const Expanded(flex: 2, child: SalesOverviewChart()),
 
-                            const SizedBox(width: 20),
+                      const SizedBox(width: 24),
 
-                            Expanded(
-                              child: Column(
-                                children: const [
-                                  Expanded(
-                                    child: RecentSalesWidget(),
-                                  ),
+                      Expanded(
+                        child: Column(
+                          children: const [
+                            Expanded(child: RecentSalesWidget()),
 
-                                  SizedBox(height: 20),
+                            SizedBox(height: 20),
 
-                                  Expanded(
-                                    child: DuePaymentAlertWidget(),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            Expanded(child: DuePaymentAlertWidget()),
                           ],
                         ),
                       ),
-
-                      const SizedBox(height: 20),
-
-                      const VariantSalesWidget(),
-
-                      const SizedBox(height: 20),
-
-                      const SupplierPurchaseWidget(),
-
-                      const SizedBox(height: 20),
-
-                      const PayablesWidget(),
-
-                      const SizedBox(height: 20),
-
-                      const PurchaseReturnDashboardSection(),
-
-                      const SizedBox(height: 20),
-
-                      const VariantInventoryWidget(),
-
-                      const SizedBox(height: 20),
-
-                      const SizedBox(
-                        height: 300,
-                        child: LowStockWidget(),
-                      ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                ),
 
-                  // const VariantInventoryWidget(),
-                ],
+                const SizedBox(height: 32),
 
-              const SizedBox(height: 20),
+                /// ANALYTICS
+                const VariantSalesWidget(),
 
-              // const ProfitCard(),
+                const SizedBox(height: 20),
+
+                const SupplierPurchaseWidget(),
+
+                const SizedBox(height: 20),
+
+                const PayablesWidget(),
+
+                const SizedBox(height: 20),
+
+                const PurchaseReturnDashboardSection(),
+
+                const SizedBox(height: 20),
+
+                /// INVENTORY
+                const VariantInventoryWidget(),
+
+                const SizedBox(height: 20),
+
+                /// LOW STOCK
+                const SizedBox(height: 300, child: LowStockWidget()),
+              ],
+
+              const SizedBox(height: 24),
+
+              /// PROFIT
+              const ProfitCard(),
+
+              const SizedBox(height: 40),
             ],
           ),
         ),
