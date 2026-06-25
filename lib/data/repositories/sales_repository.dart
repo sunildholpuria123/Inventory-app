@@ -236,4 +236,9 @@ class SalesRepository {
       db.salesReturns,
     )..where((tbl) => tbl.customerId.equals(customerId))).watch();
   }
+
+
+  Future<List<Invoice>> getAllInvoices() {
+    return db.select(db.invoices).get();
+  }
 }
