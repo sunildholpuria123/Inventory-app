@@ -40,55 +40,55 @@ class SupplierPurchaseWidget extends ConsumerWidget {
                 final sortedSuppliers = suppliers.entries.toList()
                   ..sort((a, b) => b.value.compareTo(a.value));
 
-                return ListView.separated(
-                  shrinkWrap: true,
+                return SizedBox(
+                  height: 300,
+                  child: ListView.separated(
+                    shrinkWrap: true,
 
-                  physics: const NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
 
-                  itemCount: sortedSuppliers.length > 5
-                      ? 5
-                      : sortedSuppliers.length,
+                    itemCount: sortedSuppliers.length > 5
+                        ? 5
+                        : sortedSuppliers.length,
 
-                  separatorBuilder: (_, __) => const Divider(),
+                    separatorBuilder: (_, __) => const Divider(),
 
-                  itemBuilder: (context, index) {
-                    final supplier = sortedSuppliers[index];
+                    itemBuilder: (context, index) {
+                      final supplier = sortedSuppliers[index];
 
-                    return ListTile(
-                      dense: true,
+                      return ListTile(
+                        dense: true,
 
-                      leading: CircleAvatar(child: Text('${index + 1}')),
+                        leading: CircleAvatar(child: Text('${index + 1}')),
 
-                      title: Text(
-                        supplier.key,
+                        title: Text(
+                          supplier.key,
 
-                        maxLines: 1,
+                          maxLines: 1,
 
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
 
-                      subtitle: const Text('Purchases'),
+                        subtitle: const Text('Purchases'),
 
-                      trailing: Text(
-                        'Rs.${supplier.value.toStringAsFixed(0)}',
+                        trailing: Text(
+                          'Rs.${supplier.value.toStringAsFixed(0)}',
 
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    );
-                  },
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
 
-              loading: () => const Padding(
-                padding: EdgeInsets.all(20),
-
+              loading: () => const SizedBox(
+                height: 300,
                 child: Center(child: CircularProgressIndicator()),
               ),
-
-              error: (error, _) => Padding(
-                padding: const EdgeInsets.all(20),
-
-                child: Center(child: Text(error.toString())),
+              error: (_, __) => const SizedBox(
+                height: 300,
+                child: Center(child: Text('Unable to load data')),
               ),
             ),
           ],

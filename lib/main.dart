@@ -6,14 +6,13 @@ import 'package:window_manager/window_manager.dart';
 
 import 'core/provider/theme_provider.dart';
 import 'core/services/notification_service.dart';
+import 'core/theme/app_theme.dart';
 import 'presentation/auth/screens/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await NotificationService
-      .instance
-      .initialize();
+  await NotificationService.instance.initialize();
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     await windowManager.ensureInitialized();
 
@@ -43,11 +42,13 @@ class InventoryApp extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
+      title: 'Inventory ERP',
+
+      theme: AppTheme.light,
+
+      darkTheme: AppTheme.dark,
+
       themeMode: themeMode,
-
-      theme: ThemeData(useMaterial3: false, colorSchemeSeed: Colors.indigo),
-
-      darkTheme: ThemeData.dark(useMaterial3: true),
 
       home: const SplashScreen(),
     );

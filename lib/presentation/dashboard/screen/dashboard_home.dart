@@ -3,13 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/reminder_scheduler.dart';
 import '../../../core/utils/responsive_helper.dart';
-import '../../analytics/screens/analytics_dashboard_screen.dart';
-import '../../analytics/widgets/ai_price_recommendation_card.dart';
-import '../../analytics/widgets/demand_prediction_card.dart';
-import '../../analytics/widgets/purchase_forecast_card.dart';
-import '../../analytics/widgets/reorder_suggestion_card.dart';
-import '../../analytics/widgets/supplier_score_card.dart';
+import '../widget/dash_board_grid.dart';
+import '../widget/dashboard_header.dart';
 import '../widget/dashboard_kpi_grid.dart';
+import '../widget/dashboard_quick_actions.dart';
 import '../widget/due_payment_alert_widget.dart';
 import '../widget/low_stock_widget.dart';
 import '../widget/payables_widget.dart';
@@ -57,45 +54,11 @@ class _DashboardHomeState extends ConsumerState<DashboardHome> {
             children: [
 
               /// HEADER
-              Row(
-                mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Dashboard',
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .headlineMedium,
-                  ),
-
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.analytics,
-                        ),
-                        tooltip: 'Analytics',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                              const AnalyticsDashboardScreen(),
-                            ),
-                          );
-                        },
-                      ),
-
-                      const CircleAvatar(
-                        radius: 24,
-                        child: Icon(Icons.person),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              const DashboardHeader(),
               const SizedBox(height: 20),
+              const DashboardQuickActions(),
+
+              const SizedBox(height: 24),
 
               /// KPI
               const DashboardKpiGrid(),
@@ -108,16 +71,21 @@ class _DashboardHomeState extends ConsumerState<DashboardHome> {
               const SizedBox(height: 20),
 
               if (isMobile) ...[
-                const SizedBox(height: 250, child: SalesOverviewChart()),
+                const SizedBox(
+                  height: 260,
+                  child: SalesOverviewChart(),
+                ),
 
                 const SizedBox(height: 20),
 
-
-                const SizedBox(height: 250, child: RecentSalesWidget()),
+                const DuePaymentAlertWidget(),
 
                 const SizedBox(height: 20),
 
-                const VariantSalesWidget(),
+                const SizedBox(
+                  height: 250,
+                  child: RecentSalesWidget(),
+                ),
 
                 const SizedBox(height: 20),
 
@@ -125,84 +93,72 @@ class _DashboardHomeState extends ConsumerState<DashboardHome> {
 
                 const SizedBox(height: 20),
 
-                const SupplierPurchaseWidget(),
-
-                const SizedBox(height: 20),
-
-                const PayablesWidget(),
-
-                const SizedBox(height: 20),
-
-                const PurchaseReturnDashboardSection(),
-
-                const SizedBox(height: 20),
-
-                const SizedBox(height: 250, child: LowStockWidget()),
-                const PurchaseForecastCard(),
-                const SizedBox(height: 20),
-                const DemandPredictionCard(),
-
-                const PurchaseForecastCard(),
-                const SizedBox(height: 20),
-
-                const DemandPredictionCard(),
-                const SizedBox(height: 20),
-
-                const SupplierScoreCard(),
-                const SizedBox(height: 20),
-
-                const AiPriceRecommendationCard(),
-                const SizedBox(height: 20),
-
-                const ReorderSuggestionCard(),
-
+                const SizedBox(
+                  height: 250,
+                  child: LowStockWidget(),
+                ),
               ] else
                 ...[
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-
+                  Column(
                     children: [
-                      const Expanded(
-                        flex: 2,
+                      SizedBox(
+                        height: 450,
+                        child: Row(
+                          children: [
+                            const Expanded(
+                              flex: 2,
+                              child: SalesOverviewChart(),
+                            ),
 
-                        child: SizedBox(
-                            height: 400, child: SalesOverviewChart()),
+                            const SizedBox(width: 20),
+
+                            Expanded(
+                              child: Column(
+                                children: const [
+                                  Expanded(
+                                    child: RecentSalesWidget(),
+                                  ),
+
+                                  SizedBox(height: 20),
+
+                                  Expanded(
+                                    child: DuePaymentAlertWidget(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
 
-                      const SizedBox(width: 20),
+                      const SizedBox(height: 20),
 
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: const [
-                              SizedBox(height: 250, child: RecentSalesWidget()),
+                      const VariantSalesWidget(),
 
-                              SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                              VariantSalesWidget(),
+                      const SupplierPurchaseWidget(),
 
-                              SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                              SupplierPurchaseWidget(),
+                      const PayablesWidget(),
 
-                              SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                              PayablesWidget(),
+                      const PurchaseReturnDashboardSection(),
 
-                              SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                              PurchaseReturnDashboardSection(),
+                      const VariantInventoryWidget(),
 
-                              SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                              SizedBox(height: 250, child: LowStockWidget()),
-                            ],
-                          ),
-                        ),
+                      const SizedBox(
+                        height: 300,
+                        child: LowStockWidget(),
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 20),
 
                   // const VariantInventoryWidget(),

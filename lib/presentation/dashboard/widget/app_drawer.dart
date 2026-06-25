@@ -3,14 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../dashboard/provider/navigation_provider.dart';
+import '../provider/dashboard_provider.dart';
+
 
 class AppDrawer extends ConsumerWidget {
   const AppDrawer({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selected = ref.watch(selectedIndexProvider);
+    final selected = ref.watch(selectedMenuProvider);
 
     return Drawer(
       child: SafeArea(
@@ -258,7 +259,7 @@ class AppDrawer extends ConsumerWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
 
         onTap: () {
-          ref.read(selectedIndexProvider.notifier).state = index;
+          ref.read(selectedMenuProvider.notifier).state = index;
 
           Navigator.pop(context);
         },

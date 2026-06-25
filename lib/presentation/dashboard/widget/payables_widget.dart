@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../suppliers/provider/supplier_provider.dart';
 import '../provider/dashboard_provider.dart';
 import 'dashboard_stat_card.dart';
+import 'dashboard_stat_card_v2.dart';
 
 class PayablesWidget extends ConsumerWidget {
   const PayablesWidget({super.key});
@@ -14,7 +15,7 @@ class PayablesWidget extends ConsumerWidget {
 
     return payables.when(
       data: (amount) {
-        return  DashboardStatCard(
+        return  DashboardStatCardV2(
           title: 'Payables',
           value: 'Rs.${amount.toStringAsFixed(0)}',
           icon: Icons.account_balance,
@@ -23,7 +24,7 @@ class PayablesWidget extends ConsumerWidget {
       },
 
       loading: () {
-        return  DashboardStatCard(
+        return  DashboardStatCardV2(
           title: 'Payables',
           value: '...',
           icon: Icons.account_balance,
@@ -32,7 +33,7 @@ class PayablesWidget extends ConsumerWidget {
       },
 
       error: (_, __) {
-        return  DashboardStatCard(
+        return  DashboardStatCardV2(
           title: 'Payables',
           value: 'Rs.0',
           icon: Icons.account_balance,
