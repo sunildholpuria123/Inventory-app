@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../presentation/dashboard/constants/dashboard_pages.dart';
+import '../../presentation/dashboard/model/navigation_menu.dart';
 import '../../presentation/dashboard/provider/dashboard_provider.dart';
 
 class AppSidebar extends ConsumerWidget {
@@ -62,78 +63,30 @@ class AppSidebar extends ConsumerWidget {
           const SizedBox(height: 20),
 
           Expanded(
-            child: ListView(
+            child: ListView.builder(
               padding:
               const EdgeInsets.symmetric(
                 horizontal: 12,
               ),
-              children: [_item(
-                context,
-                ref,
-                0,
-                Icons.dashboard_outlined,
-                'Dashboard',
-              ),
+              itemCount:
+              NavigationMenus
+                  .sidebarMenus
+                  .length,
+              itemBuilder:
+                  (context, index) {
+                final menu =
+                NavigationMenus
+                    .sidebarMenus[
+                index];
 
-                _item(
+                return _item(
                   context,
                   ref,
-                  1,
-                  Icons.inventory_2_outlined,
-                  'Products',
-                ),
-
-                _item(
-                  context,
-                  ref,
-                  2,
-                  Icons.people_outline,
-                  'Customers',
-                ),
-
-                _item(
-                  context,
-                  ref,
-                  9,
-                  Icons.local_shipping_outlined,
-                  'Suppliers',
-                ),
-
-                _item(
-                  context,
-                  ref,
-                  5,
-                  Icons.shopping_bag_outlined,
-                  'Purchases',
-                ),
-
-                _item(
-                  context,
-                  ref,
-                  7,
-                  Icons.analytics_outlined,
-                  'Analytics',
-                ),
-
-                _item(
-                  context,
-                  ref,
-                  4,
-                  Icons.psychology_outlined,
-                  'Purchase AI',
-                ),
-
-                _item(
-                  context,
-                  ref,
-                  8,
-                  Icons.settings_outlined,
-                  'Settings',
-                ),
-              ],
+                  menu,
+                );
+              },
             ),
-          ),
-        ],
+          ),        ],
       ),
     );
   }
@@ -141,15 +94,13 @@ class AppSidebar extends ConsumerWidget {
   Widget _item(
       BuildContext context,
       WidgetRef ref,
-      int index,
-      IconData icon,
-      String title,
+      NavigationMenu menu,
       ) {
     final selected =
         ref.watch(
           selectedMenuProvider,
         ) ==
-            index;
+            menu.index;
 
     return Padding(
       padding:
@@ -168,7 +119,7 @@ class AppSidebar extends ConsumerWidget {
         ),
         child: ListTile(
           leading: Icon(
-            icon,
+            menu.icon,
             color: selected
                 ? Theme.of(context)
                 .colorScheme
@@ -176,7 +127,7 @@ class AppSidebar extends ConsumerWidget {
                 : null,
           ),
           title: Text(
-            title,
+            menu.title,
             style: TextStyle(
               fontWeight: selected
                   ? FontWeight.bold
@@ -191,15 +142,13 @@ class AppSidebar extends ConsumerWidget {
             ),
           ),
           onTap: () {
-            print(
-              'Sidebar clicked: $index',
-            );
             ref
                 .read(
               selectedMenuProvider
                   .notifier,
             )
-                .state = index;
+                .state =
+                menu.index;
           },
         ),
       ),

@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../widgets/due_payments_widget.dart';
 import '../widgets/monthly_sales_chart.dart';
+import '../widgets/profit_analytics_widget.dart';
 import '../widgets/top_customers_widget.dart';
+import '../widgets/top_selling_products_widget.dart';
 
 class SalesAnalyticsScreen extends ConsumerWidget {
   const SalesAnalyticsScreen({super.key});
@@ -25,6 +27,10 @@ class SalesAnalyticsScreen extends ConsumerWidget {
                 TopCustomersWidget(),
                 SizedBox(height: 20),
                 DuePaymentsWidget(),
+                SizedBox(height: 20),
+                TopSellingProductsWidget(),
+                SizedBox(height: 20),
+                ProfitAnalyticsWidget(),
               ],
             );
           }
