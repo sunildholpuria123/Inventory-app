@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../widgets/ai_sales_recommendation_widget.dart';
+import '../widgets/customer_analytics_widget.dart';
 import '../widgets/due_payments_widget.dart';
 import '../widgets/monthly_sales_chart.dart';
+import '../widgets/product_performance_widget.dart';
 import '../widgets/profit_analytics_widget.dart';
+import '../widgets/sales_forecast_widget.dart';
 import '../widgets/top_customers_widget.dart';
 import '../widgets/top_selling_products_widget.dart';
 
@@ -31,6 +35,18 @@ class SalesAnalyticsScreen extends ConsumerWidget {
                 TopSellingProductsWidget(),
                 SizedBox(height: 20),
                 ProfitAnalyticsWidget(),
+                SizedBox(height: 20),
+                CustomerAnalyticsWidget(),
+                SizedBox(height: 20),
+
+                ProductPerformanceWidget(),
+                SizedBox(height: 20),
+
+                SalesForecastWidget(),
+                SizedBox(height: 20),
+
+                AiSalesRecommendationWidget(),
+                SizedBox(height: 20),
               ],
             );
           }
