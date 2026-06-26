@@ -30,119 +30,157 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   Widget build(BuildContext context) {
     final paymentMethod = ref.watch(paymentMethodProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Create Invoice')),
+    final mobile = MediaQuery.of(context).size.width < 700;
 
-      body: SingleChildScrollView(
+    return SafeArea(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: [
-            /// CUSTOMER
-            const CustomerDropdown(),
-
-            const SizedBox(height: 20),
-
-            /// PRODUCT
-            const ProductDropdown(),
-
-            const SizedBox(height: 20),
-
-            /// PRODUCT LIST
-            const SizedBox(height: 300, child: InvoiceProductList()),
-
-            const SizedBox(height: 20),
-
-            /// PAYMENT METHOD
-            DropdownButtonFormField<String>(
-              value: paymentMethod,
-
-              decoration: const InputDecoration(labelText: 'Payment Method'),
-
-              items: const [
-                DropdownMenuItem(value: 'CASH', child: Text('Cash')),
-
-                DropdownMenuItem(value: 'UPI', child: Text('UPI')),
-
-                DropdownMenuItem(value: 'CARD', child: Text('Card')),
-
-                DropdownMenuItem(value: 'BANK', child: Text('Bank Transfer')),
-              ],
-
-              onChanged: (value) {
-                if (value == null) {
-                  return;
-                }
-
-                ref.read(paymentMethodProvider.notifier).state = value;
-              },
+            Text(
+              'Create Invoice',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 20),
 
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Amount Paid'),
-
-              keyboardType: TextInputType.number,
-
-              onChanged: (value) {
-                ref.read(amountPaidProvider.notifier).state =
-                    double.tryParse(value) ?? 0;
-              },
-            ),
-            ElevatedButton.icon(
-              onPressed: () async {
-                final date = await showDatePicker(
-                  context: context,
-
-                  firstDate: DateTime.now(),
-
-                  lastDate: DateTime(2100),
-
-                  initialDate: DateTime.now(),
-                );
-
-                if (date != null) {
-                  ref.read(dueDateProvider.notifier).state = date;
-                }
-              },
-
-              icon: const Icon(Icons.calendar_today),
-
-              label: const Text('Due Date'),
+            Card(
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(children: const [CustomerDropdown()]),
+              ),
             ),
 
-            /// SUMMARY
-            const InvoiceSummary(),
+            const SizedBox(height: 16),
+
+            Card(
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(children: const [ProductDropdown()]),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            Card(
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  height: mobile ? 300 : 400,
+                  child: InvoiceProductList(),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            Card(
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    DropdownButtonFormField<String>(
+                      value: paymentMethod,
+                      decoration: const InputDecoration(
+                        labelText: 'Payment Method',
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: 'CASH', child: Text('Cash')),
+                        DropdownMenuItem(value: 'UPI', child: Text('UPI')),
+                        DropdownMenuItem(value: 'CARD', child: Text('Card')),
+                        DropdownMenuItem(
+                          value: 'BANK',
+                          child: Text('Bank Transfer'),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value == null) {
+                          return;
+                        }
+
+                        ref.read(paymentMethodProvider.notifier).state = value;
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Amount Paid',
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        ref.read(amountPaidProvider.notifier).state =
+                            double.tryParse(value) ?? 0;
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () async {
+                          final date = await showDatePicker(
+                            context: context,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2100),
+                            initialDate: DateTime.now(),
+                          );
+
+                          if (date != null) {
+                            ref.read(dueDateProvider.notifier).state = date;
+                          }
+                        },
+                        icon: const Icon(Icons.calendar_today),
+                        label: const Text('Select Due Date'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            const Card(
+              elevation: 0,
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: InvoiceSummary(),
+              ),
+            ),
 
             const SizedBox(height: 20),
 
-            /// SAVE BUTTON
             SizedBox(
               width: double.infinity,
-              height: 55,
-
-              child: ElevatedButton.icon(
+              height: 56,
+              child: FilledButton.icon(
                 onPressed: isSaving
                     ? null
                     : () async {
                         await saveInvoice();
                       },
-
                 icon: isSaving
                     ? const SizedBox(
                         width: 20,
                         height: 20,
-
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.save),
-
                 label: Text(isSaving ? 'Saving...' : 'Generate Invoice'),
               ),
             ),
+
+            const SizedBox(height: 40),
           ],
         ),
       ),

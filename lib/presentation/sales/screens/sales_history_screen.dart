@@ -12,93 +12,103 @@ class SalesHistoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final invoices = ref.watch(salesHistoryProvider);
 
-    final mobile = MediaQuery.of(context).size.width < 700;
+    final mobile = MediaQuery
+        .of(context)
+        .size
+        .width < 700;
 
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Sales History',
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Sales History',
+            style: Theme
+                .of(
+              context,
+            )
+                .textTheme
+                .headlineSmall
+                ?.copyWith(fontWeight: FontWeight.bold),
+          ),
 
-            const SizedBox(height: 20),
+          const SizedBox(height: 20),
 
-            Card(
-              elevation: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    hintText: 'Search Invoice...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
+          Card(
+            elevation: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: TextField(
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search),
+                  hintText: 'Search Invoice...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
                   ),
-                  onChanged: (value) {
-                    ref.read(salesSearchProvider.notifier).state = value;
-                  },
                 ),
+                onChanged: (value) {
+                  ref
+                      .read(salesSearchProvider.notifier)
+                      .state = value;
+                },
               ),
             ),
+          ),
 
-            const SizedBox(height: 20),
+          const SizedBox(height: 20),
 
-            Expanded(
-              child: invoices.when(
-                data: (items) {
-                  if (items.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Icon(
-                            Icons.receipt_long_outlined,
-                            size: 80,
-                            color: Colors.grey,
-                          ),
-                          SizedBox(height: 16),
-                          Text('No Sales Found'),
-                        ],
-                      ),
-                    );
-                  }
-
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      ref.refresh(salesHistoryProvider);
-                    },
-                    child: ListView.separated(
-                      itemCount: items.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (context, index) {
-                        final invoice = items[index];
-
-                        return Card(
-                          elevation: 0,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: mobile
-                                ? _mobileCard(context, ref, invoice)
-                                : _desktopCard(context, ref, invoice),
-                          ),
-                        );
-                      },
+          Expanded(
+            child: invoices.when(
+              data: (items) {
+                if (items.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(
+                          Icons.receipt_long_outlined,
+                          size: 80,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 16),
+                        Text('No Sales Found'),
+                      ],
                     ),
                   );
-                },
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Center(child: Text(e.toString())),
-              ),
+                }
+
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    ref.refresh(salesHistoryProvider);
+                  },
+                  child: ListView.separated(
+                    primary: false,
+                    physics:
+                    const BouncingScrollPhysics(),
+                    itemCount: items.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final invoice = items[index];
+
+                      return Card(
+                        elevation: 0,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: mobile
+                              ? _mobileCard(context, ref, invoice)
+                              : _desktopCard(context, ref, invoice),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(child: Text(e.toString())),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -155,24 +165,25 @@ class SalesHistoryScreen extends ConsumerWidget {
               onPressed: () async {
                 final delete = await showDialog<bool>(
                   context: context,
-                  builder: (_) => AlertDialog(
-                    title: const Text('Delete Invoice'),
-                    content: const Text('Are you sure?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context, false);
-                        },
-                        child: const Text('Cancel'),
+                  builder: (_) =>
+                      AlertDialog(
+                        title: const Text('Delete Invoice'),
+                        content: const Text('Are you sure?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context, false);
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          FilledButton(
+                            onPressed: () {
+                              Navigator.pop(context, true);
+                            },
+                            child: const Text('Delete'),
+                          ),
+                        ],
                       ),
-                      FilledButton(
-                        onPressed: () {
-                          Navigator.pop(context, true);
-                        },
-                        child: const Text('Delete'),
-                      ),
-                    ],
-                  ),
                 );
 
                 if (delete != true) {
