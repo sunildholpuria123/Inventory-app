@@ -5106,6 +5106,17 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _customerIdMeta = const VerificationMeta(
+    'customerId',
+  );
+  @override
+  late final GeneratedColumn<int> customerId = GeneratedColumn<int>(
+    'customer_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -5127,6 +5138,7 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
     loadingCharge,
     unloadingCharge,
     transportCharge,
+    customerId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -5287,6 +5299,12 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
         ),
       );
     }
+    if (data.containsKey('customer_id')) {
+      context.handle(
+        _customerIdMeta,
+        customerId.isAcceptableOrUnknown(data['customer_id']!, _customerIdMeta),
+      );
+    }
     return context;
   }
 
@@ -5372,6 +5390,10 @@ class $InvoicesTable extends Invoices with TableInfo<$InvoicesTable, Invoice> {
         DriftSqlType.double,
         data['${effectivePrefix}transport_charge'],
       )!,
+      customerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}customer_id'],
+      ),
     );
   }
 
@@ -5401,6 +5423,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
   final double loadingCharge;
   final double unloadingCharge;
   final double transportCharge;
+  final int? customerId;
   const Invoice({
     required this.id,
     required this.invoiceNo,
@@ -5421,6 +5444,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     required this.loadingCharge,
     required this.unloadingCharge,
     required this.transportCharge,
+    this.customerId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5448,6 +5472,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     map['loading_charge'] = Variable<double>(loadingCharge);
     map['unloading_charge'] = Variable<double>(unloadingCharge);
     map['transport_charge'] = Variable<double>(transportCharge);
+    if (!nullToAbsent || customerId != null) {
+      map['customer_id'] = Variable<int>(customerId);
+    }
     return map;
   }
 
@@ -5476,6 +5503,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       loadingCharge: Value(loadingCharge),
       unloadingCharge: Value(unloadingCharge),
       transportCharge: Value(transportCharge),
+      customerId: customerId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(customerId),
     );
   }
 
@@ -5504,6 +5534,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       loadingCharge: serializer.fromJson<double>(json['loadingCharge']),
       unloadingCharge: serializer.fromJson<double>(json['unloadingCharge']),
       transportCharge: serializer.fromJson<double>(json['transportCharge']),
+      customerId: serializer.fromJson<int?>(json['customerId']),
     );
   }
   @override
@@ -5529,6 +5560,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       'loadingCharge': serializer.toJson<double>(loadingCharge),
       'unloadingCharge': serializer.toJson<double>(unloadingCharge),
       'transportCharge': serializer.toJson<double>(transportCharge),
+      'customerId': serializer.toJson<int?>(customerId),
     };
   }
 
@@ -5552,6 +5584,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     double? loadingCharge,
     double? unloadingCharge,
     double? transportCharge,
+    Value<int?> customerId = const Value.absent(),
   }) => Invoice(
     id: id ?? this.id,
     invoiceNo: invoiceNo ?? this.invoiceNo,
@@ -5572,6 +5605,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     loadingCharge: loadingCharge ?? this.loadingCharge,
     unloadingCharge: unloadingCharge ?? this.unloadingCharge,
     transportCharge: transportCharge ?? this.transportCharge,
+    customerId: customerId.present ? customerId.value : this.customerId,
   );
   Invoice copyWithCompanion(InvoicesCompanion data) {
     return Invoice(
@@ -5614,6 +5648,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       transportCharge: data.transportCharge.present
           ? data.transportCharge.value
           : this.transportCharge,
+      customerId: data.customerId.present
+          ? data.customerId.value
+          : this.customerId,
     );
   }
 
@@ -5638,7 +5675,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           ..write('reminderSent: $reminderSent, ')
           ..write('loadingCharge: $loadingCharge, ')
           ..write('unloadingCharge: $unloadingCharge, ')
-          ..write('transportCharge: $transportCharge')
+          ..write('transportCharge: $transportCharge, ')
+          ..write('customerId: $customerId')
           ..write(')'))
         .toString();
   }
@@ -5664,6 +5702,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     loadingCharge,
     unloadingCharge,
     transportCharge,
+    customerId,
   );
   @override
   bool operator ==(Object other) =>
@@ -5687,7 +5726,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           other.reminderSent == this.reminderSent &&
           other.loadingCharge == this.loadingCharge &&
           other.unloadingCharge == this.unloadingCharge &&
-          other.transportCharge == this.transportCharge);
+          other.transportCharge == this.transportCharge &&
+          other.customerId == this.customerId);
 }
 
 class InvoicesCompanion extends UpdateCompanion<Invoice> {
@@ -5710,6 +5750,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
   final Value<double> loadingCharge;
   final Value<double> unloadingCharge;
   final Value<double> transportCharge;
+  final Value<int?> customerId;
   const InvoicesCompanion({
     this.id = const Value.absent(),
     this.invoiceNo = const Value.absent(),
@@ -5730,6 +5771,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     this.loadingCharge = const Value.absent(),
     this.unloadingCharge = const Value.absent(),
     this.transportCharge = const Value.absent(),
+    this.customerId = const Value.absent(),
   });
   InvoicesCompanion.insert({
     this.id = const Value.absent(),
@@ -5751,6 +5793,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     this.loadingCharge = const Value.absent(),
     this.unloadingCharge = const Value.absent(),
     this.transportCharge = const Value.absent(),
+    this.customerId = const Value.absent(),
   }) : invoiceNo = Value(invoiceNo),
        customerName = Value(customerName),
        customerPhone = Value(customerPhone),
@@ -5777,6 +5820,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     Expression<double>? loadingCharge,
     Expression<double>? unloadingCharge,
     Expression<double>? transportCharge,
+    Expression<int>? customerId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -5798,6 +5842,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
       if (loadingCharge != null) 'loading_charge': loadingCharge,
       if (unloadingCharge != null) 'unloading_charge': unloadingCharge,
       if (transportCharge != null) 'transport_charge': transportCharge,
+      if (customerId != null) 'customer_id': customerId,
     });
   }
 
@@ -5821,6 +5866,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     Value<double>? loadingCharge,
     Value<double>? unloadingCharge,
     Value<double>? transportCharge,
+    Value<int?>? customerId,
   }) {
     return InvoicesCompanion(
       id: id ?? this.id,
@@ -5842,6 +5888,7 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
       loadingCharge: loadingCharge ?? this.loadingCharge,
       unloadingCharge: unloadingCharge ?? this.unloadingCharge,
       transportCharge: transportCharge ?? this.transportCharge,
+      customerId: customerId ?? this.customerId,
     );
   }
 
@@ -5905,6 +5952,9 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
     if (transportCharge.present) {
       map['transport_charge'] = Variable<double>(transportCharge.value);
     }
+    if (customerId.present) {
+      map['customer_id'] = Variable<int>(customerId.value);
+    }
     return map;
   }
 
@@ -5929,7 +5979,8 @@ class InvoicesCompanion extends UpdateCompanion<Invoice> {
           ..write('reminderSent: $reminderSent, ')
           ..write('loadingCharge: $loadingCharge, ')
           ..write('unloadingCharge: $unloadingCharge, ')
-          ..write('transportCharge: $transportCharge')
+          ..write('transportCharge: $transportCharge, ')
+          ..write('customerId: $customerId')
           ..write(')'))
         .toString();
   }
@@ -13577,6 +13628,7 @@ typedef $$InvoicesTableCreateCompanionBuilder =
       Value<double> loadingCharge,
       Value<double> unloadingCharge,
       Value<double> transportCharge,
+      Value<int?> customerId,
     });
 typedef $$InvoicesTableUpdateCompanionBuilder =
     InvoicesCompanion Function({
@@ -13599,6 +13651,7 @@ typedef $$InvoicesTableUpdateCompanionBuilder =
       Value<double> loadingCharge,
       Value<double> unloadingCharge,
       Value<double> transportCharge,
+      Value<int?> customerId,
     });
 
 class $$InvoicesTableFilterComposer
@@ -13702,6 +13755,11 @@ class $$InvoicesTableFilterComposer
 
   ColumnFilters<double> get transportCharge => $composableBuilder(
     column: $table.transportCharge,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get customerId => $composableBuilder(
+    column: $table.customerId,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -13809,6 +13867,11 @@ class $$InvoicesTableOrderingComposer
     column: $table.transportCharge,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$InvoicesTableAnnotationComposer
@@ -13896,6 +13959,11 @@ class $$InvoicesTableAnnotationComposer
     column: $table.transportCharge,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => column,
+  );
 }
 
 class $$InvoicesTableTableManager
@@ -13945,6 +14013,7 @@ class $$InvoicesTableTableManager
                 Value<double> loadingCharge = const Value.absent(),
                 Value<double> unloadingCharge = const Value.absent(),
                 Value<double> transportCharge = const Value.absent(),
+                Value<int?> customerId = const Value.absent(),
               }) => InvoicesCompanion(
                 id: id,
                 invoiceNo: invoiceNo,
@@ -13965,6 +14034,7 @@ class $$InvoicesTableTableManager
                 loadingCharge: loadingCharge,
                 unloadingCharge: unloadingCharge,
                 transportCharge: transportCharge,
+                customerId: customerId,
               ),
           createCompanionCallback:
               ({
@@ -13987,6 +14057,7 @@ class $$InvoicesTableTableManager
                 Value<double> loadingCharge = const Value.absent(),
                 Value<double> unloadingCharge = const Value.absent(),
                 Value<double> transportCharge = const Value.absent(),
+                Value<int?> customerId = const Value.absent(),
               }) => InvoicesCompanion.insert(
                 id: id,
                 invoiceNo: invoiceNo,
@@ -14007,6 +14078,7 @@ class $$InvoicesTableTableManager
                 loadingCharge: loadingCharge,
                 unloadingCharge: unloadingCharge,
                 transportCharge: transportCharge,
+                customerId: customerId,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

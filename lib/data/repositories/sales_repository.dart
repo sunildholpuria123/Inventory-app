@@ -79,6 +79,7 @@ class SalesRepository {
             dueDate: Value(dueDate),
 
             pdfPath: Value(pdfPath),
+            customerId: Value(customerId),
           ),
         );
     if (dueAmount > 0) {

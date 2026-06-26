@@ -38,4 +38,6 @@ class Invoices extends Table {
   RealColumn get unloadingCharge => real().withDefault(const Constant(0))();
 
   RealColumn get transportCharge => real().withDefault(const Constant(0))();
+
+  IntColumn get customerId => integer().nullable()();
 }

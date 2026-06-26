@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
 import '../provider/customer_provider.dart';
+import '../screen/CustomerProfileScreen.dart';
 import '../screen/customer_ledger_screen.dart' show CustomerLedgerScreen;
 import 'edit_customer_dialog.dart';
 
@@ -29,6 +30,14 @@ class CustomerTable extends ConsumerWidget {
 
           rows: customers.map((customer) {
             return DataRow(
+              onSelectChanged: (_) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CustomerProfileScreen(customer: customer),
+                  ),
+                );
+              },
               cells: [
                 DataCell(Text(customer.name)),
 
@@ -54,6 +63,19 @@ class CustomerTable extends ConsumerWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      IconButton(
+                        tooltip: 'Profile',
+                        icon: const Icon(Icons.person, color: Colors.blue),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  CustomerProfileScreen(customer: customer),
+                            ),
+                          );
+                        },
+                      ),
                       IconButton(
                         onPressed: () {
                           showDialog(
