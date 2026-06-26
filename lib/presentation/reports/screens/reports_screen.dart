@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/widgets/report_export_buttons.dart'
     show ReportExportButtons;
-import '../widgets/monthly_sales_chart.dart';
+import '../widgets/monthly_report_sales_chart.dart';
 import '../widgets/report_date_filter_widget.dart';
 import '../widgets/reports_summary_cards.dart';
 import '../widgets/top_products_widget.dart';
@@ -39,7 +39,7 @@ class ReportsScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// MONTHLY SALES CHART
-            const MonthlySalesChart(),
+            const MonthlyReportSalesChart(),
 
             const SizedBox(height: 20),
 

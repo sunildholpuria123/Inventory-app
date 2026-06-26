@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../provider/report_provider.dart' show monthlySalesProvider;
 
-class MonthlySalesChart extends ConsumerWidget {
-  const MonthlySalesChart({super.key});
+class MonthlyReportSalesChart extends ConsumerWidget {
+  const MonthlyReportSalesChart({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
