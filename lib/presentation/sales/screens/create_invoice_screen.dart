@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../customers/provider/customer_loyality_provider.dart';
 import '../../products/provider/product_provider.dart'
     show productRepositoryProvider;
 import '../../products/provider/product_variant_provider.dart';
@@ -331,6 +332,11 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
 
       /// SAVE INVOICE
       final salesRepo = ref.read(salesRepositoryProvider);
+      final loyaltyRepo = ref.read(customerLoyaltyRepositoryProvider);
+
+      final points = (total / 100).floor();
+
+      await loyaltyRepo.addPoints(customerId: customer.id, points: points);
 
       final invoiceId = await salesRepo.saveInvoice(
         customerId: customer.id,

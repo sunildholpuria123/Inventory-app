@@ -2,27 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
+import '../widget/customer_documents_tab.dart';
+import '../widget/customer_loyalty_card.dart';
+import '../widget/customer_notes_tab.dart';
 import '../widget/customer_profile_header.dart';
 import '../widget/customer_profile_overview_tab.dart';
 import '../widget/customer_profile_tab_bar.dart';
 
-class CustomerProfileScreen
-    extends ConsumerStatefulWidget {
+class CustomerProfileScreen extends ConsumerStatefulWidget {
   final Customer customer;
 
-  const CustomerProfileScreen({
-    super.key,
-    required this.customer,
-  });
+  const CustomerProfileScreen({super.key, required this.customer});
 
   @override
-  ConsumerState<CustomerProfileScreen>
-  createState() =>
+  ConsumerState<CustomerProfileScreen> createState() =>
       _CustomerProfileScreenState();
 }
 
-class _CustomerProfileScreenState
-    extends ConsumerState<CustomerProfileScreen>
+class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController controller;
 
@@ -30,10 +27,7 @@ class _CustomerProfileScreenState
   void initState() {
     super.initState();
 
-    controller = TabController(
-      length: 5,
-      vsync: this,
-    );
+    controller = TabController(length: 5, vsync: this);
   }
 
   @override
@@ -48,45 +42,23 @@ class _CustomerProfileScreenState
       body: SafeArea(
         child: Column(
           children: [
-            CustomerProfileHeader(
-              customer: widget.customer,
-            ),
+            CustomerProfileHeader(customer: widget.customer),
 
-            CustomerProfileTabBar(
-              controller: controller,
-            ),
+            CustomerProfileTabBar(controller: controller),
 
             Expanded(
               child: TabBarView(
                 controller: controller,
                 children: [
-                  CustomerProfileOverviewTab(
-                    customer: widget.customer,
-                  ),
+                  CustomerProfileOverviewTab(customer: widget.customer),
 
-                  const Center(
-                    child: Text(
-                      'Invoices',
-                    ),
-                  ),
+                  const Center(child: Text('Invoices')),
 
-                  const Center(
-                    child: Text(
-                      'Payments',
-                    ),
-                  ),
+                  const Center(child: Text('Payments')),
 
-                  const Center(
-                    child: Text(
-                      'Notes',
-                    ),
-                  ),
-
-                  const Center(
-                    child: Text(
-                      'Documents',
-                    ),
-                  ),
+                  CustomerNotesTab(customer: widget.customer),
+                  CustomerDocumentsTab(customer: widget.customer),
+                  CustomerLoyaltyCard(customer: widget.customer),
                 ],
               ),
             ),

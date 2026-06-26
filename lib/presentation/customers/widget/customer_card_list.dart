@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/utils/whatsapp_helper.dart';
 import '../../../data/database/app_database.dart';
 import '../provider/customer_provider.dart';
 import '../screen/CustomerProfileScreen.dart';
@@ -72,6 +73,23 @@ class CustomerCardList extends ConsumerWidget {
                             if (customer.email != null) Text(customer.email!),
                           ],
                         ),
+                      ),
+                      const SizedBox(width: 12),
+
+                      OutlinedButton.icon(
+                        icon: const Icon(
+                          Icons.chat,
+                        ),
+                        label: const Text(
+                          'WhatsApp',
+                        ),
+                        onPressed: () async {
+                          await WhatsAppHelper.openChat(
+                            phone: customer.phone,
+                            message:
+                            'Hello ${customer.name}',
+                          );
+                        },
                       ),
                     ],
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/utils/whatsapp_helper.dart';
 import '../../../data/database/app_database.dart';
 
 class CustomerProfileHeader extends StatelessWidget {
@@ -61,7 +62,77 @@ class CustomerProfileHeader extends StatelessWidget {
             ),
           ),
 
-          Chip(label: Text(customer.creditBalance > 0 ? 'Credit' : 'Regular')),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Chip(
+                backgroundColor: Colors.white,
+                label: Text(
+                  customer.creditBalance > 0 ? 'Credit' : 'Regular',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: IconButton(
+                      tooltip: 'WhatsApp',
+                      icon: const Icon(Icons.chat, color: Colors.white),
+                      onPressed: () async {
+                        await WhatsAppHelper.openChat(
+                          phone: customer.phone,
+                          message: 'Hello ${customer.name}',
+                        );
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: IconButton(
+                      tooltip: 'Call',
+                      icon: const Icon(Icons.call, color: Colors.white),
+                      onPressed: () async {
+                        await WhatsAppHelper.openChat(
+                          phone: customer.phone,
+                          message:
+                          'Hello ${customer.name}',
+                        );                      },
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: IconButton(
+                      tooltip: 'Edit',
+                      icon: const Icon(Icons.edit, color: Colors.white),
+                      onPressed: () {
+                        // Open existing edit customer dialog
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ],
       ),
     );

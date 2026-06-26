@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/utils/whatsapp_helper.dart';
 import '../../../data/database/app_database.dart';
 import '../provider/customer_provider.dart';
 import '../screen/CustomerProfileScreen.dart';
@@ -111,6 +112,20 @@ class CustomerTable extends ConsumerWidget {
                               builder: (_) =>
                                   CustomerLedgerScreen(customer: customer),
                             ),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        tooltip: 'WhatsApp',
+                        icon: const Icon(
+                          Icons.chat,
+                          color: Colors.green,
+                        ),
+                        onPressed: () async {
+                          await WhatsAppHelper.openChat(
+                            phone: customer.phone,
+                            message:
+                            'Hello ${customer.name}',
                           );
                         },
                       ),

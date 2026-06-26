@@ -2,7 +2,11 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:inventory_desktop/data/database/tables/CustomerLoyalties.dart';
 import 'package:inventory_desktop/data/database/tables/business_settings_table.dart';
+import 'package:inventory_desktop/data/database/tables/customer_documents_table.dart';
+import 'package:inventory_desktop/data/database/tables/customer_followups_table.dart';
+import 'package:inventory_desktop/data/database/tables/customer_notes_table.dart';
 import 'package:inventory_desktop/data/database/tables/product_price_histories.dart';
 import 'package:inventory_desktop/data/database/tables/product_variants.dart';
 import 'package:inventory_desktop/data/database/tables/purchase_returns_table.dart';
@@ -47,7 +51,11 @@ part 'app_database.g.dart';
     PurchaseReturns,
     SalesReturns,
     BusinessSettings,
-    ProductPriceHistories
+    ProductPriceHistories,
+    CustomerNotes,
+    CustomerDocuments,
+    CustomerFollowUps,
+    CustomerLoyalties
   ],
 )
 class AppDatabase extends _$AppDatabase {
