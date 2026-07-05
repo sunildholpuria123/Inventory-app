@@ -59,4 +59,49 @@ class NotificationService {
       ),
     );
   }
+
+  /// Generic Notification
+  Future<void> showNotification({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
+    await notifications.show(
+      id,
+      title,
+      body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'inventory_erp',
+          'Inventory ERP',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
+    );
+  }
+  /// Low Stock Alert
+  Future<void> showLowStockNotification({
+    required String productName,
+  }) async {
+    await showNotification(
+      id: productName.hashCode,
+      title: 'Low Stock Alert',
+      body: '$productName is running low on stock.',
+    );
+  }
+
+  /// Payment Reminder
+  Future<void> showPaymentReminder({
+    required String customerName,
+    required double amount,
+  }) async {
+    await showNotification(
+      id: customerName.hashCode,
+      title: 'Payment Due',
+      body:
+      '$customerName has ₹${amount.toStringAsFixed(0)} pending.',
+    );
+  }
 }

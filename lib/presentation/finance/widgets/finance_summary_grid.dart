@@ -16,7 +16,7 @@ class FinanceSummaryGrid extends StatelessWidget {
       crossAxisCount: MediaQuery.of(context).size.width < 700 ? 2 : 4,
       crossAxisSpacing: 16,
       mainAxisSpacing: 16,
-      childAspectRatio: 1.5,
+      childAspectRatio: 1,
       children: [
         FinanceKpiCard(
           title: 'Revenue',

@@ -121,4 +121,44 @@ class BackupService {
       await extractedDb.copy(originalDb.path);
     }
   }
+
+  /// EXPORT ZIP BACKUP
+  Future<File?> createAndExportBackup() async {
+    final dbFile = await getDatabaseFile();
+
+    if (!await dbFile.exists()) {
+      throw Exception('Database not found');
+    }
+
+    if (Platform.isAndroid || Platform.isIOS) {
+      final dir = await getTemporaryDirectory();
+
+      final output = File(
+        '${dir.path}/InventoryERP_${DateTime.now().millisecondsSinceEpoch}.zip',
+      );
+
+      final encoder = ZipFileEncoder();
+
+      encoder.create(output.path);
+      encoder.addFile(dbFile);
+      encoder.close();
+
+      return output;
+    }
+
+    final output = await FilePicker.platform.saveFile(
+      dialogTitle: 'Export Backup',
+      fileName: 'InventoryERP_${DateTime.now().millisecondsSinceEpoch}.zip',
+    );
+
+    if (output == null) return null;
+
+    final encoder = ZipFileEncoder();
+
+    encoder.create(output);
+    encoder.addFile(dbFile);
+    encoder.close();
+
+    return File(output);
+  }
 }

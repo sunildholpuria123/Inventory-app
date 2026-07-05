@@ -1,15 +1,32 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/provider/theme_provider.dart';
+import '../../../core/services/backup_service.dart';
 import '../../../core/services/demo_data_service.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../data/providers/database_provider.dart';
 import '../../../data/repositories/backup_repository.dart'
     show BackupRepository;
 import '../../categories/screen/category_management_screen.dart';
+import '../provider/backup_provider.dart';
 import '../provider/settings_provider.dart';
+import '../widgets/settings_header.dart';
+import '../widgets/settings_quick_actions.dart';
+import '../widgets/settings_section.dart';
+import '../widgets/settings_tile.dart';
 import 'business_settings_screen.dart';
+
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../provider/backup_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -17,284 +34,312 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
-
+    final brightness = Theme.of(context).brightness;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20),
 
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-
             children: [
-              Text(
-                'Application Settings',
-                style: Theme.of(context).textTheme.headlineMedium,
+              SettingsHeader(
+                companyName: settings.companyName,
+                gstNumber: "N/A",
+                phone: "N/A",
+                email: "N/A",
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 24),
 
-              buildSectionTitle('Appearance'),
-
-              SwitchListTile(
-                value: settings.darkMode,
-
-                title: const Text('Dark Mode'),
-
-                onChanged: (value) {
-                  ref.read(themeModeProvider.notifier).state = value
-                      ? ThemeMode.dark
-                      : ThemeMode.light;
-
-                  ref.read(settingsProvider.notifier).state = settings.copyWith(
-                    darkMode: value,
+              SettingsQuickActions(
+                onBusiness: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const BusinessSettingsScreen(),
+                    ),
                   );
                 },
-              ),
+                onBackup: () async {
+                  final repo = ref.read(backupRepositoryProvider);
 
-              const Divider(),
+                  final file = await repo.localBackup();
 
-              buildSectionTitle('Currency'),
-
-              DropdownButtonFormField(
-                value: settings.currency,
-
-                items: const [
-                  DropdownMenuItem(value: 'Rs.', child: Text('Indian Rupee Rs.')),
-
-                  DropdownMenuItem(value: '\$', child: Text('Dollar \$')),
-
-                  DropdownMenuItem(value: '€', child: Text('Euro €')),
-                ],
-
-                onChanged: (value) {
-                  ref.read(settingsProvider.notifier).state = settings.copyWith(
-                    currency: value!,
-                  );
-                },
-              ),
-
-              const SizedBox(height: 30),
-
-              buildSectionTitle('Tax Settings'),
-
-              TextFormField(
-                initialValue: settings.taxPercent.toString(),
-
-                decoration: const InputDecoration(labelText: 'GST / Tax %'),
-
-                onChanged: (value) {
-                  ref.read(settingsProvider.notifier).state = settings.copyWith(
-                    taxPercent: double.tryParse(value) ?? 0,
-                  );
-                },
-              ),
-
-              const SizedBox(height: 30),
-
-              buildSectionTitle('Company Details'),
-
-              TextFormField(
-                initialValue: settings.companyName,
-
-                decoration: const InputDecoration(labelText: 'Company Name'),
-
-                onChanged: (value) {
-                  ref.read(settingsProvider.notifier).state = settings.copyWith(
-                    companyName: value,
-                  );
-                },
-              ),
-
-              const SizedBox(height: 20),
-
-              TextFormField(
-                initialValue: settings.companyAddress,
-
-                decoration: const InputDecoration(labelText: 'Company Address'),
-
-                onChanged: (value) {
-                  ref.read(settingsProvider.notifier).state = settings.copyWith(
-                    companyAddress: value,
-                  );
-                },
-              ),
-
-              const SizedBox(height: 30),
-
-              buildSectionTitle('Invoice Settings'),
-
-              TextFormField(
-                initialValue: settings.invoicePrefix,
-
-                decoration: const InputDecoration(labelText: 'Invoice Prefix'),
-
-                onChanged: (value) {
-                  ref.read(settingsProvider.notifier).state = settings.copyWith(
-                    invoicePrefix: value,
-                  );
-                },
-              ),
-
-              const SizedBox(height: 30),
-
-              buildSectionTitle('Backup & Restore'),
-
-              Card(
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        await NotificationService.instance.showReminder(
-                          id: 999,
-                          title: 'Test Reminder',
-                          body: 'Reminder functionality is working.',
-                        );
-                      },
-                      child: const Text('Test Reminder'),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.science),
-                      title: const Text(
-                        'Generate Demo Data',
-                      ),
-                      onTap: () async {
-                        final db = ref.read(
-                          databaseProvider,
-                        );
-
-                        await DemoDataService(
-                          db,
-                        ).generate();
-
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Demo data generated successfully',
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.inventory),
-
-                      title: const Text('Invoice settings'),
-
-                      trailing: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                              const BusinessSettingsScreen(),
-                            ),
-                          );
-                        },
-
-                        child: const Text('Category'),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.backup),
-
-                      title: const Text('Manage Categories'),
-
-                      trailing: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-
-                            MaterialPageRoute(
-                              builder: (_) => const CategoryManagementScreen(),
-                            ),
-                          );
-                        },
-
-                        child: const Text('Category'),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.backup),
-
-                      title: const Text('Backup Database'),
-
-                      trailing: ElevatedButton(
-                        onPressed: () {},
-
-                        child: const Text('Backup'),
-                      ),
-                    ),
-
-                    ListTile(
-                      leading: const Icon(Icons.restore),
-
-                      title: const Text('Restore Database'),
-
-                      trailing: ElevatedButton(
-                        onPressed: () {},
-
-                        child: const Text('Restore'),
-                      ),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.delete_forever),
-                      title: const Text('Reset Database'),
-                      trailing: ElevatedButton(
-                        onPressed: () async {
-                          final db = ref.read(databaseProvider);
-
-                          await db.clearDatabase();
-                        },
-
-                        child: const Text('Reset'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 40),
-
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-
-                child: ElevatedButton.icon(
-                  onPressed: () {
+                  if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Settings Saved')),
+                      SnackBar(content: Text('Backup saved\n$file')),
                     );
-                  },
+                  }
+                },
+                onRestore: () async {
+                  final result = await FilePicker.platform.pickFiles(
+                    type: FileType.custom,
 
-                  icon: const Icon(Icons.save),
+                    allowedExtensions: ['zip'],
+                  );
 
-                  label: const Text('Save Settings'),
-                ),
-              ),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.backup),
+                  if (result == null) {
+                    return;
+                  }
 
-                label: const Text('Backup Now'),
+                  final path = result.files.single.path;
 
-                onPressed: () async {
-                  try {
-                    await BackupRepository().backupToGoogle();
+                  if (path == null) {
+                    return;
+                  }
 
+                  final repo = ref.read(backupRepositoryProvider);
+
+                  await repo.restore(File(path));
+                  if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Backup Successful')),
+                      const SnackBar(
+                        content: Text('Database restored successfully'),
+                      ),
                     );
-                  } catch (e) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(e.toString())));
+                  }
+                },
+                onExport: () async {
+                  final file = await BackupService().createAndExportBackup();
+
+                  if (file != null && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Backup exported to\n${file.path}'),
+                      ),
+                    );
                   }
                 },
               ),
+
+              const SizedBox(height: 28),
+
+              /// BUSINESS
+              SettingsSection(
+                title: 'Business',
+                icon: Icons.business,
+                children: [
+                  SettingsTile(
+                    icon: Icons.apartment,
+                    title: 'Company Details',
+                    subtitle: 'Company name, logo & address',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const BusinessSettingsScreen(),
+                        ),
+                      );
+                    },
+                  ),
+
+                  SettingsTile(
+                    icon: Icons.receipt_long,
+                    title: 'GST Settings',
+                    subtitle: 'GSTIN & Tax',
+                    onTap: () {},
+                  ),
+
+                  SettingsTile(
+                    icon: Icons.currency_rupee,
+                    title: 'Currency',
+                    subtitle: settings.currency,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const BusinessSettingsScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+
+              /// BILLING
+              SettingsSection(
+                title: 'Billing',
+                icon: Icons.request_quote,
+                children: [
+                  SettingsTile(
+                    icon: Icons.description,
+                    title: 'Invoice Settings',
+                    subtitle: 'Invoice Prefix & Number',
+                    onTap: () {},
+                  ),
+
+                  SettingsTile(
+                    icon: Icons.percent,
+                    title: 'Tax Settings',
+                    subtitle: 'Default Tax',
+                    onTap: () {},
+                  ),
+
+                  SettingsTile(
+                    icon: Icons.payments,
+                    title: 'Payment Methods',
+                    subtitle: 'Cash / UPI / Card',
+                    onTap: () {},
+                  ),
+                ],
+              ),
+
+              /// INVENTORY
+              SettingsSection(
+                title: 'Inventory',
+                icon: Icons.inventory_2,
+                children: [
+                  SettingsTile(
+                    icon: Icons.warning_amber,
+                    title: 'Low Stock Alert',
+                    subtitle: 'Minimum stock warning',
+                    onTap: () {},
+                  ),
+
+                  SettingsTile(
+                    icon: Icons.straighten,
+                    title: 'Default Unit',
+                    subtitle: 'PCS',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CategoryManagementScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+
+              /// BACKUP
+              SettingsSection(
+                title: 'Backup & Restore',
+                icon: Icons.backup,
+                children: [
+                  SettingsTile(
+                    icon: Icons.upload_file,
+                    title: 'Export Database',
+                    subtitle: 'Backup to ZIP',
+                    onTap: () async {
+                      final file = await BackupService().createAndExportBackup();
+
+                      if (file != null && context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Backup exported to\n${file.path}',
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  SettingsTile(
+                    icon: Icons.download,
+                    title: 'Import Database',
+                    subtitle: 'Restore backup',
+                    onTap: () {},
+                  ),
+                ],
+              ),
+
+              /// APPEARANCE
+              SettingsSection(
+                title: 'Appearance',
+                icon: Icons.palette,
+                children: [
+                  SettingsTile(
+                    icon: Icons.dark_mode,
+                    title: 'Dark Mode',
+                    subtitle: 'Coming Soon',
+                    trailing: Switch(
+                      value: ref.watch(themeModeProvider) == ThemeMode.dark,
+
+                      onChanged: (value) {
+                        ref.read(themeModeProvider.notifier).state = value
+                            ? ThemeMode.dark
+                            : ThemeMode.light;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+
+              SettingsSection(
+                title: 'Tools',
+                icon: Icons.build,
+                children: [
+                  SettingsTile(
+                    icon: Icons.notifications_active,
+                    title: 'Test Notification',
+                    subtitle: 'Send test notification',
+                    onTap: () async {
+                      await NotificationService.instance.showNotification(
+                        id: 1,
+                        title: 'Inventory ERP',
+                        body: 'Notification test successful.',
+                      );
+                    },
+                  ),
+                  SettingsTile(
+                    icon: Icons.data_object,
+                    title: 'Load Demo Data',
+                    subtitle: 'Insert sample records',
+                    onTap: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text('Load Demo Data'),
+                          content: const Text(
+                            'This will insert sample data into the database. Continue?',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Cancel'),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: const Text('Continue'),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      if (confirm != true) return;
+
+                      await DemoDataService(
+                        ref.read(databaseProvider),
+                      ).generate();
+                    },
+                  ),
+                ],
+              ),
+
+              /// ABOUT
+              SettingsSection(
+                title: 'About',
+                icon: Icons.info_outline,
+                children: [
+                  const SettingsTile(
+                    icon: Icons.info,
+                    title: 'Version',
+                    subtitle: 'v1.0.0',
+                  ),
+
+                  SettingsTile(
+                    icon: Icons.privacy_tip,
+                    title: 'Privacy Policy',
+                    subtitle: 'Read policy',
+                    onTap: () {},
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 40),
             ],
           ),
         ),
