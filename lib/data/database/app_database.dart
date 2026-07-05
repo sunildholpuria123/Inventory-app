@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:inventory_desktop/data/database/tables/CustomerLoyalties.dart';
+import 'package:inventory_desktop/data/database/tables/customer_loyalties_table.dart';
 import 'package:inventory_desktop/data/database/tables/business_settings_table.dart';
 import 'package:inventory_desktop/data/database/tables/customer_documents_table.dart';
 import 'package:inventory_desktop/data/database/tables/customer_followups_table.dart';

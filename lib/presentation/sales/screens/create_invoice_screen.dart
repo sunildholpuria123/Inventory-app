@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../customers/provider/customer_loyality_provider.dart';
+import '../../customers/provider/customer_loyalty_provider.dart';
 import '../../products/provider/product_provider.dart'
     show productRepositoryProvider;
 import '../../products/provider/product_variant_provider.dart';

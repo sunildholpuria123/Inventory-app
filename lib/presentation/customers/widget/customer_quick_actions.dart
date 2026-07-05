@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:inventory_desktop/presentation/customers/screen/customer_ledger_screen.dart';
+
+import '../screen/customer_list_screen.dart';
+import '../screen/due_payments_screen.dart';
+import 'add_customer_dialog.dart';
 
 class CustomerQuickActions extends StatelessWidget {
   const CustomerQuickActions({super.key});
@@ -11,25 +16,34 @@ class CustomerQuickActions extends StatelessWidget {
       children: [
         FilledButton.icon(
           onPressed: () {
-            // Existing Add Customer dialog
+            showDialog(
+              context: context,
+              builder: (_) => const AddCustomerDialog(),
+            );
           },
           icon: const Icon(Icons.person_add),
           label: const Text('Add Customer'),
         ),
         OutlinedButton.icon(
           onPressed: () {
-            // Existing Due Payments Screen
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const DuePaymentsScreen()),
+            );
           },
           icon: const Icon(Icons.payments),
           label: const Text('Due Payments'),
         ),
-        OutlinedButton.icon(
-          onPressed: () {
-            // Existing Ledger Screen
-          },
-          icon: const Icon(Icons.receipt_long),
-          label: const Text('Ledger'),
-        ),
+        // OutlinedButton.icon(
+        //   onPressed: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: (_) => const CustomerListScreen()),
+        //     );
+        //   },
+        //   icon: const Icon(Icons.receipt_long),
+        //   label: const Text('Ledger'),
+        // ),
       ],
     );
   }

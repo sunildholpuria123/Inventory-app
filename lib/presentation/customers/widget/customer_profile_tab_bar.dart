@@ -1,51 +1,23 @@
 import 'package:flutter/material.dart';
 
-class CustomerProfileTabBar
-    extends StatelessWidget {
+class CustomerProfileTabBar extends StatelessWidget {
   final TabController controller;
 
-  const CustomerProfileTabBar({
-    super.key,
-    required this.controller,
-  });
+  const CustomerProfileTabBar({super.key, required this.controller});
 
   @override
-  Widget build(
-      BuildContext context,
-      ) {
+  Widget build(BuildContext context) {
     return Material(
-      color:
-      Theme.of(context)
-          .cardColor,
+      color: Theme.of(context).cardColor,
       child: TabBar(
         controller: controller,
         isScrollable: true,
         tabs: const [
-          Tab(
-            icon:
-            Icon(Icons.dashboard),
-            text: 'Overview',
-          ),
-          Tab(
-            icon: Icon(
-              Icons.receipt_long,
-            ),
-            text: 'Invoices',
-          ),
-          Tab(
-            icon:
-            Icon(Icons.payments),
-            text: 'Payments',
-          ),
-          Tab(
-            icon: Icon(Icons.note),
-            text: 'Notes',
-          ),
-          Tab(
-            icon:
-            Icon(Icons.folder),
-            text: 'Documents',
-          ),
+          Tab(icon: Icon(Icons.dashboard), text: 'Overview'),
+          Tab(icon: Icon(Icons.receipt_long), text: 'Invoices'),
+          Tab(icon: Icon(Icons.payments), text: 'Payments'),
+          Tab(icon: Icon(Icons.note), text: 'Notes'),
+          Tab(icon: Icon(Icons.folder), text: 'Documents'),
         ],
       ),
     );

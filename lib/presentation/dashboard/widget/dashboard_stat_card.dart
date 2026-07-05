@@ -24,7 +24,7 @@ class DashboardStatCard extends StatelessWidget {
 
       child: Container(
         width: 220,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
 
         child: Row(
           children: [
@@ -35,35 +35,26 @@ class DashboardStatCard extends StatelessWidget {
               child: Icon(icon, color: color, size: 30),
             ),
 
-            const SizedBox(width: 16),
+            const SizedBox(width: 8),
 
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-
-                mainAxisSize: MainAxisSize.min,
-
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    title,
-
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
-                  ),
-
-                  const SizedBox(height: 6),
-
+                  Icon(icon, size: 32, color: color),
+                  const SizedBox(height: 8),
                   Text(
                     value,
-
                     maxLines: 1,
-
                     overflow: TextOverflow.ellipsis,
-
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),

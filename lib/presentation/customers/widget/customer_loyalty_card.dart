@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
-import '../provider/customer_loyality_provider.dart';
+import '../provider/customer_loyalty_provider.dart';
 
 class CustomerLoyaltyCard extends ConsumerWidget {
   final Customer customer;

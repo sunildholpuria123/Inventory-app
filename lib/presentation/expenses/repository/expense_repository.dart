@@ -31,4 +31,9 @@ class ExpenseRepository {
   Future<void> deleteExpense(int id) async {
     await (db.delete(db.expenses)..where((tbl) => tbl.id.equals(id))).go();
   }
+
+  Future<List<Expense>> getAllExpenses() {
+    return db.select(db.expenses).get();
+  }
+
 }

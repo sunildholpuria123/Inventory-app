@@ -49,7 +49,7 @@ class ProductDashboardCards extends ConsumerWidget {
 
         if (isMobile) {
           return SizedBox(
-            height: 120,
+            height: 165,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: cards.length,

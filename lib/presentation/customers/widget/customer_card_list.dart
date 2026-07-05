@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inventory_desktop/presentation/customers/widget/payment_history_dialog.dart';
+import 'package:inventory_desktop/presentation/customers/widget/receive_payment_dialog.dart';
 
 import '../../../core/utils/whatsapp_helper.dart';
 import '../../../data/database/app_database.dart';
 import '../provider/customer_provider.dart';
-import '../screen/CustomerProfileScreen.dart';
+import '../screen/customer_profile_screen.dart';
 import '../screen/customer_ledger_screen.dart';
 import 'edit_customer_dialog.dart';
 
@@ -143,53 +145,83 @@ class CustomerCardList extends ConsumerWidget {
                                   .deleteCustomer(customer.id);
 
                               break;
+                          /*  case 'payment':
+                              showDialog(
+                                context: context,
+                                builder: (_) =>
+                                    ReceivePaymentDialog(
+                                      customer: customer,
+                                    ),
+                              );
+                              break;
+
+                            case 'history':
+                              showDialog(
+                                context: context,
+                                builder: (_) =>
+                                    PaymentHistoryDialog(
+                                      customer: customer,
+                                    ),
+                              );
+                              break;*/
                           }
                         },
 
-                        itemBuilder: (_) => [
-                          const PopupMenuItem(
-                            value: 'ledger',
-
-                            child: Row(
-                              children: [
-                                Icon(Icons.receipt_long),
-
-                                SizedBox(width: 10),
-
-                                Text('Ledger'),
-                              ],
+                          itemBuilder: (_) => [
+                            /*const PopupMenuItem(
+                              value: 'payment',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.payments),
+                                  SizedBox(width: 10),
+                                  Text('Receive Payment'),
+                                ],
+                              ),
                             ),
-                          ),
-
-                          const PopupMenuItem(
-                            value: 'edit',
-
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit),
-
-                                SizedBox(width: 10),
-
-                                Text('Edit'),
-                              ],
+                            const PopupMenuItem(
+                              value: 'history',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.history),
+                                  SizedBox(width: 10),
+                                  Text('Payment History'),
+                                ],
+                              ),
+                            ),*/
+                            const PopupMenuItem(
+                              value: 'ledger',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.receipt_long),
+                                  SizedBox(width: 10),
+                                  Text('Ledger'),
+                                ],
+                              ),
                             ),
-                          ),
-
-                          const PopupMenuItem(
-                            value: 'delete',
-
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete, color: Colors.red),
-
-                                SizedBox(width: 10),
-
-                                Text('Delete'),
-                              ],
+                            const PopupMenuItem(
+                              value: 'edit',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit),
+                                  SizedBox(width: 10),
+                                  Text('Edit'),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                            const PopupMenuItem(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text('Delete'),
+                                ],
+                              ),
+                            ),
+                          ]                      ),
                     ],
                   ),
                 ],

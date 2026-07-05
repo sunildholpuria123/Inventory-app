@@ -11,7 +11,7 @@ class ProductGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int count = 2;
+    int count = 1;
 
     if (!ResponsiveHelper.isMobile(context)) {
       final width = MediaQuery.of(context).size.width;
@@ -29,10 +29,10 @@ class ProductGridView extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       itemCount: products.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: count,
+        crossAxisCount: 1,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
-        childAspectRatio: .95,
+        childAspectRatio: 1.6,
       ),
       itemBuilder: (_, index) {
         return ProductCardV2(product: products[index]);

@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
 import '../widget/customer_documents_tab.dart';
-import '../widget/customer_loyalty_card.dart';
+import '../widget/customer_invoices_tab.dart';
 import '../widget/customer_notes_tab.dart';
+import '../widget/customer_payments_tab.dart';
 import '../widget/customer_profile_header.dart';
 import '../widget/customer_profile_overview_tab.dart';
 import '../widget/customer_profile_tab_bar.dart';
@@ -52,13 +53,13 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen>
                 children: [
                   CustomerProfileOverviewTab(customer: widget.customer),
 
-                  const Center(child: Text('Invoices')),
+                  CustomerInvoicesTab(customer: widget.customer),
 
-                  const Center(child: Text('Payments')),
+                  CustomerPaymentsTab(customer: widget.customer),
 
                   CustomerNotesTab(customer: widget.customer),
+
                   CustomerDocumentsTab(customer: widget.customer),
-                  CustomerLoyaltyCard(customer: widget.customer),
                 ],
               ),
             ),

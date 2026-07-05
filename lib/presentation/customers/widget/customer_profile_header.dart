@@ -108,9 +108,9 @@ class CustomerProfileHeader extends StatelessWidget {
                       onPressed: () async {
                         await WhatsAppHelper.openChat(
                           phone: customer.phone,
-                          message:
-                          'Hello ${customer.name}',
-                        );                      },
+                          message: 'Hello ${customer.name}',
+                        );
+                      },
                     ),
                   ),
 
@@ -129,6 +129,33 @@ class CustomerProfileHeader extends StatelessWidget {
                       },
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  PopupMenuButton<String>(
+                    icon: const Icon(Icons.chat, color: Colors.white),
+                    onSelected: (value) async {
+                      switch (value) {
+                        case 'chat':
+                          await WhatsAppHelper.openChat(
+                            phone: customer.phone,
+                            message: 'Hello ${customer.name}',
+                          );
+                          break;
+
+                        case 'payment':
+                          await WhatsAppHelper.sendPaymentReminder(
+                            phone: customer.phone,
+                            customerName: customer.name,
+                            amount: customer.creditBalance,
+                          );
+                          break;
+                      }
+                    },
+                    itemBuilder: (_) => const [
+                      PopupMenuItem(value: 'chat', child: Text('Open Chat')),
+                      PopupMenuItem(value: 'payment', child: Text('Payment Reminder')),
+                    ],
+                  ),
+
                 ],
               ),
             ],

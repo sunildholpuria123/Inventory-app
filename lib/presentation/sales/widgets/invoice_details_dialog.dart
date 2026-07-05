@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import '../../../core/utils/invoice_share_helper.dart';
 import '../../../data/database/app_database.dart';
 import '../widgets/payment_status_badge.dart';
 
@@ -278,6 +279,24 @@ class InvoiceDetailsDialog extends StatelessWidget {
           child: const Text(
             'Close',
           ),
+        ),
+        ElevatedButton.icon(
+          icon: const Icon(
+            Icons.share,
+          ),
+          label: const Text(
+            'Share PDF',
+          ),
+          onPressed: () async {
+            if (invoice.pdfPath == null) {
+              return;
+            }
+
+            await InvoiceShareHelper.sharePdf(
+              pdfPath: invoice.pdfPath!,
+              invoiceNo: invoice.invoiceNo,
+            );
+          },
         ),
       ],
     );

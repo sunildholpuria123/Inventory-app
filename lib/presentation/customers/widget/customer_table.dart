@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inventory_desktop/presentation/customers/widget/payment_history_dialog.dart';
+import 'package:inventory_desktop/presentation/customers/widget/receive_payment_dialog.dart';
 
 import '../../../core/utils/whatsapp_helper.dart';
 import '../../../data/database/app_database.dart';
 import '../provider/customer_provider.dart';
-import '../screen/CustomerProfileScreen.dart';
+import '../screen/customer_profile_screen.dart';
 import '../screen/customer_ledger_screen.dart' show CustomerLedgerScreen;
 import 'edit_customer_dialog.dart';
 
@@ -64,6 +66,7 @@ class CustomerTable extends ConsumerWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      /// PROFILE
                       IconButton(
                         tooltip: 'Profile',
                         icon: const Icon(Icons.person, color: Colors.blue),
@@ -77,37 +80,43 @@ class CustomerTable extends ConsumerWidget {
                           );
                         },
                       ),
-                      IconButton(
+
+                      /// RECEIVE PAYMENT
+                      /*IconButton(
+                        tooltip: 'Receive Payment',
+                        icon: const Icon(Icons.payments, color: Colors.green),
                         onPressed: () {
                           showDialog(
                             context: context,
                             builder: (_) =>
-                                EditCustomerDialog(customer: customer),
+                                ReceivePaymentDialog(customer: customer),
                           );
                         },
-                        icon: const Icon(Icons.edit),
-                      ),
+                      ),*/
 
-                      IconButton(
-                        onPressed: () async {
-                          final repo = ref.read(customerRepositoryProvider);
-
-                          await repo.deleteCustomer(customer.id);
+                      /// PAYMENT HISTORY
+                      /*IconButton(
+                        tooltip: 'Payment History',
+                        icon: const Icon(Icons.history, color: Colors.orange),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) =>
+                                PaymentHistoryDialog(customer: customer),
+                          );
                         },
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                      ),
+                      ),*/
+
+                      /// LEDGER
                       IconButton(
                         tooltip: 'Ledger',
-
                         icon: const Icon(
                           Icons.receipt_long,
                           color: Colors.blue,
                         ),
-
                         onPressed: () {
                           Navigator.push(
                             context,
-
                             MaterialPageRoute(
                               builder: (_) =>
                                   CustomerLedgerScreen(customer: customer),
@@ -115,18 +124,59 @@ class CustomerTable extends ConsumerWidget {
                           );
                         },
                       ),
+
+                      /// WHATSAPP
+                      PopupMenuButton<String>(
+                        icon: const Icon(Icons.chat, color: Colors.green),
+                        onSelected: (value) async {
+                          switch (value) {
+                            case 'chat':
+                              await WhatsAppHelper.openChat(
+                                phone: customer.phone,
+                                message: 'Hello ${customer.name}',
+                              );
+                              break;
+
+                            case 'payment':
+                              await WhatsAppHelper.sendPaymentReminder(
+                                phone: customer.phone,
+                                customerName: customer.name,
+                                amount: customer.creditBalance ?? 0,
+                              );
+                              break;
+                          }
+                        },
+                        itemBuilder: (_) => const [
+                          PopupMenuItem(
+                            value: 'chat',
+                            child: Text('Open Chat'),
+                          ),
+                          PopupMenuItem(
+                            value: 'payment',
+                            child: Text('Payment Reminder'),
+                          ),
+                        ],
+                      ),
+
+                      /// EDIT
                       IconButton(
-                        tooltip: 'WhatsApp',
-                        icon: const Icon(
-                          Icons.chat,
-                          color: Colors.green,
-                        ),
-                        onPressed: () async {
-                          await WhatsAppHelper.openChat(
-                            phone: customer.phone,
-                            message:
-                            'Hello ${customer.name}',
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) =>
+                                EditCustomerDialog(customer: customer),
                           );
+                        },
+                      ),
+
+                      /// DELETE
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () async {
+                          final repo = ref.read(customerRepositoryProvider);
+
+                          await repo.deleteCustomer(customer.id);
                         },
                       ),
                     ],

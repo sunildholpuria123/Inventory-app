@@ -135,4 +135,10 @@ class SupplierRepository {
           return (rows.first.data['total'] as num?)?.toDouble() ?? 0;
         });
   }
+
+  Future<List<Supplier>> getAllSuppliers() {
+    return db.select(
+      db.suppliers,
+    ).get();
+  }
 }
