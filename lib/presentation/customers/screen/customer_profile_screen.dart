@@ -9,6 +9,10 @@ import '../widget/customer_payments_tab.dart';
 import '../widget/customer_profile_header.dart';
 import '../widget/customer_profile_overview_tab.dart';
 import '../widget/customer_profile_tab_bar.dart';
+import '../widget/customer_profile_actions.dart';
+import '../screen/customer_ledger_screen.dart';
+import '../widget/edit_customer_dialog.dart';
+import '../../../core/utils/whatsapp_helper.dart';
 
 class CustomerProfileScreen extends ConsumerStatefulWidget {
   final Customer customer;
@@ -44,6 +48,32 @@ class _CustomerProfileScreenState extends ConsumerState<CustomerProfileScreen>
         child: Column(
           children: [
             CustomerProfileHeader(customer: widget.customer),
+            CustomerProfileActions(
+              onReceivePayment: () {
+                controller.animateTo(1); // Invoices Tab
+              },
+              onLedger: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        CustomerLedgerScreen(customer: widget.customer),
+                  ),
+                );
+              },
+              onWhatsapp: () async {
+                await WhatsAppHelper.openChat(
+                  phone: widget.customer.phone,
+                  message: 'Hello ${widget.customer.name}',
+                );
+              },
+              onEdit: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => EditCustomerDialog(customer: widget.customer),
+                );
+              },
+            ),
 
             CustomerProfileTabBar(controller: controller),
 

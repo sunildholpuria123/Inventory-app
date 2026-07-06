@@ -69,11 +69,7 @@ class AppTheme {
     ElevatedButtonThemeData(
       style:
       ElevatedButton.styleFrom(
-        minimumSize:
-        const Size(
-          double.infinity,
-          50,
-        ),
+        minimumSize: const Size.fromHeight(50),
         shape:
         RoundedRectangleBorder(
           borderRadius:

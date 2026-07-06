@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/database/app_database.dart';
 import '../../../data/providers/database_provider.dart';
 import '../../sales/widgets/invoice_details_dialog.dart';
+import '../provider/customer_provider.dart';
 import 'payment_history_dialog.dart';
 import 'receive_payment_dialog.dart';
 
@@ -15,17 +16,7 @@ class CustomerInvoicesTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final db = ref.watch(databaseProvider);
-
-    final invoicesProvider = StreamProvider((ref) {
-      return (db.select(db.invoices)
-            ..where((tbl) => tbl.customerId.equals(customer.id))
-            ..orderBy([(tbl) => OrderingTerm.desc(tbl.createdAt)]))
-          .watch();
-    });
-
-    final invoices = ref.watch(invoicesProvider);
-
+    final invoices = ref.watch(customerInvoicesProvider(customer.id));
     return invoices.when(
       data: (items) {
         if (items.isEmpty) {

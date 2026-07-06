@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/providers/database_provider.dart';
 import '../../../data/database/app_database.dart';
+import '../provider/payment_history_provider.dart';
 
 class CustomerPaymentsTab extends ConsumerWidget {
   final Customer customer;
@@ -12,17 +13,7 @@ class CustomerPaymentsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final db = ref.watch(databaseProvider);
-
-    final paymentsProvider = StreamProvider((ref) {
-      return (db.select(db.paymentHistories)
-            ..where((tbl) => tbl.customerId.equals(customer.id))
-            ..orderBy([(tbl) => OrderingTerm.desc(tbl.paidAt)]))
-          .watch();
-    });
-
-    final payments = ref.watch(paymentsProvider);
-
+    final payments = ref.watch(customerPaymentsProvider(customer.id));
     return payments.when(
       data: (items) {
         if (items.isEmpty) {

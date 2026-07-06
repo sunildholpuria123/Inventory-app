@@ -13,10 +13,12 @@ class MonthlySale {
 }
 
 class CustomerSales {
+  final int? customerId;
   final String customer;
   final double amount;
 
   const CustomerSales({
+    required this.customerId,
     required this.customer,
     required this.amount,
   });
@@ -52,34 +54,38 @@ FutureProvider<List<MonthlySale>>((ref) async {
 
 final topCustomersProvider =
 FutureProvider<List<CustomerSales>>((ref) async {
-  final invoices =
-  await ref.watch(
-    salesHistoryProvider.future,
-  );
+  final invoices = await ref.watch(salesHistoryProvider.future);
 
-  final map = <String, double>{};
+  final Map<int, CustomerSales> map = {};
 
-  for (final e in invoices) {
-    map[e.customerName] =
-        (map[e.customerName] ?? 0) +
-            e.grandTotal;
+  for (final invoice in invoices) {
+    final customerId = invoice.customerId;
+
+    if (customerId == null) {
+      continue;
+    }
+
+    final existing = map[customerId];
+
+    if (existing == null) {
+      map[customerId] = CustomerSales(
+        customerId: customerId,
+        customer: invoice.customerName,
+        amount: invoice.grandTotal,
+      );
+    } else {
+      map[customerId] = CustomerSales(
+        customerId: existing.customerId,
+        customer: existing.customer,
+        amount: existing.amount + invoice.grandTotal,
+      );
+    }
   }
 
-  final list =
-  map.entries
-      .map(
-        (e) => CustomerSales(
-      customer: e.key,
-      amount: e.value,
-    ),
-  )
-      .toList();
+  final list = map.values.toList();
 
   list.sort(
-        (a, b) =>
-        b.amount.compareTo(
-          a.amount,
-        ),
+        (a, b) => b.amount.compareTo(a.amount),
   );
 
   return list.take(10).toList();

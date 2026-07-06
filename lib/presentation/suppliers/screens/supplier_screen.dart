@@ -27,16 +27,14 @@ class SupplierScreen extends ConsumerWidget {
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
 
-                ElevatedButton.icon(
+                FilledButton.icon(
                   onPressed: () {
                     showDialog(
                       context: context,
                       builder: (_) => const AddSupplierDialog(),
                     );
                   },
-
                   icon: const Icon(Icons.add),
-
                   label: const Text('Add Supplier'),
                 ),
               ],

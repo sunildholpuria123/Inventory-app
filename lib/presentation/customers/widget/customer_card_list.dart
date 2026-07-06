@@ -79,17 +79,12 @@ class CustomerCardList extends ConsumerWidget {
                       const SizedBox(width: 12),
 
                       OutlinedButton.icon(
-                        icon: const Icon(
-                          Icons.chat,
-                        ),
-                        label: const Text(
-                          'WhatsApp',
-                        ),
+                        icon: const Icon(Icons.chat),
+                        label: const Text('WhatsApp'),
                         onPressed: () async {
                           await WhatsAppHelper.openChat(
                             phone: customer.phone,
-                            message:
-                            'Hello ${customer.name}',
+                            message: 'Hello ${customer.name}',
                           );
                         },
                       ),
@@ -145,30 +140,27 @@ class CustomerCardList extends ConsumerWidget {
                                   .deleteCustomer(customer.id);
 
                               break;
-                          /*  case 'payment':
-                              showDialog(
-                                context: context,
-                                builder: (_) =>
-                                    ReceivePaymentDialog(
-                                      customer: customer,
-                                    ),
+                            case 'profile':
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      CustomerProfileScreen(customer: customer),
+                                ),
                               );
                               break;
 
-                            case 'history':
-                              showDialog(
-                                context: context,
-                                builder: (_) =>
-                                    PaymentHistoryDialog(
-                                      customer: customer,
-                                    ),
+                            case 'whatsapp':
+                              await WhatsAppHelper.openChat(
+                                phone: customer.phone,
+                                message: 'Hello ${customer.name}',
                               );
-                              break;*/
+                              break;
                           }
                         },
 
-                          itemBuilder: (_) => [
-                            /*const PopupMenuItem(
+                        itemBuilder: (_) => [
+                          /*const PopupMenuItem(
                               value: 'payment',
                               child: Row(
                                 children: [
@@ -188,40 +180,58 @@ class CustomerCardList extends ConsumerWidget {
                                 ],
                               ),
                             ),*/
-                            const PopupMenuItem(
-                              value: 'ledger',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.receipt_long),
-                                  SizedBox(width: 10),
-                                  Text('Ledger'),
-                                ],
-                              ),
+                          const PopupMenuItem(
+                            value: 'profile',
+                            child: Row(
+                              children: [
+                                Icon(Icons.person),
+                                SizedBox(width: 10),
+                                Text('Profile'),
+                              ],
                             ),
-                            const PopupMenuItem(
-                              value: 'edit',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.edit),
-                                  SizedBox(width: 10),
-                                  Text('Edit'),
-                                ],
-                              ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'ledger',
+                            child: Row(
+                              children: [
+                                Icon(Icons.receipt_long),
+                                SizedBox(width: 10),
+                                Text('Ledger'),
+                              ],
                             ),
-                            const PopupMenuItem(
-                              value: 'delete',
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text('Delete'),
-                                ],
-                              ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'whatsapp',
+                            child: Row(
+                              children: [
+                                Icon(Icons.chat),
+                                SizedBox(width: 10),
+                                Text('WhatsApp'),
+                              ],
                             ),
-                          ]                      ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'edit',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit),
+                                SizedBox(width: 10),
+                                Text('Edit'),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete, color: Colors.red),
+                                SizedBox(width: 10),
+                                Text('Delete'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ],
