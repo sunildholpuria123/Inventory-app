@@ -223,18 +223,110 @@ class SettingsScreen extends ConsumerWidget {
                   SettingsTile(
                     icon: Icons.upload_file,
                     title: 'Export Database',
-                    subtitle: 'Backup to ZIP',
+                    subtitle: 'Export or Share backup ZIP',
                     onTap: () async {
-                      final file = await BackupService()
-                          .createAndExportBackup();
+                      if (!context.mounted) return;
 
-                      if (file != null && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Backup exported to\n${file.path}'),
+                      await showModalBottomSheet(
+                        context: context,
+                        showDragHandle: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(24),
                           ),
-                        );
-                      }
+                        ),
+                        builder: (sheetContext) {
+                          return SafeArea(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Wrap(
+                                runSpacing: 8,
+                                children: [
+                                  Text(
+                                    'Database Backup',
+                                    style: Theme.of(sheetContext)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+
+                                  const SizedBox(height: 8),
+
+                                  const Text(
+                                    'Choose what you want to do with the generated backup.',
+                                  ),
+
+                                  const SizedBox(height: 20),
+
+                                  ListTile(
+                                    leading: const CircleAvatar(
+                                      child: Icon(Icons.folder_open),
+                                    ),
+                                    title: const Text('Export & Open'),
+                                    subtitle: const Text(
+                                      'Generate backup and open it',
+                                    ),
+                                    onTap: () async {
+                                      Navigator.pop(sheetContext);
+
+                                      final file = await BackupService()
+                                          .createAndExportBackup();
+
+                                      if (file != null && context.mounted) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Backup exported successfully\n${file.path}',
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+
+                                  ListTile(
+                                    leading: const CircleAvatar(
+                                      child: Icon(Icons.share),
+                                    ),
+                                    title: const Text('Export & Share'),
+                                    subtitle: const Text(
+                                      'Generate backup and share ZIP',
+                                    ),
+                                    onTap: () async {
+                                      Navigator.pop(sheetContext);
+
+                                      final file = await BackupService()
+                                          .createAndExportBackup();
+
+                                      if (file == null) return;
+
+                                      await SharePlus.instance.share(
+                                        ShareParams(
+                                          files: [XFile(file.path)],
+                                          subject: 'Inventory ERP Backup',
+                                          text: 'Inventory ERP Database Backup',
+                                        ),
+                                      );
+                                    },
+                                  ),
+
+                                  const Divider(height: 24),
+
+                                  ListTile(
+                                    leading: const CircleAvatar(
+                                      child: Icon(Icons.close),
+                                    ),
+                                    title: const Text('Cancel'),
+                                    onTap: () => Navigator.pop(sheetContext),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
                     },
                   ),
                   SettingsTile(
@@ -244,25 +336,6 @@ class SettingsScreen extends ConsumerWidget {
                     onTap: () {},
                   ),
                 ],
-              ),
-
-              SettingsTile(
-                icon: Icons.share,
-                title: 'Share Backup',
-                subtitle: 'Share backup ZIP',
-                onTap: () async {
-                  final file = await BackupService().createAndExportBackup();
-
-                  if (file == null) return;
-
-                  await SharePlus.instance.share(
-                    ShareParams(
-                      files: [XFile(file.path)],
-                      subject: 'Inventory ERP Backup',
-                      text: 'Inventory ERP Database Backup',
-                    ),
-                  );
-                },
               ),
 
               /// APPEARANCE
