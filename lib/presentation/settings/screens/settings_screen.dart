@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/provider/theme_provider.dart';
 import '../../../core/services/backup_service.dart';
@@ -224,14 +225,13 @@ class SettingsScreen extends ConsumerWidget {
                     title: 'Export Database',
                     subtitle: 'Backup to ZIP',
                     onTap: () async {
-                      final file = await BackupService().createAndExportBackup();
+                      final file = await BackupService()
+                          .createAndExportBackup();
 
                       if (file != null && context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(
-                              'Backup exported to\n${file.path}',
-                            ),
+                            content: Text('Backup exported to\n${file.path}'),
                           ),
                         );
                       }
@@ -244,6 +244,25 @@ class SettingsScreen extends ConsumerWidget {
                     onTap: () {},
                   ),
                 ],
+              ),
+
+              SettingsTile(
+                icon: Icons.share,
+                title: 'Share Backup',
+                subtitle: 'Share backup ZIP',
+                onTap: () async {
+                  final file = await BackupService().createAndExportBackup();
+
+                  if (file == null) return;
+
+                  await SharePlus.instance.share(
+                    ShareParams(
+                      files: [XFile(file.path)],
+                      subject: 'Inventory ERP Backup',
+                      text: 'Inventory ERP Database Backup',
+                    ),
+                  );
+                },
               ),
 
               /// APPEARANCE
