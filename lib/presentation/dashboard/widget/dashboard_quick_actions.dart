@@ -11,16 +11,29 @@ class DashboardQuickActions extends ConsumerWidget {
     final isMobile = MediaQuery.of(context).size.width < 700;
 
     final actions = [
-      _QuickAction(Icons.point_of_sale, 'New Sale', 3),
-      _QuickAction(Icons.shopping_bag, 'Purchase', 5),
-      _QuickAction(Icons.person_add_alt_1, 'Customer', 2),
+      _QuickAction(
+        Icons.point_of_sale,
+        'New Sale',
+        3, // Sales
+      ),
+
+      _QuickAction(
+        Icons.shopping_bag,
+        'Purchase',
+        4, // Purchase
+      ),
+
+      _QuickAction(Icons.person_add_alt_1, 'Customers', 2),
+
       _QuickAction(Icons.inventory_2, 'Products', 1),
 
-      /// Verify these indexes with your menu list
-      _QuickAction(Icons.local_shipping, 'Suppliers', 4),
-      _QuickAction(Icons.analytics_outlined, 'Reports', 8),
-      _QuickAction(Icons.account_balance_wallet_outlined, 'Finance', 7),
-      _QuickAction(Icons.settings, 'Settings', 11),
+      _QuickAction(Icons.local_shipping, 'Suppliers', 9),
+
+      _QuickAction(Icons.bar_chart, 'Reports', 7),
+
+      _QuickAction(Icons.settings, 'Settings', 8),
+
+      _QuickAction(Icons.analytics, 'Analytics', 11),
     ];
 
     return LayoutBuilder(
