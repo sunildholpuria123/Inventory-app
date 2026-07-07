@@ -6,28 +6,37 @@ import 'package:open_filex/open_filex.dart';
 import 'export_service.dart';
 
 class CsvExportService {
-  static Future<void> exportSalesCsv({required List<dynamic> invoices}) async {
-    List<List<dynamic>> rows = [];
-
-    rows.add(['Invoice No', 'Customer', 'Total', 'Date']);
+  static Future<File> exportSalesCsv({
+    required List<dynamic> invoices,
+    bool openAfterExport = true,
+  }) async {
+    final rows = <List<dynamic>>[
+      ['Invoice No', 'Customer', 'Total', 'Date'],
+    ];
 
     for (final invoice in invoices) {
       rows.add([
         invoice.invoiceNo,
         invoice.customerName,
-        invoice.grandTotal,
-        invoice.createdAt.toString(),
+        invoice.grandTotal.toStringAsFixed(2),
+        invoice.createdAt.toString().substring(0, 16),
       ]);
     }
 
-    String csv = const ListToCsvConverter().convert(rows);
+    final csv = const ListToCsvConverter().convert(rows);
 
     final exportDir = await ExportService.getExportDirectory();
 
-    final file = File('${exportDir.path}/sales_report.csv');
+    final file = File(
+      '${exportDir.path}/sales_report_${DateTime.now().millisecondsSinceEpoch}.csv',
+    );
 
     await file.writeAsString(csv);
 
-    await OpenFilex.open(file.path);
+    if (openAfterExport) {
+      await OpenFilex.open(file.path);
+    }
+
+    return file;
   }
 }

@@ -6,8 +6,9 @@ import 'package:open_filex/open_filex.dart';
 import 'export_service.dart';
 
 class ExcelExportService {
-  static Future<void> exportSalesReport({
+  static Future<File> exportSalesReport({
     required List<dynamic> invoices,
+    bool openAfterExport = true,
   }) async {
     final excel = Excel.createExcel();
 
@@ -25,16 +26,30 @@ class ExcelExportService {
         TextCellValue(invoice.invoiceNo),
         TextCellValue(invoice.customerName),
         DoubleCellValue(invoice.grandTotal),
-        TextCellValue(invoice.createdAt.toString()),
+        TextCellValue(
+          invoice.createdAt.toString().substring(0, 16),
+        ),
       ]);
     }
 
     final exportDir = await ExportService.getExportDirectory();
 
-    final file = File('${exportDir.path}/sales_report.xlsx');
+    final file = File(
+      '${exportDir.path}/sales_report_${DateTime.now().millisecondsSinceEpoch}.xlsx',
+    );
 
-    await file.writeAsBytes(excel.encode()!);
+    final bytes = excel.encode();
 
-    await OpenFilex.open(file.path);
+    if (bytes == null) {
+      throw Exception('Failed to generate Excel report.');
+    }
+
+    await file.writeAsBytes(bytes);
+
+    if (openAfterExport) {
+      await OpenFilex.open(file.path);
+    }
+
+    return file;
   }
 }
