@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
 
 class Customers extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -14,4 +15,10 @@ class Customers extends Table {
   RealColumn get creditBalance => real().withDefault(const Constant(0))();
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+
+  TextColumn get syncId => text().clientDefault(() => const Uuid().v4())();
+
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 }

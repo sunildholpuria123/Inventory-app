@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
 
 class InvoiceItems extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -36,4 +37,10 @@ class InvoiceItems extends Table {
 
   /// CREATED DATE
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+
+  TextColumn get syncId => text().clientDefault(() => const Uuid().v4())();
+
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 }

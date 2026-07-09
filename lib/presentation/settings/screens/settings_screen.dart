@@ -12,6 +12,7 @@ import '../../../core/services/notification_service.dart';
 import '../../../data/providers/database_provider.dart';
 import '../../../data/repositories/backup_repository.dart'
     show BackupRepository;
+import '../../../sync/screen/sync_screen.dart';
 import '../../categories/screen/category_management_screen.dart';
 import '../provider/backup_provider.dart';
 import '../provider/settings_provider.dart';
@@ -217,7 +218,7 @@ class SettingsScreen extends ConsumerWidget {
 
               /// BACKUP
               SettingsSection(
-                title: 'Backup & Restore',
+                title: 'Data Management',
                 icon: Icons.backup,
                 children: [
                   SettingsTile(
@@ -334,6 +335,17 @@ class SettingsScreen extends ConsumerWidget {
                     title: 'Import Database',
                     subtitle: 'Restore backup',
                     onTap: () {},
+                  ),
+                  SettingsTile(
+                    icon: Icons.sync,
+                    title: 'Sync Database',
+                    subtitle: 'Synchronize database with another device',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SyncScreen()),
+                      );
+                    },
                   ),
                 ],
               ),

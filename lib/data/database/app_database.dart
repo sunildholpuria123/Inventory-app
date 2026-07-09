@@ -14,6 +14,7 @@ import 'package:inventory_desktop/data/database/tables/sales_returns_table.dart'
 import 'package:inventory_desktop/data/database/tables/supplier_payment_histories.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 import 'tables/invoice_items_table.dart';
 import 'tables/invoices_table.dart';
