@@ -31,7 +31,7 @@ class ExpenseTable extends ConsumerWidget {
 
                 DataCell(
                   Text(
-                    '₹${e.amount}',
+                    'Rs.${e.amount}',
                     style: const TextStyle(
                       color: Colors.red,
                       fontWeight: FontWeight.bold,

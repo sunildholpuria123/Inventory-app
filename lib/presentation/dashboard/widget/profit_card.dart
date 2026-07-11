@@ -35,7 +35,7 @@ class ProfitCard extends ConsumerWidget {
                 const SizedBox(height: 16),
 
                 Text(
-                  '₹${data.profit.toStringAsFixed(0)}',
+                  'Rs.${data.profit.toStringAsFixed(0)}',
 
                   style: TextStyle(
                     fontSize: 36,
@@ -72,7 +72,7 @@ class ProfitCard extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-        children: [Text(title), Text('₹${value.toStringAsFixed(0)}')],
+        children: [Text(title), Text('Rs.${value.toStringAsFixed(0)}')],
       ),
     );
   }

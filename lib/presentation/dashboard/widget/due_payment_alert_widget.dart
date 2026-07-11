@@ -58,7 +58,7 @@ class DuePaymentAlertWidget extends ConsumerWidget {
                       : '${upcomingItems.length} Upcoming Payments',
                 ),
 
-                subtitle: Text('₹${totalAmount.toStringAsFixed(2)}'),
+                subtitle: Text('Rs.${totalAmount.toStringAsFixed(2)}'),
 
                 trailing: const Icon(Icons.chevron_right),
 

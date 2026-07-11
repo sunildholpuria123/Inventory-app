@@ -2,6 +2,8 @@ import '../../presentation/reports/model/customer_sales_model.dart';
 import '../../presentation/reports/model/monthly_sales_model.dart';
 import '../../presentation/reports/model/top_product_model.dart';
 import '../database/app_database.dart';
+import '../database/model/inventory_analytics_model.dart';
+import '../database/model/payment_collection_model.dart';
 
 class ReportsRepository {
   final AppDatabase db;
@@ -136,17 +138,18 @@ class ReportsRepository {
   Future<Map<String, double>> getExpenseAnalytics() async {
     final result = await db.customSelect('''
     SELECT
-    category,
-    SUM(amount) as total
+      LOWER(category) AS category,
+      SUM(amount) AS total
     FROM expenses
-    GROUP BY category
-    ''').get();
+    GROUP BY LOWER(category)
+    ORDER BY total DESC
+  ''').get();
 
-    final Map<String, double> data = {};
+    final data = <String, double>{};
 
     for (final row in result) {
-      data[row.data['category'].toString()] = (row.data['total'] as num)
-          .toDouble();
+      data[row.data['category'].toString()] =
+          (row.data['total'] as num?)?.toDouble() ?? 0;
     }
 
     return data;
@@ -169,5 +172,73 @@ class ReportsRepository {
         total: (e.data['total'] as num).toDouble(),
       );
     }).toList();
+  }
+
+  // Future<double> getProfit() async {
+  //   final sales = await db.customSelect('''
+  //   SELECT SUM(grand_total) AS total
+  //   FROM invoices
+  // ''').getSingle();
+  //
+  //   final purchases = await db.customSelect('''
+  //   SELECT SUM(total) AS total
+  //   FROM purchases
+  // ''').getSingle();
+  //
+  //   final expenses = await db.customSelect('''
+  //   SELECT SUM(amount) AS total
+  //   FROM expenses
+  // ''').getSingle();
+  //
+  //   final saleAmount = (sales.data['total'] as num?)?.toDouble() ?? 0;
+  //
+  //   final purchaseAmount = (purchases.data['total'] as num?)?.toDouble() ?? 0;
+  //
+  //   final expenseAmount = (expenses.data['total'] as num?)?.toDouble() ?? 0;
+  //
+  //   return saleAmount - purchaseAmount - expenseAmount;
+  // }
+
+  Future<InventoryAnalytics> getInventoryAnalytics() async {
+    final products = await db.select(db.products).get();
+
+    int lowStock = 0;
+    int healthyStock = 0;
+    int overStock = 0;
+
+    double totalValue = 0;
+
+    for (final product in products) {
+      totalValue += product.stockQty * product.purchasePrice;
+
+      if (product.stockQty <= 5) {
+        lowStock++;
+      } else if (product.stockQty >= 100) {
+        overStock++;
+      } else {
+        healthyStock++;
+      }
+    }
+
+    return InventoryAnalytics(
+      lowStock: lowStock,
+      healthyStock: healthyStock,
+      overStock: overStock,
+      totalValue: totalValue,
+    );
+  }
+
+  Future<PaymentCollectionModel> getPaymentCollection() async {
+    final invoices = await db.select(db.invoices).get();
+
+    double collected = 0;
+    double due = 0;
+
+    for (final invoice in invoices) {
+      collected += invoice.amountPaid;
+      due += invoice.dueAmount;
+    }
+
+    return PaymentCollectionModel(collected: collected, due: due);
   }
 }

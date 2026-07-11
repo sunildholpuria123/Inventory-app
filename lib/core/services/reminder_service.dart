@@ -11,7 +11,7 @@ class ReminderService {
     final message = Uri.encodeComponent('''
 Dear $customerName,
 
-This is a reminder that your payment of ₹$amount is overdue.
+This is a reminder that your payment of Rs.$amount is overdue.
 
 Please make the payment at your earliest convenience.
 

@@ -15,6 +15,10 @@ class _InvoiceSummaryState extends ConsumerState<InvoiceSummary> {
 
   late final TextEditingController taxController;
 
+  late final TextEditingController loadingController;
+  late final TextEditingController unloadingController;
+  late final TextEditingController transportController;
+
   @override
   void initState() {
     super.initState();
@@ -22,6 +26,12 @@ class _InvoiceSummaryState extends ConsumerState<InvoiceSummary> {
     discountController = TextEditingController();
 
     taxController = TextEditingController(text: '0');
+
+    loadingController = TextEditingController();
+
+    unloadingController = TextEditingController();
+
+    transportController = TextEditingController();
   }
 
   @override
@@ -29,6 +39,9 @@ class _InvoiceSummaryState extends ConsumerState<InvoiceSummary> {
     discountController.dispose();
 
     taxController.dispose();
+    loadingController.dispose();
+    unloadingController.dispose();
+    transportController.dispose();
 
     super.dispose();
   }
@@ -40,6 +53,11 @@ class _InvoiceSummaryState extends ConsumerState<InvoiceSummary> {
     final tax = ref.watch(taxProvider);
 
     final grandTotal = ref.watch(grandTotalProvider);
+    final loading = ref.watch(loadingChargeProvider);
+
+    final unloading = ref.watch(unloadingChargeProvider);
+
+    final transport = ref.watch(transportChargeProvider);
 
     return Card(
       child: Padding(
@@ -85,6 +103,65 @@ class _InvoiceSummaryState extends ConsumerState<InvoiceSummary> {
               ],
             ),
 
+            const SizedBox(height: 20),
+
+            ExpansionTile(
+              title: const Text('Additional Charges'),
+
+              childrenPadding: const EdgeInsets.all(12),
+
+              children: [
+                TextField(
+                  controller: loadingController,
+
+                  keyboardType: TextInputType.number,
+
+                  decoration: const InputDecoration(
+                    labelText: 'Loading Charges',
+                  ),
+
+                  onChanged: (value) {
+                    ref.read(loadingChargeProvider.notifier).state =
+                        double.tryParse(value) ?? 0;
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                TextField(
+                  controller: unloadingController,
+
+                  keyboardType: TextInputType.number,
+
+                  decoration: const InputDecoration(
+                    labelText: 'Unloading Charges',
+                  ),
+
+                  onChanged: (value) {
+                    ref.read(unloadingChargeProvider.notifier).state =
+                        double.tryParse(value) ?? 0;
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                TextField(
+                  controller: transportController,
+
+                  keyboardType: TextInputType.number,
+
+                  decoration: const InputDecoration(
+                    labelText: 'Transport Charges',
+                  ),
+
+                  onChanged: (value) {
+                    ref.read(transportChargeProvider.notifier).state =
+                        double.tryParse(value) ?? 0;
+                  },
+                ),
+              ],
+            ),
+
             const SizedBox(height: 25),
 
             buildRow('Subtotal', subtotal),
@@ -94,6 +171,11 @@ class _InvoiceSummaryState extends ConsumerState<InvoiceSummary> {
             buildRow('GST', tax),
 
             const Divider(height: 30),
+            if (loading > 0) buildRow('Loading Charges', loading),
+
+            if (unloading > 0) buildRow('Unloading Charges', unloading),
+
+            if (transport > 0) buildRow('Transport Charges', transport),
 
             buildRow('Grand Total', grandTotal, bold: true),
           ],
@@ -118,7 +200,7 @@ class _InvoiceSummaryState extends ConsumerState<InvoiceSummary> {
         ),
 
         Text(
-          '₹${value.toStringAsFixed(2)}',
+          'Rs.${value.toStringAsFixed(2)}',
 
           style: TextStyle(
             fontSize: bold ? 20 : 18,

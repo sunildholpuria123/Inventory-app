@@ -22,8 +22,10 @@ class BackupRepository {
     return BackupService.createBackup();
   }
 
+
   /// RESTORE
   Future<void> restore(File file) async {
     await BackupService.restoreBackup(file);
   }
+
 }

@@ -23,4 +23,7 @@ class PurchaseItems extends Table {
 
   /// CREATED DATE
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  IntColumn get variantId => integer().nullable()();
+  TextColumn get variantName => text().nullable()();
 }

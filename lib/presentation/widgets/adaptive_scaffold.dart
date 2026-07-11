@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/utils/responsive_helper.dart';
-import 'app_sidebar.dart';
+import '../../core/widgets/app_sidebar.dart';
 
 class AdaptiveScaffold extends StatelessWidget {
   final Widget body;

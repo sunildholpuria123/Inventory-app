@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
 
 class Invoices extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -20,6 +21,11 @@ class Invoices extends Table {
   TextColumn get paymentMethod => text().withDefault(const Constant('CASH'))();
 
   TextColumn get paymentStatus => text().withDefault(const Constant('PAID'))();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+
+  TextColumn get syncId => text().clientDefault(() => const Uuid().v4())();
+
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 
@@ -32,4 +38,12 @@ class Invoices extends Table {
   DateTimeColumn get dueDate => dateTime().nullable()();
 
   BoolColumn get reminderSent => boolean().withDefault(const Constant(false))();
+
+  RealColumn get loadingCharge => real().withDefault(const Constant(0))();
+
+  RealColumn get unloadingCharge => real().withDefault(const Constant(0))();
+
+  RealColumn get transportCharge => real().withDefault(const Constant(0))();
+
+  IntColumn get customerId => integer().nullable()();
 }

@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../../data/database/app_database.dart';
 import '../model/invoice_item_model.dart';
 
 class InvoicePdfService {
@@ -24,6 +25,10 @@ class InvoicePdfService {
     required double amountPaid,
     required double dueAmount,
     required String paymentStatus,
+    required BusinessSetting businessSettings,
+    required double loadingCharge,
+    required double unloadingCharge,
+    required double transportCharge,
 
     DateTime? dueDate,
   }) async {
@@ -42,22 +47,58 @@ class InvoicePdfService {
                 pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
 
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
+                    if (businessSettings.logoPath != null)
+                      pw.Image(
+                        pw.MemoryImage(
+                          File(businessSettings.logoPath!).readAsBytesSync(),
+                        ),
+
+                        width: 80,
+
+                        height: 80,
+                      ),
                     pw.Text(
-                      'INVOICE',
+                      businessSettings.companyName,
 
                       style: pw.TextStyle(
-                        fontSize: 28,
-
+                        fontSize: 24,
                         fontWeight: pw.FontWeight.bold,
                       ),
                     ),
 
-                    pw.SizedBox(height: 10),
+                    if ((businessSettings.address ?? '').isNotEmpty)
+                      pw.Text(
+                        businessSettings.address!,
+                        style: const pw.TextStyle(fontSize: 10),
+                      ),
+
+                    if ((businessSettings.phone ?? '').isNotEmpty)
+                      pw.Text('Phone: ${businessSettings.phone}'),
+
+                    if ((businessSettings.email ?? '').isNotEmpty)
+                      pw.Text('Email: ${businessSettings.email}'),
+
+                    if ((businessSettings.gstNo ?? '').isNotEmpty)
+                      pw.Text('GST No: ${businessSettings.gstNo}'),
+
+                    pw.SizedBox(height: 12),
+
+                    pw.Text(
+                      'TAX INVOICE',
+
+                      style: pw.TextStyle(
+                        fontSize: 20,
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ),
 
                     pw.Text('Invoice No: $invoiceNo'),
 
-                    pw.Text('Date: ${DateTime.now()}'),
+                    pw.Text(
+                      'Date: ${DateFormat('dd MMM yyyy').format(DateTime.now())}',
+                    ),
                   ],
                 ),
 
@@ -105,17 +146,31 @@ class InvoicePdfService {
 
               headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
 
-              headers: ['Product', 'Qty', 'Price', 'Total'],
+              cellStyle: const pw.TextStyle(fontSize: 10),
 
+              headers: ['Product', 'Qty', 'Rate/Sqft', 'Measurement', 'Total'],
               data: items.map((e) {
+                final productName = e.variantName != null
+                    ? '${e.product.name}\n'
+                          '(${e.variantName})'
+                    : e.product.name;
+
+                final areaText = e.isAreaBased
+                    ? '${e.height?.toStringAsFixed(2)} × '
+                          '${e.width?.toStringAsFixed(2)}'
+                          ' × ${e.qty}\n'
+                          '= ${(e.area! * e.qty).toStringAsFixed(2)} sqft'
+                    : '-';
+
                 return [
-                  e.product.name,
+                  productName,
 
-                  e.qty.toString(),
+                  e.isAreaBased ? '${e.qty} Slab' : e.qty.toString(),
+                  'Rs.${e.price.toStringAsFixed(2)}',
 
-                  '₹${e.price.toStringAsFixed(2)}',
+                  areaText,
 
-                  '₹${e.total.toStringAsFixed(2)}',
+                  'Rs.${e.total.toStringAsFixed(2)}',
                 ];
               }).toList(),
             ),
@@ -142,6 +197,21 @@ class InvoicePdfService {
 
                     buildAmountRow('Tax', tax),
 
+                    if (loadingCharge > 0) ...[
+                      pw.SizedBox(height: 8),
+                      buildAmountRow('Loading Charges', loadingCharge),
+                    ],
+
+                    if (unloadingCharge > 0) ...[
+                      pw.SizedBox(height: 8),
+                      buildAmountRow('Unloading Charges', unloadingCharge),
+                    ],
+
+                    if (transportCharge > 0) ...[
+                      pw.SizedBox(height: 8),
+                      buildAmountRow('Transport Charges', transportCharge),
+                    ],
+
                     pw.SizedBox(height: 8),
 
                     buildAmountRow('Discount', discount),
@@ -149,7 +219,9 @@ class InvoicePdfService {
                     pw.Divider(),
 
                     buildAmountRow('Grand Total', grandTotal, bold: true),
+
                     buildAmountRow('Amount Paid', amountPaid),
+
                     buildAmountRow('Due Amount', dueAmount),
 
                     pw.Text(
@@ -176,8 +248,60 @@ class InvoicePdfService {
             ),
 
             pw.SizedBox(height: 40),
+            pw.SizedBox(height: 30),
 
-            pw.Center(child: pw.Text('Thank you for your business!')),
+            if ((businessSettings.bankName ?? '').isNotEmpty ||
+                (businessSettings.upiId ?? '').isNotEmpty)
+              pw.Container(
+                padding: const pw.EdgeInsets.all(12),
+
+                decoration: pw.BoxDecoration(border: pw.Border.all()),
+
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+
+                  children: [
+                    pw.Text(
+                      'Bank Details',
+
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                    ),
+
+                    pw.SizedBox(height: 8),
+
+                    if ((businessSettings.bankName ?? '').isNotEmpty)
+                      pw.Text('Bank: ${businessSettings.bankName}'),
+
+                    if ((businessSettings.accountNumber ?? '').isNotEmpty)
+                      pw.Text('A/C No: ${businessSettings.accountNumber}'),
+
+                    if ((businessSettings.ifscCode ?? '').isNotEmpty)
+                      pw.Text('IFSC: ${businessSettings.ifscCode}'),
+
+                    if ((businessSettings.upiId ?? '').isNotEmpty)
+                      pw.Text('UPI: ${businessSettings.upiId}'),
+                  ],
+                ),
+              ),
+
+            pw.SizedBox(height: 20),
+            pw.Center(
+              child: pw.Column(
+                children: [
+                  pw.Text(
+                    businessSettings.footerMessage ??
+                        'Thank you for your business!',
+                  ),
+
+                  pw.SizedBox(height: 8),
+
+                  pw.Text(
+                    'Generated by Inventory ERP',
+                    style: const pw.TextStyle(fontSize: 9),
+                  ),
+                ],
+              ),
+            ),
           ];
         },
       ),
@@ -228,7 +352,7 @@ class InvoicePdfService {
         ),
 
         pw.Text(
-          '₹${amount.toStringAsFixed(2)}',
+          'Rs.${amount.toStringAsFixed(2)}',
 
           style: pw.TextStyle(fontWeight: bold ? pw.FontWeight.bold : null),
         ),

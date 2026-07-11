@@ -2,6 +2,7 @@ import 'package:drift/drift.dart' show ComparableExpr;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
+import '../../suppliers/provider/supplier_provider.dart';
 
 /// DATABASE
 final databaseProvider = Provider<AppDatabase>((ref) {
@@ -66,4 +67,10 @@ final lowStockProductsProvider = StreamProvider<List<Product>>((ref) {
   return (db.select(
     db.products,
   )..where((tbl) => tbl.stockQty.isSmallerOrEqualValue(5))).watch();
+});
+
+final totalPayablesProvider = StreamProvider<double>((ref) {
+  final repo = ref.watch(supplierRepositoryProvider);
+
+  return repo.watchTotalPayables();
 });

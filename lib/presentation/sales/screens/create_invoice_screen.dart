@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../customers/provider/customer_loyalty_provider.dart';
 import '../../products/provider/product_provider.dart'
     show productRepositoryProvider;
+import '../../products/provider/product_variant_provider.dart';
+import '../../settings/provider/settings_provider.dart';
 import '../model/invoice_item_model.dart';
 import '../provider/invoice_item_provider.dart';
 import '../provider/sales_provider.dart';
@@ -28,119 +31,157 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   Widget build(BuildContext context) {
     final paymentMethod = ref.watch(paymentMethodProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Create Invoice')),
+    final mobile = MediaQuery.of(context).size.width < 700;
 
-      body: SingleChildScrollView(
+    return SafeArea(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: [
-            /// CUSTOMER
-            const CustomerDropdown(),
-
-            const SizedBox(height: 20),
-
-            /// PRODUCT
-            const ProductDropdown(),
-
-            const SizedBox(height: 20),
-
-            /// PRODUCT LIST
-            const SizedBox(height: 300, child: InvoiceProductList()),
-
-            const SizedBox(height: 20),
-
-            /// PAYMENT METHOD
-            DropdownButtonFormField<String>(
-              value: paymentMethod,
-
-              decoration: const InputDecoration(labelText: 'Payment Method'),
-
-              items: const [
-                DropdownMenuItem(value: 'CASH', child: Text('Cash')),
-
-                DropdownMenuItem(value: 'UPI', child: Text('UPI')),
-
-                DropdownMenuItem(value: 'CARD', child: Text('Card')),
-
-                DropdownMenuItem(value: 'BANK', child: Text('Bank Transfer')),
-              ],
-
-              onChanged: (value) {
-                if (value == null) {
-                  return;
-                }
-
-                ref.read(paymentMethodProvider.notifier).state = value;
-              },
+            Text(
+              'Create Invoice',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 20),
 
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Amount Paid'),
-
-              keyboardType: TextInputType.number,
-
-              onChanged: (value) {
-                ref.read(amountPaidProvider.notifier).state =
-                    double.tryParse(value) ?? 0;
-              },
-            ),
-            ElevatedButton.icon(
-              onPressed: () async {
-                final date = await showDatePicker(
-                  context: context,
-
-                  firstDate: DateTime.now(),
-
-                  lastDate: DateTime(2100),
-
-                  initialDate: DateTime.now(),
-                );
-
-                if (date != null) {
-                  ref.read(dueDateProvider.notifier).state = date;
-                }
-              },
-
-              icon: const Icon(Icons.calendar_today),
-
-              label: const Text('Due Date'),
+            Card(
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(children: const [CustomerDropdown()]),
+              ),
             ),
 
-            /// SUMMARY
-            const InvoiceSummary(),
+            const SizedBox(height: 16),
+
+            Card(
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(children: const [ProductDropdown()]),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            Card(
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  height: mobile ? 300 : 400,
+                  child: InvoiceProductList(),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            Card(
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    DropdownButtonFormField<String>(
+                      value: paymentMethod,
+                      decoration: const InputDecoration(
+                        labelText: 'Payment Method',
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: 'CASH', child: Text('Cash')),
+                        DropdownMenuItem(value: 'UPI', child: Text('UPI')),
+                        DropdownMenuItem(value: 'CARD', child: Text('Card')),
+                        DropdownMenuItem(
+                          value: 'BANK',
+                          child: Text('Bank Transfer'),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value == null) {
+                          return;
+                        }
+
+                        ref.read(paymentMethodProvider.notifier).state = value;
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Amount Paid',
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        ref.read(amountPaidProvider.notifier).state =
+                            double.tryParse(value) ?? 0;
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () async {
+                          final date = await showDatePicker(
+                            context: context,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2100),
+                            initialDate: DateTime.now(),
+                          );
+
+                          if (date != null) {
+                            ref.read(dueDateProvider.notifier).state = date;
+                          }
+                        },
+                        icon: const Icon(Icons.calendar_today),
+                        label: const Text('Select Due Date'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            const Card(
+              elevation: 0,
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: InvoiceSummary(),
+              ),
+            ),
 
             const SizedBox(height: 20),
 
-            /// SAVE BUTTON
             SizedBox(
               width: double.infinity,
-              height: 55,
-
-              child: ElevatedButton.icon(
+              height: 56,
+              child: FilledButton.icon(
                 onPressed: isSaving
                     ? null
                     : () async {
                         await saveInvoice();
                       },
-
                 icon: isSaving
                     ? const SizedBox(
                         width: 20,
                         height: 20,
-
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.save),
-
                 label: Text(isSaving ? 'Saving...' : 'Generate Invoice'),
               ),
             ),
+
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -167,6 +208,12 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
 
       final paymentMethod = ref.read(paymentMethodProvider);
       final amountPaid = ref.read(amountPaidProvider);
+
+      final loadingCharge = ref.read(loadingChargeProvider);
+
+      final unloadingCharge = ref.read(unloadingChargeProvider);
+
+      final transportCharge = ref.read(transportChargeProvider);
 
       final dueDate = ref.read(dueDateProvider);
       final dueAmount = total - amountPaid;
@@ -197,10 +244,24 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
 
       /// CHECK STOCK
       for (final item in items) {
-        if (item.product.stockQty < item.qty) {
-          showMessage('Insufficient stock for ${item.product.name}');
+        if (item.variant != null) {
+          if (item.variant!.stockQty < item.quantity) {
+            showMessage(
+              'Insufficient stock for '
+              '${item.displayName}',
+            );
 
-          return;
+            return;
+          }
+        } else {
+          if (item.product.stockQty < item.quantity) {
+            showMessage(
+              'Insufficient stock for '
+              '${item.product.name}',
+            );
+
+            return;
+          }
         }
       }
 
@@ -209,6 +270,15 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
 
       /// GENERATE PDF
       final pdfService = InvoicePdfService();
+      final settingsRepo = ref.read(businessSettingsRepositoryProvider);
+
+      final settings = await settingsRepo.getSettings();
+
+      if (settings == null) {
+        showMessage('Please configure Business Settings first');
+
+        return;
+      }
 
       final pdfPath = await pdfService.generateInvoice(
         invoiceNo: invoiceNo,
@@ -222,9 +292,17 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
               (e) => InvoiceItemModel(
                 product: e.product,
 
-                qty: e.qty,
+                variantName: e.variant?.variantName,
 
-                price: e.price,
+                qty: e.quantity,
+
+                price: e.unitPrice,
+
+                height: e.height,
+
+                width: e.width,
+
+                area: e.isAreaBased ? e.area : null,
               ),
             )
             .toList(),
@@ -244,12 +322,21 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
         dueAmount: dueAmount,
 
         paymentStatus: paymentStatus,
+        businessSettings: settings,
 
         dueDate: dueDate,
+        loadingCharge: loadingCharge,
+        unloadingCharge: unloadingCharge,
+        transportCharge: transportCharge,
       );
 
       /// SAVE INVOICE
       final salesRepo = ref.read(salesRepositoryProvider);
+      final loyaltyRepo = ref.read(customerLoyaltyRepositoryProvider);
+
+      final points = (total / 100).floor();
+
+      await loyaltyRepo.addPoints(customerId: customer.id, points: points);
 
       final invoiceId = await salesRepo.saveInvoice(
         customerId: customer.id,
@@ -284,20 +371,36 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
         items: items,
       );
 
-      /// UPDATE PRODUCT STOCK
+      /// UPDATE STOCK
+
       final productRepo = ref.read(productRepositoryProvider);
 
-      for (final item in items) {
-        await productRepo.reduceStock(
-          productId: item.product.id,
+      final variantRepo = ref.read(productVariantRepositoryProvider);
 
-          qty: item.qty,
-        );
+      for (final item in items) {
+        if (item.variant != null) {
+          await variantRepo.updateVariant(
+            item.variant!.copyWith(
+              stockQty: item.variant!.stockQty - item.quantity,
+            ),
+          );
+        } else {
+          await productRepo.reduceStock(
+            productId: item.product.id,
+
+            qty: item.quantity,
+          );
+        }
       }
 
       /// CLEAR CART
       ref.read(invoiceItemsProvider.notifier).state = [];
       ref.read(amountPaidProvider.notifier).state = 0;
+      ref.read(loadingChargeProvider.notifier).state = 0;
+
+      ref.read(unloadingChargeProvider.notifier).state = 0;
+
+      ref.read(transportChargeProvider.notifier).state = 0;
       ref.read(dueDateProvider.notifier).state = null;
       ref.read(selectedCustomerProvider.notifier).state = null;
 

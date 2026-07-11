@@ -2,8 +2,20 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:inventory_desktop/data/database/tables/customer_loyalties_table.dart';
+import 'package:inventory_desktop/data/database/tables/business_settings_table.dart';
+import 'package:inventory_desktop/data/database/tables/customer_documents_table.dart';
+import 'package:inventory_desktop/data/database/tables/customer_followups_table.dart';
+import 'package:inventory_desktop/data/database/tables/customer_notes_table.dart';
+import 'package:inventory_desktop/data/database/tables/product_price_histories.dart';
+import 'package:inventory_desktop/data/database/tables/product_variants.dart';
+import 'package:inventory_desktop/data/database/tables/purchase_returns_table.dart';
+import 'package:inventory_desktop/data/database/tables/sales_returns_table.dart';
+import 'package:inventory_desktop/data/database/tables/supplier_payment_histories.dart';
+import 'package:inventory_desktop/data/database/tables/sync_histories.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 import 'tables/invoice_items_table.dart';
 import 'tables/invoices_table.dart';
@@ -36,13 +48,24 @@ part 'app_database.g.dart';
     Invoices,
     InvoiceItems,
     PaymentHistories,
+    ProductVariants,
+    SupplierPaymentHistories,
+    PurchaseReturns,
+    SalesReturns,
+    BusinessSettings,
+    ProductPriceHistories,
+    CustomerNotes,
+    CustomerDocuments,
+    CustomerFollowUps,
+    CustomerLoyalties,
+    SyncHistories
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 1;
 
   // PRODUCTS
 
@@ -119,6 +142,21 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<Product>> watchAllProducts() {
     return select(products).watch();
   }
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) async {
+      await m.createAll();
+
+    },
+
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.addColumn(products, products.sku);
+      }
+    },
+  );
+
 }
 
 LazyDatabase _openConnection() {

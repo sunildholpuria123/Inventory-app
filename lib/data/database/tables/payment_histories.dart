@@ -1,31 +1,26 @@
 import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
 
 class PaymentHistories extends Table {
+  IntColumn get id => integer().autoIncrement()();
 
-  IntColumn get id =>
-      integer().autoIncrement()();
+  IntColumn get invoiceId => integer()();
 
-  IntColumn get invoiceId =>
-      integer()();
+  IntColumn get customerId => integer()();
 
-  IntColumn get customerId =>
-      integer()();
+  RealColumn get amount => real()();
 
-  RealColumn get amount =>
-      real()();
+  TextColumn get paymentMethod => text().withDefault(const Constant('Cash'))();
 
-  TextColumn get paymentMethod =>
-      text().withDefault(
-        const Constant(
-          'Cash',
-        ),
-      )();
+  TextColumn get notes => text().nullable()();
 
-  TextColumn get notes =>
-      text().nullable()();
+  DateTimeColumn get paidAt => dateTime().withDefault(currentDateAndTime)();
 
-  DateTimeColumn get paidAt =>
-      dateTime().withDefault(
-        currentDateAndTime,
-      )();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+
+  TextColumn get syncId => text().clientDefault(() => const Uuid().v4())();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 }

@@ -62,7 +62,7 @@ class RecentSalesWidget extends ConsumerWidget {
                           subtitle: Text(sale.invoiceNo),
 
                           trailing: Text(
-                            '₹${sale.grandTotal.toStringAsFixed(0)}',
+                            'Rs.${sale.grandTotal.toStringAsFixed(0)}',
 
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),

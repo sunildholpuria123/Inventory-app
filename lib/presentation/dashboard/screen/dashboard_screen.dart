@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/utils/responsive_helper.dart';
-import '../../widgets/app_sidebar.dart';
+import '../../../core/widgets/app_sidebar.dart';
 import '../constants/dashboard_pages.dart';
 import '../provider/dashboard_provider.dart';
-import '../provider/navigation_provider.dart';
 import '../widget/app_drawer.dart';
-import '../widget/dashboard_bottom_nav.dart';
+import '../../../core/widgets/app_bottom_nav.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -21,7 +20,7 @@ class DashboardScreen extends ConsumerWidget {
 
     final selected = isDesktop
         ? ref.watch(selectedMenuProvider)
-        : ref.watch(selectedIndexProvider);
+        : ref.watch(selectedMenuProvider);
 
     /// DESKTOP
     if (isDesktop) {
@@ -44,7 +43,7 @@ class DashboardScreen extends ConsumerWidget {
 
       body: SafeArea(child: dashboardPages[selected]),
 
-      bottomNavigationBar: isMobile ? const DashboardBottomNav() : null,
+      bottomNavigationBar: isMobile ? const AppBottomNav() : null,
     );
   }
 }

@@ -1,11 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../provider/purchase_repository_provider.dart';
+import 'purchase_repository_provider.dart';
 
-final totalPurchaseProvider = FutureProvider<double>((ref) async {
+final totalPurchaseProvider = StreamProvider<double>((ref) {
   final repo = ref.watch(purchaseRepositoryProvider);
 
-  final purchases = await repo.getPurchases();
+  return repo.watchTotalPurchases();
+});
 
-  return purchases.fold<double>(0, (sum, item) => (sum + item.total));
+final purchasesBySupplierProvider = StreamProvider<Map<String, double>>((ref) {
+  final repo = ref.watch(purchaseRepositoryProvider);
+
+  return repo.watchPurchasesBySupplier();
 });

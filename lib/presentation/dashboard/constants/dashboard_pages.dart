@@ -1,3 +1,7 @@
+import 'package:inventory_desktop/presentation/analytics/screens/analytics_dashboard_screen.dart';
+import 'package:inventory_desktop/presentation/analytics/screens/purchase_ai_dashboard_screen.dart';
+import 'package:inventory_desktop/presentation/dashboard/screen/more_screen.dart';
+
 import '../../customers/screen/customer_list_screen.dart';
 import '../../expenses/screens/expense_screen.dart' show ExpenseScreen;
 import '../../products/screens/product_list_screen.dart';
@@ -15,9 +19,12 @@ final dashboardPages = [
   CustomerListScreen(),
   SalesHomeScreen(),
   PurchaseScreen(),
+  MoreScreen(),
   ExpenseScreen(),
   ReportsScreen(),
   SettingsScreen(),
   SupplierScreen(),
   BackupScreen(),
+  AnalyticsDashboardScreen(),
+  PurchaseAiDashboardScreen()
 ];

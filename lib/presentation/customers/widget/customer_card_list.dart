@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inventory_desktop/presentation/customers/widget/payment_history_dialog.dart';
+import 'package:inventory_desktop/presentation/customers/widget/receive_payment_dialog.dart';
 
+import '../../../core/utils/whatsapp_helper.dart';
 import '../../../data/database/app_database.dart';
 import '../provider/customer_provider.dart';
+import '../screen/customer_profile_screen.dart';
 import '../screen/customer_ledger_screen.dart';
 import 'edit_customer_dialog.dart';
 
@@ -19,149 +23,219 @@ class CustomerCardList extends ConsumerWidget {
       itemBuilder: (context, index) {
         final customer = customers[index];
 
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
+        return InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => CustomerProfileScreen(customer: customer),
+              ),
+            );
+          },
+          child: Card(
+            margin: const EdgeInsets.only(bottom: 12),
 
-          child: Padding(
-            padding: const EdgeInsets.all(16),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
 
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
 
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      child: Text(customer.name.substring(0, 1).toUpperCase()),
-                    ),
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        child: Text(
+                          customer.name.substring(0, 1).toUpperCase(),
+                        ),
+                      ),
 
-                    const SizedBox(width: 12),
+                      const SizedBox(width: 12),
 
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
 
-                        children: [
-                          Text(
-                            customer.name,
+                          children: [
+                            Text(
+                              customer.name,
 
-                            style: const TextStyle(
-                              fontSize: 18,
+                              style: const TextStyle(
+                                fontSize: 18,
 
-                              fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            const SizedBox(height: 4),
+
+                            Text(customer.phone),
+
+                            if (customer.email != null) Text(customer.email!),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.chat),
+                        label: const Text('WhatsApp'),
+                        onPressed: () async {
+                          await WhatsAppHelper.openChat(
+                            phone: customer.phone,
+                            message: 'Hello ${customer.name}',
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                    children: [
+                      Text(
+                        'Credit: Rs.${customer.creditBalance.toStringAsFixed(2)}',
+
+                        style: TextStyle(
+                          color: customer.creditBalance > 0
+                              ? Colors.red
+                              : Colors.green,
+
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      PopupMenuButton<String>(
+                        onSelected: (value) async {
+                          switch (value) {
+                            case 'ledger':
+                              Navigator.push(
+                                context,
+
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      CustomerLedgerScreen(customer: customer),
+                                ),
+                              );
+
+                              break;
+
+                            case 'edit':
+                              showDialog(
+                                context: context,
+
+                                builder: (_) =>
+                                    EditCustomerDialog(customer: customer),
+                              );
+
+                              break;
+
+                            case 'delete':
+                              await ref
+                                  .read(customerRepositoryProvider)
+                                  .deleteCustomer(customer.id);
+
+                              break;
+                            case 'profile':
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      CustomerProfileScreen(customer: customer),
+                                ),
+                              );
+                              break;
+
+                            case 'whatsapp':
+                              await WhatsAppHelper.openChat(
+                                phone: customer.phone,
+                                message: 'Hello ${customer.name}',
+                              );
+                              break;
+                          }
+                        },
+
+                        itemBuilder: (_) => [
+                          /*const PopupMenuItem(
+                              value: 'payment',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.payments),
+                                  SizedBox(width: 10),
+                                  Text('Receive Payment'),
+                                ],
+                              ),
+                            ),
+                            const PopupMenuItem(
+                              value: 'history',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.history),
+                                  SizedBox(width: 10),
+                                  Text('Payment History'),
+                                ],
+                              ),
+                            ),*/
+                          const PopupMenuItem(
+                            value: 'profile',
+                            child: Row(
+                              children: [
+                                Icon(Icons.person),
+                                SizedBox(width: 10),
+                                Text('Profile'),
+                              ],
                             ),
                           ),
-
-                          const SizedBox(height: 4),
-
-                          Text(customer.phone),
-
-                          if (customer.email != null) Text(customer.email!),
+                          const PopupMenuItem(
+                            value: 'ledger',
+                            child: Row(
+                              children: [
+                                Icon(Icons.receipt_long),
+                                SizedBox(width: 10),
+                                Text('Ledger'),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'whatsapp',
+                            child: Row(
+                              children: [
+                                Icon(Icons.chat),
+                                SizedBox(width: 10),
+                                Text('WhatsApp'),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'edit',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit),
+                                SizedBox(width: 10),
+                                Text('Edit'),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete, color: Colors.red),
+                                SizedBox(width: 10),
+                                Text('Delete'),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 12),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                  children: [
-                    Text(
-                      'Credit: ₹${customer.creditBalance.toStringAsFixed(2)}',
-
-                      style: TextStyle(
-                        color: customer.creditBalance > 0
-                            ? Colors.red
-                            : Colors.green,
-
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    PopupMenuButton<String>(
-                      onSelected: (value) async {
-                        switch (value) {
-                          case 'ledger':
-                            Navigator.push(
-                              context,
-
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    CustomerLedgerScreen(customer: customer),
-                              ),
-                            );
-
-                            break;
-
-                          case 'edit':
-                            showDialog(
-                              context: context,
-
-                              builder: (_) =>
-                                  EditCustomerDialog(customer: customer),
-                            );
-
-                            break;
-
-                          case 'delete':
-                            await ref
-                                .read(customerRepositoryProvider)
-                                .deleteCustomer(customer.id);
-
-                            break;
-                        }
-                      },
-
-                      itemBuilder: (_) => [
-                        const PopupMenuItem(
-                          value: 'ledger',
-
-                          child: Row(
-                            children: [
-                              Icon(Icons.receipt_long),
-
-                              SizedBox(width: 10),
-
-                              Text('Ledger'),
-                            ],
-                          ),
-                        ),
-
-                        const PopupMenuItem(
-                          value: 'edit',
-
-                          child: Row(
-                            children: [
-                              Icon(Icons.edit),
-
-                              SizedBox(width: 10),
-
-                              Text('Edit'),
-                            ],
-                          ),
-                        ),
-
-                        const PopupMenuItem(
-                          value: 'delete',
-
-                          child: Row(
-                            children: [
-                              Icon(Icons.delete, color: Colors.red),
-
-                              SizedBox(width: 10),
-
-                              Text('Delete'),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

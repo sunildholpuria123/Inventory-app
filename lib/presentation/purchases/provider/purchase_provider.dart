@@ -5,7 +5,7 @@ import '../../../data/providers/database_provider.dart';
 import '../models/purchase_item.dart';
 import '../repository/purchase_repository.dart';
 
-final purchaseItemsProvider = StateProvider<List<PurchaseItem>>((ref) => []);
+final purchaseItemsProvider = StateProvider<List<PurchaseCartItem>>((ref) => []);
 
 final selectedSupplierProvider = StateProvider<Supplier?>((ref) => null);
 

@@ -14,3 +14,15 @@ final paymentHistoryProvider = StreamProvider.family<List<PaymentHistory>, int>(
         .watch();
   },
 );
+
+final customerPaymentsProvider =
+StreamProvider.family<List<PaymentHistory>, int>((ref, customerId) {
+  final db = ref.watch(databaseProvider);
+
+  return (db.select(db.paymentHistories)
+    ..where((tbl) => tbl.customerId.equals(customerId))
+    ..orderBy([
+          (tbl) => OrderingTerm.desc(tbl.paidAt),
+    ]))
+      .watch();
+});

@@ -79,7 +79,7 @@ class ExpenseAnalytics extends ConsumerWidget {
                         const SizedBox(height: 10),
 
                         Text(
-                          '₹${totalExpense.toStringAsFixed(0)}',
+                          'Rs.${totalExpense.toStringAsFixed(0)}',
                           style: const TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,

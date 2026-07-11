@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../products/provider/product_provider.dart';
+import '../../products/provider/product_variant_provider.dart';
+import '../../suppliers/provider/supplier_provider.dart';
 import '../provider/purchase_provider.dart';
 import '../widgets/purchase_item_list.dart';
 import '../widgets/purchase_product_dropdown.dart';
 import '../widgets/purchase_summary.dart';
-import '../widgets/supplier_dropdown.dart';
+import '../../suppliers/widgets/supplier_dropdown.dart';
 
 class PurchaseScreen extends ConsumerStatefulWidget {
   const PurchaseScreen({super.key});
@@ -86,17 +88,39 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                               items: items,
                             );
 
+                            final supplierRepo = ref.read(
+                              supplierRepositoryProvider,
+                            );
+
+                            await supplierRepo.updateCreditBalance(
+                              supplierId: supplier.id,
+
+                              amount: total,
+                            );
+
                             /// UPDATE STOCK
                             final productRepo = ref.read(
                               productRepositoryProvider,
                             );
 
-                            for (final item in items) {
-                              await productRepo.increaseStock(
-                                productId: item.product.id,
+                            final variantRepo = ref.read(
+                              productVariantRepositoryProvider,
+                            );
 
-                                qty: item.qty,
-                              );
+                            for (final item in items) {
+                              if (item.variant != null) {
+                                await variantRepo.updateVariant(
+                                  item.variant!.copyWith(
+                                    stockQty: item.variant!.stockQty + item.qty,
+                                  ),
+                                );
+                              } else {
+                                await productRepo.increaseStock(
+                                  productId: item.product.id,
+
+                                  qty: item.qty,
+                                );
+                              }
                             }
 
                             /// CLEAR CART

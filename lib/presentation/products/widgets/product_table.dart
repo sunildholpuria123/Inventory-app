@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/app_database.dart';
+import '../../categories/provider/category_provider.dart';
 import '../provider/product_provider.dart';
+import '../screens/product_detail_screen.dart';
+import '../screens/product_price_history_screen.dart';
 import 'edit_product_dialog.dart';
 
 class ProductTable extends ConsumerWidget {
@@ -14,6 +17,11 @@ class ProductTable extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final categories = ref.watch(categoriesProvider);
+
+    final categoryMap = {
+      for (final category in categories.value ?? []) category.id: category,
+    };
     return Card(
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -37,6 +45,12 @@ class ProductTable extends ConsumerWidget {
 
               DataColumn(label: Text('Name')),
 
+              DataColumn(label: Text('Category')),
+
+              DataColumn(label: Text('Unit')),
+
+              DataColumn(label: Text('Pricing')),
+
               DataColumn(label: Text('Stock')),
 
               DataColumn(label: Text('Purchase')),
@@ -45,7 +59,6 @@ class ProductTable extends ConsumerWidget {
 
               DataColumn(label: Text('Actions')),
             ],
-
             rows: products.map((product) {
               return DataRow(
                 cells: [
@@ -79,13 +92,22 @@ class ProductTable extends ConsumerWidget {
                   /// NAME
                   DataCell(Text(product.name)),
 
+                  DataCell(Text(categoryMap[product.categoryId]?.name ?? '-')),
+
+                  DataCell(Text(categoryMap[product.categoryId]?.unit ?? '-')),
+
+                  DataCell(
+                    Text(categoryMap[product.categoryId]?.pricingType ?? '-'),
+                  ),
+
                   /// STOCK
                   DataCell(
                     Text(
                       product.stockQty.toString(),
 
                       style: TextStyle(
-                        color: product.stockQty <= 5
+                        color:product.stockQty <=
+                            product.minStock
                             ? Colors.red
                             : Colors.green,
 
@@ -95,10 +117,10 @@ class ProductTable extends ConsumerWidget {
                   ),
 
                   /// PURCHASE PRICE
-                  DataCell(Text('₹${product.purchasePrice}')),
+                  DataCell(Text('Rs.${product.purchasePrice}')),
 
                   /// SELLING PRICE
-                  DataCell(Text('₹${product.sellingPrice}')),
+                  DataCell(Text('Rs.${product.sellingPrice}')),
 
                   /// ACTIONS
                   DataCell(
@@ -106,6 +128,21 @@ class ProductTable extends ConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
 
                       children: [
+                        //History
+                        IconButton(
+                          icon: const Icon(Icons.history),
+
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    ProductPriceHistoryScreen(product: product),
+                              ),
+                            );
+                          },
+                        ),
+
                         /// EDIT
                         IconButton(
                           onPressed: () {
@@ -129,6 +166,20 @@ class ProductTable extends ConsumerWidget {
                           },
 
                           icon: const Icon(Icons.delete, color: Colors.red),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.info_outline),
+
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    ProductDetailScreen(product: product),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
