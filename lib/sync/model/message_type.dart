@@ -1,8 +1,1 @@
-enum MessageType {
-  sync,
-  ack,
-  error,
-  cancel,
-  progress,
-  ping,
-}
+enum MessageType { handshake, sync, ack, error, cancel, progress, ping, pong }

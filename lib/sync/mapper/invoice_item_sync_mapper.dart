@@ -1,81 +1,88 @@
 import 'package:drift/drift.dart';
+import 'package:inventory_desktop/sync/context/sync_export_context.dart';
+import 'package:inventory_desktop/sync/context/sync_import_context.dart';
 
 import '../../data/database/app_database.dart';
 import 'base_sync_mapper.dart';
 
+
 class InvoiceItemSyncMapper
     implements BaseSyncMapper<InvoiceItem, InvoiceItemsCompanion> {
+  const InvoiceItemSyncMapper();
+
   @override
-  Map<String, dynamic> toMap(
-      InvoiceItem item,
-      ) {
+  InvoiceItemsCompanion toCompanion(Map<String, dynamic> json, SyncImportContext context) {
+    return InvoiceItemsCompanion(
+      id: Value(json['id']),
+      invoiceId: Value(json['invoiceId']),
+      productId: Value(json['productId']),
+      variantId: Value(json['variantId']),
+      productName: Value(json['productName'] ?? ''),
+      variantName: Value(json['variantName']),
+      quantity: Value(json['quantity'] ?? 0),
+
+      price: Value(
+        (json['price'] as num?)?.toDouble() ?? 0,
+      ),
+
+      height: Value(
+        (json['height'] as num?)?.toDouble(),
+      ),
+
+      width: Value(
+        (json['width'] as num?)?.toDouble(),
+      ),
+
+      area: Value(
+        (json['area'] as num?)?.toDouble(),
+      ),
+
+      total: Value(
+        (json['total'] as num?)?.toDouble() ?? 0,
+      ),
+
+      createdAt: Value(
+        json['createdAt'] != null
+            ? DateTime.parse(json['createdAt'])
+            : DateTime.now(),
+      ),
+
+      updatedAt: Value(
+        json['updatedAt'] != null
+            ? DateTime.parse(json['updatedAt'])
+            : DateTime.now(),
+      ),
+
+      syncId: Value(json['syncId'] ?? ''),
+
+      deletedAt: Value(
+        json['deletedAt'] != null
+            ? DateTime.parse(json['deletedAt'])
+            : null,
+      ),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toMap(InvoiceItem item, SyncExportContext context) {
     return {
-      'syncId': item.syncId,
-
+      'id': item.id,
       'invoiceId': item.invoiceId,
-
       'productId': item.productId,
+      'variantId': item.variantId,
       'productName': item.productName,
-
+      'variantName': item.variantName,
       'quantity': item.quantity,
       'price': item.price,
-      // 'discount': item.d,
-      // 'tax': item.taa,
+      'height': item.height,
+      'width': item.width,
+      'area': item.area,
       'total': item.total,
-
       'createdAt': item.createdAt.toIso8601String(),
       'updatedAt': item.updatedAt.toIso8601String(),
+      'syncId': item.syncId,
       'deletedAt': item.deletedAt?.toIso8601String(),
     };
   }
 
-  @override
-  InvoiceItemsCompanion toCompanion(
-      Map<String, dynamic> json,
-      ) {
-    return InvoiceItemsCompanion(
-      syncId: Value(json['syncId']),
-
-      invoiceId: Value(json['invoiceId']),
-
-      productId: Value(json['productId']),
-      productName: Value(json['productName']),
-
-      quantity: Value(
-        (json['quantity'] as num).toDouble() as int,
-      ),
-
-      price: Value(
-        (json['price'] as num).toDouble(),
-      ),
-
-      // discount: Value(
-      //   (json['discount'] as num).toDouble(),
-      // ),
-      //
-      // tax: Value(
-      //   (json['tax'] as num).toDouble(),
-      // ),
-
-      total: Value(
-        (json['total'] as num).toDouble(),
-      ),
-
-      createdAt: Value(
-        DateTime.parse(json['createdAt']),
-      ),
-
-      updatedAt: Value(
-        DateTime.parse(json['updatedAt']),
-      ),
-
-      deletedAt: json['deletedAt'] == null
-          ? const Value.absent()
-          : Value(
-        DateTime.parse(
-          json['deletedAt'],
-        ),
-      ),
-    );
-  }
 }

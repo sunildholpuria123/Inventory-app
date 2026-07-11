@@ -1,7 +1,8 @@
-abstract class BaseSyncMapper<T, C> {
-  /// Drift row -> JSON
-  Map<String, dynamic> toMap(T model);
+import '../context/sync_export_context.dart';
+import '../context/sync_import_context.dart';
 
-  /// JSON -> Drift Companion
-  C toCompanion(Map<String, dynamic> json);
+abstract class BaseSyncMapper<T, C> {
+  Map<String, dynamic> toMap(T data, SyncExportContext context);
+
+  C toCompanion(Map<String, dynamic> json, SyncImportContext context);
 }

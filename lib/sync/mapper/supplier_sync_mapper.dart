@@ -1,54 +1,75 @@
 import 'package:drift/drift.dart';
 
 import '../../data/database/app_database.dart';
+import '../context/sync_export_context.dart';
+import '../context/sync_import_context.dart';
+import 'base_sync_mapper.dart';
+
+import 'package:drift/drift.dart';
+
+import '../../data/database/app_database.dart';
 import 'base_sync_mapper.dart';
 
 class SupplierSyncMapper
     implements BaseSyncMapper<Supplier, SuppliersCompanion> {
+  const SupplierSyncMapper();
+
   @override
-  Map<String, dynamic> toMap(Supplier supplier) {
+  Map<String, dynamic> toMap(Supplier supplier, SyncExportContext context) {
     return {
-      'syncId': supplier.syncId,
+      'id': supplier.id,
       'name': supplier.name,
       'phone': supplier.phone,
       'email': supplier.email,
       'address': supplier.address,
-      'gstNumber': supplier.gstNumber,
       'creditBalance': supplier.creditBalance,
+      'gstNumber': supplier.gstNumber,
       'isActive': supplier.isActive,
       'createdAt': supplier.createdAt.toIso8601String(),
       'updatedAt': supplier.updatedAt.toIso8601String(),
+      'syncId': supplier.syncId,
       'deletedAt': supplier.deletedAt?.toIso8601String(),
     };
   }
 
   @override
   SuppliersCompanion toCompanion(
-      Map<String, dynamic> json,
-      ) {
+    Map<String, dynamic> json,
+    SyncImportContext context,
+  ) {
     return SuppliersCompanion(
-      syncId: Value(json['syncId']),
-      name: Value(json['name']),
-      phone: Value(json['phone']),
+      id: Value(json['id']),
+
+      name: Value(json['name'] ?? ''),
+
+      phone: Value(json['phone'] ?? ''),
+
       email: Value(json['email']),
+
       address: Value(json['address']),
+
+      creditBalance: Value((json['creditBalance'] as num?)?.toDouble() ?? 0),
+
       gstNumber: Value(json['gstNumber']),
-      creditBalance: Value(
-        (json['creditBalance'] as num).toDouble(),
-      ),
-      isActive: Value(json['isActive'] as bool),
+
+      isActive: Value(json['isActive'] ?? true),
+
       createdAt: Value(
-        DateTime.parse(json['createdAt']),
+        json['createdAt'] != null
+            ? DateTime.parse(json['createdAt'])
+            : DateTime.now(),
       ),
+
       updatedAt: Value(
-        DateTime.parse(json['updatedAt']),
+        json['updatedAt'] != null
+            ? DateTime.parse(json['updatedAt'])
+            : DateTime.now(),
       ),
-      deletedAt: json['deletedAt'] == null
-          ? const Value.absent()
-          : Value(
-        DateTime.parse(
-          json['deletedAt'],
-        ),
+
+      syncId: Value(json['syncId'] ?? ''),
+
+      deletedAt: Value(
+        json['deletedAt'] != null ? DateTime.parse(json['deletedAt']) : null,
       ),
     );
   }

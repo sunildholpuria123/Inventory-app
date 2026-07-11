@@ -1,14 +1,15 @@
 import 'package:drift/drift.dart';
-import 'package:flutter/material.dart';
 
 import '../../data/database/app_database.dart';
+import '../context/sync_export_context.dart';
+import '../context/sync_import_context.dart';
 import 'base_sync_mapper.dart';
 
 class ProductSyncMapper implements BaseSyncMapper<Product, ProductsCompanion> {
   const ProductSyncMapper();
 
   @override
-  Map<String, dynamic> toMap(Product product) {
+  Map<String, dynamic> toMap(Product product, SyncExportContext context) {
     return {
       'id': product.id,
       'categoryId': product.categoryId,
@@ -28,40 +29,45 @@ class ProductSyncMapper implements BaseSyncMapper<Product, ProductsCompanion> {
   }
 
   @override
-  ProductsCompanion toCompanion(Map<String, dynamic> json) {
-    debugPrint("===== PRODUCT JSON =====");
-    debugPrint(json.toString());
-    debugPrint("========================");
+  ProductsCompanion toCompanion(Map<String, dynamic> json,SyncImportContext context) {
     return ProductsCompanion(
       id: Value(json['id']),
 
-      categoryId: Value(json['categoryId']),
+      categoryId: Value(json['categoryId'] ?? 0),
 
-      name: Value(json['name']),
+      name: Value(json['name'] ?? ''),
 
       sku: Value(json['sku']),
 
       barcode: Value(json['barcode']),
 
-      purchasePrice: Value((json['purchasePrice'] as num).toDouble()),
+      purchasePrice: Value((json['purchasePrice'] as num?)?.toDouble() ?? 0),
 
-      sellingPrice: Value((json['sellingPrice'] as num).toDouble()),
+      sellingPrice: Value((json['sellingPrice'] as num?)?.toDouble() ?? 0),
 
-      stockQty: Value(json['stockQty']),
+      stockQty: Value(json['stockQty'] ?? 0),
 
-      minStock: Value(json['minStock']),
+      minStock: Value(json['minStock'] ?? 0),
 
       imagePath: Value(json['imagePath']),
 
-      createdAt: Value(DateTime.parse(json['createdAt'])),
+      createdAt: Value(
+        json['createdAt'] != null
+            ? DateTime.parse(json['createdAt'])
+            : DateTime.now(),
+      ),
 
-      updatedAt: Value(DateTime.parse(json['updatedAt'])),
+      updatedAt: Value(
+        json['updatedAt'] != null
+            ? DateTime.parse(json['updatedAt'])
+            : DateTime.now(),
+      ),
 
-      syncId: Value(json['syncId']),
+      syncId: Value(json['syncId'] ?? ''),
 
-      deletedAt: json['deletedAt'] == null
-          ? const Value.absent()
-          : Value(DateTime.parse(json['deletedAt'])),
+      deletedAt: Value(
+        json['deletedAt'] != null ? DateTime.parse(json['deletedAt']) : null,
+      ),
     );
   }
 }

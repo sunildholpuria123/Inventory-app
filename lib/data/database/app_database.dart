@@ -12,6 +12,7 @@ import 'package:inventory_desktop/data/database/tables/product_variants.dart';
 import 'package:inventory_desktop/data/database/tables/purchase_returns_table.dart';
 import 'package:inventory_desktop/data/database/tables/sales_returns_table.dart';
 import 'package:inventory_desktop/data/database/tables/supplier_payment_histories.dart';
+import 'package:inventory_desktop/data/database/tables/sync_histories.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -56,7 +57,8 @@ part 'app_database.g.dart';
     CustomerNotes,
     CustomerDocuments,
     CustomerFollowUps,
-    CustomerLoyalties
+    CustomerLoyalties,
+    SyncHistories
   ],
 )
 class AppDatabase extends _$AppDatabase {

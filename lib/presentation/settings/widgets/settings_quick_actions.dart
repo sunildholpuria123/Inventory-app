@@ -135,7 +135,7 @@ class _QuickActionCard extends StatelessWidget {
 
                 Text(
                   subtitle,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)
                       .textTheme

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import '../network/network_constants.dart';
+
 class PacketFramer {
   final List<int> _buffer = [];
 
@@ -46,6 +48,10 @@ class PacketFramer {
     );
 
     final length = payload.length;
+
+    if(length > NetworkConstants.maxPacketSize){
+      throw Exception("Packet too large");
+    }
 
     output[0] = (length >> 24) & 0xff;
     output[1] = (length >> 16) & 0xff;

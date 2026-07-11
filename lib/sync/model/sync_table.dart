@@ -5,5 +5,7 @@ enum SyncTable {
   invoices,
   invoiceItems,
   payments,
-  expenses
+  expenses,
+  category,
+  businessSetting
 }

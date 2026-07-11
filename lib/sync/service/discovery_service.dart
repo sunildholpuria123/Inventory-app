@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 import '../model/sync_device.dart';
 
 class DiscoveryService {
@@ -9,22 +11,27 @@ class DiscoveryService {
 
   RawDatagramSocket? _socket;
 
-  final List<SyncDevice> _devices = [];
+  final Map<String, SyncDevice> _devices = {};
+
+  final Map<String, DateTime> _lastSeen = {};
 
   final StreamController<List<SyncDevice>> _controller =
-  StreamController.broadcast();
+      StreamController<List<SyncDevice>>.broadcast();
+
+  Timer? _cleanupTimer;
+
+  SyncDevice? _currentDevice;
 
   Stream<List<SyncDevice>> get devices => _controller.stream;
 
   List<SyncDevice> get currentDevices =>
-      List.unmodifiable(_devices);
+      _devices.values.toList(growable: false);
 
-  SyncDevice? _currentDevice;
+  //==========================================================
+  // START
+  //==========================================================
 
-  /// Start listening
-  Future<void> start({
-    required SyncDevice currentDevice,
-  }) async {
+  Future<void> start({required SyncDevice currentDevice}) async {
     if (_socket != null) return;
 
     _currentDevice = currentDevice;
@@ -32,40 +39,52 @@ class DiscoveryService {
     _socket = await RawDatagramSocket.bind(
       InternetAddress.anyIPv4,
       discoveryPort,
-      reuseAddress: true);
+      reuseAddress: true,
+    );
 
     _socket!
       ..broadcastEnabled = true
       ..listen(_onSocketEvent);
+
+    _cleanupTimer = Timer.periodic(
+      const Duration(seconds: 15),
+      (_) => _removeOfflineDevices(),
+    );
+
+    debugPrint("[DISCOVERY] Started");
   }
 
-  /// Search nearby devices
+  //==========================================================
+  // SEARCH
+  //==========================================================
 
-  Future<void> search({
-    required SyncDevice currentDevice,
-  }) async {
-    if (_socket == null) {
-      throw Exception('DiscoveryService not started');
+  Future<void> search() async {
+    if (_socket == null || _currentDevice == null) {
+      throw Exception("DiscoveryService has not been started.");
     }
 
-    final data = jsonEncode({
+    final request = {
       "type": "DISCOVER_REQUEST",
-      "id": currentDevice.id,
-      "name": currentDevice.name,
-      "port": currentDevice.port,
-      "desktop": currentDevice.isDesktop,
-    });
+      "id": _currentDevice!.id,
+      "name": _currentDevice!.name,
+      "port": _currentDevice!.port,
+      "desktop": _currentDevice!.isDesktop,
+    };
 
     await _socket!.send(
-      utf8.encode(data),
+      utf8.encode(jsonEncode(request)),
       InternetAddress("255.255.255.255"),
       discoveryPort,
     );
+
+    debugPrint("[DISCOVERY] Broadcast sent");
   }
 
-  void _onSocketEvent(
-      RawSocketEvent event,
-      ) {
+  //==========================================================
+  // SOCKET
+  //==========================================================
+
+  void _onSocketEvent(RawSocketEvent event) {
     if (event != RawSocketEvent.read) {
       return;
     }
@@ -77,35 +96,36 @@ class DiscoveryService {
     }
 
     try {
-      final json = jsonDecode(
-        utf8.decode(datagram.data),
-      );
+      final json = jsonDecode(utf8.decode(datagram.data));
 
       switch (json["type"]) {
         case "DISCOVER_REQUEST":
-          _handleRequest(
-            json,
-            datagram.address,
-          );
+          _handleRequest(json, datagram.address);
           break;
 
         case "DISCOVER_RESPONSE":
-          _handleResponse(
-            json,
-            datagram.address,
-          );
+          _handleResponse(json, datagram.address);
           break;
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint("[DISCOVERY] Invalid packet : $e");
+    }
   }
 
-  void _handleRequest(
-      Map<String, dynamic> json,
-      InternetAddress sender,
-      ) {
-    if (_currentDevice == null) return;
+  //==========================================================
+  // REQUEST
+  //==========================================================
+
+  void _handleRequest(Map<String, dynamic> json, InternetAddress sender) {
+    if (_currentDevice == null) {
+      return;
+    }
 
     if (json["id"] == _currentDevice!.id) {
+      return;
+    }
+
+    if (sender.address == _currentDevice!.ip) {
       return;
     }
 
@@ -117,18 +137,17 @@ class DiscoveryService {
       "desktop": _currentDevice!.isDesktop,
     };
 
-    _socket?.send(
-      utf8.encode(jsonEncode(response)),
-      sender,
-      discoveryPort,
-    );
+    _socket?.send(utf8.encode(jsonEncode(response)), sender, discoveryPort);
   }
 
-  void _handleResponse(
-      Map<String, dynamic> json,
-      InternetAddress sender,
-      ) {
-    if (_currentDevice == null) return;
+  //==========================================================
+  // RESPONSE
+  //==========================================================
+
+  void _handleResponse(Map<String, dynamic> json, InternetAddress sender) {
+    if (_currentDevice == null) {
+      return;
+    }
 
     if (json["id"] == _currentDevice!.id) {
       return;
@@ -142,36 +161,74 @@ class DiscoveryService {
       isDesktop: json["desktop"],
     );
 
-    final index = _devices.indexWhere(
-          (e) => e.id == device.id,
-    );
+    _devices[device.id] = device;
 
-    if (index == -1) {
-      _devices.add(device);
-    } else {
-      _devices[index] = device;
-    }
+    _lastSeen[device.id] = DateTime.now();
 
-    _devices.sort(
-          (a, b) => a.name.compareTo(b.name),
-    );
+    _emit();
 
-    _controller.add(
-      List.unmodifiable(_devices),
-    );
+    debugPrint("[DISCOVERY] Device : ${device.name} (${device.ip})");
   }
 
+  //==========================================================
+  // REMOVE OFFLINE DEVICES
+  //==========================================================
+
+  void _removeOfflineDevices() {
+    final now = DateTime.now();
+
+    _lastSeen.removeWhere((id, lastSeen) {
+      final expired = now.difference(lastSeen).inSeconds > 30;
+
+      if (expired) {
+        _devices.remove(id);
+
+        debugPrint("[DISCOVERY] Device removed : $id");
+      }
+
+      return expired;
+    });
+
+    _emit();
+  }
+
+  //==========================================================
+  // EMIT
+  //==========================================================
+
+  void _emit() {
+    final list = _devices.values.toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+
+    _controller.add(List.unmodifiable(list));
+  }
+
+  //==========================================================
+  // STOP
+  //==========================================================
+
   Future<void> stop() async {
+    _cleanupTimer?.cancel();
+    _cleanupTimer = null;
+
     _socket?.close();
     _socket = null;
 
     _devices.clear();
+    _lastSeen.clear();
 
-    _controller.add([]);
+    _controller.add(const []);
+
+    debugPrint("[DISCOVERY] Stopped");
   }
+
+  //==========================================================
+  // DISPOSE
+  //==========================================================
 
   Future<void> dispose() async {
     await stop();
+
     await _controller.close();
   }
 }

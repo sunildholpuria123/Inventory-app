@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import '../model/message_type.dart';
 import '../model/network_message.dart';
@@ -13,6 +13,7 @@ import '../model/sync_status.dart';
 import '../model/sync_table.dart';
 import '../repository/sync_repository.dart';
 import '../utils/sync_codec.dart';
+import 'SyncProgressManager.dart';
 import 'discovery_service.dart';
 import 'transport_service.dart';
 
@@ -29,19 +30,29 @@ class SyncService {
     required this.codec,
   });
 
+  static const Duration _ackTimeout = Duration(seconds: 30);
+
   Stream<List<SyncDevice>> get devices => discovery.devices;
 
   Stream<bool> get connection => transport.connection;
 
   bool get isConnected => transport.isConnected;
 
-  StreamSubscription<Uint8List>? _packetSubscription;
-  final _progressController = StreamController<SyncProgress>.broadcast();
+  final SyncProgressManager progressManager =
+  SyncProgressManager();
 
-  Stream<SyncProgress> get progress => _progressController.stream;
+  Stream<SyncProgress> get progress =>
+      progressManager.stream;
+
+  StreamSubscription<Uint8List>? _packetSubscription;
 
   SyncDevice? _currentDevice;
+
   Completer<void>? _ackCompleter;
+
+  bool _isSyncing = false;
+
+  bool get isSyncing => _isSyncing;
 
   //-------------------------------------------------------
   // START
@@ -51,9 +62,14 @@ class SyncService {
     _currentDevice = currentDevice;
 
     await discovery.start(currentDevice: currentDevice);
+
     await transport.startServer();
 
+    await _packetSubscription?.cancel();
+
     _packetSubscription = transport.packets.listen(_onPacketReceived);
+
+    debugPrint("[SYNC] Service started");
   }
 
   //-------------------------------------------------------
@@ -62,26 +78,28 @@ class SyncService {
 
   Future<void> searchDevices() async {
     if (_currentDevice == null) {
-      throw Exception('SyncService not initialized.');
+      throw Exception("SyncService not initialized.");
     }
 
-    await discovery.search(currentDevice: _currentDevice!);
+    await discovery.search();
   }
 
   //-------------------------------------------------------
   // CONNECT
   //-------------------------------------------------------
 
-  Future<void> connect(SyncDevice device) {
-    return transport.connect(ip: device.ip, port: device.port);
+  Future<void> connect(SyncDevice device) async {
+    debugPrint("[SYNC] Connecting to ${device.name}");
+
+    await transport.connect(ip: device.ip, port: device.port);
   }
 
   //-------------------------------------------------------
   // DISCONNECT
   //-------------------------------------------------------
 
-  Future<void> disconnect() {
-    return transport.disconnect();
+  Future<void> disconnect() async {
+    await transport.disconnect();
   }
 
   //-------------------------------------------------------
@@ -89,11 +107,17 @@ class SyncService {
   //-------------------------------------------------------
 
   Future<void> sendDatabase({required List<SyncTable> tables}) async {
+    if (_currentDevice == null) {
+      throw Exception("SyncService not initialized.");
+    }
+
     debugPrint("[SYNC] Exporting database...");
 
-    if (_currentDevice == null) {
-      throw Exception("SyncService has not been initialized.");
-    }
+    _emitProgress(
+      status: SyncStatus.exporting,
+      message: "Exporting database...",
+      progress: 0.20,
+    );
 
     final packet = await repository.exportData(
       deviceId: _currentDevice!.id,
@@ -101,28 +125,50 @@ class SyncService {
       tables: tables,
     );
 
-    debugPrint("[SYNC] Packet created");
-    debugPrint("[SYNC] Customers: ${(packet.payload['customers'] as List?)?.length}");
-    debugPrint("[SYNC] Products : ${(packet.payload['products'] as List?)?.length}");
+    debugPrint("[SYNC] Export complete");
 
+    debugPrint(
+      "[SYNC] Customers : ${(packet.payload['customers'] as List?)?.length ?? 0}",
+    );
+
+    debugPrint(
+      "[SYNC] Products  : ${(packet.payload['products'] as List?)?.length ?? 0}",
+    );
+
+    _emitProgress(
+      status: SyncStatus.compressing,
+      message: "Compressing database...",
+      progress: 0.35,
+    );
 
     final message = NetworkMessage(
       type: MessageType.sync,
       payload: codec.encodeBase64(packet),
     );
 
-    _ackCompleter = Completer<void>();
-    _emitProgress(
-      status: SyncStatus.compressing,
-      message: 'Compressing database...',
-      progress: 0.35,
-    );
-    debugPrint(
-      "[SYNC] Sending message size: ${utf8.encode(message.encode()).length}",
-    );
-    await transport.send(Uint8List.fromList(utf8.encode(message.encode())));
+    final bytes = Uint8List.fromList(utf8.encode(message.encode()));
 
-    await _ackCompleter!.future.timeout(const Duration(seconds: 30));
+    debugPrint("[SYNC] Sending ${bytes.length} bytes");
+
+    await transport.send(bytes);
+
+    debugPrint("[SYNC] Database sent");
+  }
+
+  //-------------------------------------------------------
+  // PROGRESS
+  //-------------------------------------------------------
+
+  void _emitProgress({
+    required SyncStatus status,
+    required String message,
+    required double progress,
+  }) {
+    progressManager.emit(
+      status: SyncStatus.exporting,
+      message: 'Exporting database...',
+      progress: 0.20,
+    );
   }
 
   //-------------------------------------------------------
@@ -131,15 +177,14 @@ class SyncService {
 
   Future<void> _onPacketReceived(Uint8List bytes) async {
     try {
-      debugPrint("[SYNC] _onPacketReceived()");
       final networkMessage = NetworkMessage.decode(utf8.decode(bytes));
-      debugPrint("[SYNC] Message Type: ${networkMessage.type}");
-      debugPrint("================================");
-      debugPrint(networkMessage.encode());
-      debugPrint("Type    : ${networkMessage.type}");
-      debugPrint("Payload : ${networkMessage.payload?.length}");
-      debugPrint("================================");
+
+      debugPrint("[SYNC] Received : ${networkMessage.type}");
+
       switch (networkMessage.type) {
+        //---------------------------------------------------
+        // SYNC
+        //---------------------------------------------------
         case MessageType.sync:
           _emitProgress(
             status: SyncStatus.importing,
@@ -148,44 +193,163 @@ class SyncService {
           );
 
           final packet = codec.decodeBase64(networkMessage.payload!);
-          debugPrint("[SYNC] Calling repository.importData()");
+
           await repository.importData(packet);
-          debugPrint("[SYNC] importData() completed");
+
+          debugPrint("[SYNC] Import completed");
+
           final ack = NetworkMessage(type: MessageType.ack);
 
           await transport.send(Uint8List.fromList(utf8.encode(ack.encode())));
 
           break;
 
+        //---------------------------------------------------
+        // ACK
+        //---------------------------------------------------
         case MessageType.ack:
-          _ackCompleter?.complete();
+          if (_ackCompleter != null && !_ackCompleter!.isCompleted) {
+            debugPrint("[SYNC] ACK received");
+
+            _ackCompleter!.complete();
+          }
           break;
 
+        //---------------------------------------------------
+        // ERROR
+        //---------------------------------------------------
         case MessageType.error:
-          _ackCompleter?.completeError(
-            networkMessage.message ?? "Unknown sync error",
-          );
-        case MessageType.cancel:
-          debugPrint("Cancel message received.");
+          if (_ackCompleter != null && !_ackCompleter!.isCompleted) {
+            _ackCompleter!.completeError(
+              networkMessage.message ?? "Unknown sync error",
+            );
+          }
+
           break;
 
-        case MessageType.progress:
-          debugPrint("Progress message received.");
+        //---------------------------------------------------
+        // HANDSHAKE
+        //---------------------------------------------------
+        case MessageType.handshake:
+          debugPrint("[SYNC] Handshake received");
+
+          final ack = NetworkMessage(type: MessageType.ack);
+
+          await transport.send(Uint8List.fromList(utf8.encode(ack.encode())));
+
           break;
 
-
+        //---------------------------------------------------
+        // PING
+        //---------------------------------------------------
         case MessageType.ping:
-          debugPrint("Ping received.");
+          final pong = NetworkMessage(type: MessageType.pong);
+
+          await transport.send(Uint8List.fromList(utf8.encode(pong.encode())));
+
+          break;
+
+        //---------------------------------------------------
+        // PONG
+        //---------------------------------------------------
+        case MessageType.pong:
+          debugPrint("[SYNC] Pong received");
+          break;
+
+        //---------------------------------------------------
+        // CANCEL
+        //---------------------------------------------------
+        case MessageType.cancel:
+          debugPrint("[SYNC] Cancel received");
+          break;
+
+        //---------------------------------------------------
+        // PROGRESS
+        //---------------------------------------------------
+        case MessageType.progress:
+          debugPrint("[SYNC] Progress received");
           break;
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint("[SYNC] Receive error : $e");
+
+      debugPrint(stackTrace.toString());
+
       final error = NetworkMessage(
         type: MessageType.error,
-
         message: e.toString(),
       );
 
       await transport.send(Uint8List.fromList(utf8.encode(error.encode())));
+    }
+  }
+
+  //-------------------------------------------------------
+  // SYNC
+  //-------------------------------------------------------
+
+  Future<SyncResult> syncToDevice({
+    required SyncDevice device,
+    required List<SyncTable> tables,
+  }) async {
+    if (_isSyncing) {
+      throw Exception("Synchronization already running.");
+    }
+
+    _isSyncing = true;
+
+    _ackCompleter = Completer<void>();
+
+    final stopwatch = Stopwatch()..start();
+
+    try {
+      _emitProgress(
+        status: SyncStatus.connecting,
+        message: "Connecting...",
+        progress: 0.05,
+      );
+
+      await connect(device);
+
+      await sendDatabase(tables: tables);
+
+      _emitProgress(
+        status: SyncStatus.waitingAck,
+        message: "Waiting for ACK...",
+        progress: 0.90,
+      );
+
+      await _ackCompleter!.future.timeout(_ackTimeout);
+
+      stopwatch.stop();
+
+      _emitProgress(
+        status: SyncStatus.completed,
+        message: "Synchronization completed.",
+        progress: 1.0,
+      );
+
+      debugPrint("[SYNC] Completed in ${stopwatch.elapsed}");
+
+      return SyncResult.success(stopwatch.elapsed);
+    } catch (e) {
+      stopwatch.stop();
+
+      _emitProgress(
+        status: SyncStatus.failed,
+        message: e.toString(),
+        progress: 0,
+      );
+
+      debugPrint("[SYNC] Failed : $e");
+
+      return SyncResult.failure(e.toString(), stopwatch.elapsed);
+    } finally {
+      await disconnect();
+
+      _ackCompleter = null;
+
+      _isSyncing = false;
     }
   }
 
@@ -208,75 +372,10 @@ class SyncService {
 
     await stop();
 
-    discovery.dispose();
-    await _progressController.close();
+    await discovery.dispose();
+
     await transport.dispose();
-  }
 
-  void _emitProgress({
-    required SyncStatus status,
-    required String message,
-    required double progress,
-  }) {
-    _progressController.add(
-      SyncProgress(status: status, message: message, progress: progress),
-    );
-  }
-
-  Future<SyncResult> syncToDevice({
-    required SyncDevice device,
-    required List<SyncTable> tables,
-  }) async {
-    final stopwatch = Stopwatch()..start();
-
-    try {
-      _emitProgress(
-        status: SyncStatus.connecting,
-        message: 'Connecting...',
-        progress: 0.05,
-      );
-
-      await connect(device);
-
-      _emitProgress(
-        status: SyncStatus.exporting,
-        message: 'Exporting database...',
-        progress: 0.20,
-      );
-
-      await sendDatabase(tables: tables);
-
-      _emitProgress(
-        status: SyncStatus.waitingAck,
-        message: 'Waiting for confirmation...',
-        progress: 0.90,
-      );
-
-      await _ackCompleter!.future.timeout(const Duration(seconds: 30));
-
-      stopwatch.stop();
-
-      _emitProgress(
-        status: SyncStatus.completed,
-        message: 'Synchronization completed.',
-        progress: 1,
-      );
-
-      await disconnect();
-
-      return SyncResult.success(stopwatch.elapsed);
-    } catch (e) {
-      stopwatch.stop();
-
-      await disconnect();
-
-      _emitProgress(
-        status: SyncStatus.failed,
-        message: e.toString(),
-        progress: 0,
-      );
-
-      return SyncResult.failure(e.toString(), stopwatch.elapsed);
-    }
+    await progressManager.dispose();
   }
 }

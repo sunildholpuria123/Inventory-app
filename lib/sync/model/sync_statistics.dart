@@ -1,28 +1,11 @@
-class SyncStatistics {
-  final int customers;
-  final int suppliers;
-  final int products;
-  final int invoices;
-  final int invoiceItems;
-  final int payments;
-  final int expenses;
+class SyncStatistics{
 
-  const SyncStatistics({
-    required this.customers,
-    required this.suppliers,
-    required this.products,
-    required this.invoices,
-    required this.invoiceItems,
-    required this.payments,
-    required this.expenses,
-  });
+  int inserted=0;
 
-  int get total =>
-      customers +
-          suppliers +
-          products +
-          invoices +
-          invoiceItems +
-          payments +
-          expenses;
+  int updated=0;
+
+  int skipped=0;
+
+  int deleted=0;
+
 }

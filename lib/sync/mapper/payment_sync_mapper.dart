@@ -1,72 +1,76 @@
 import 'package:drift/drift.dart';
 
 import '../../data/database/app_database.dart';
+import '../context/sync_export_context.dart';
+import '../context/sync_import_context.dart';
 import 'base_sync_mapper.dart';
 
 class PaymentSyncMapper
     implements BaseSyncMapper<PaymentHistory, PaymentHistoriesCompanion> {
-  @override
-  Map<String, dynamic> toMap(PaymentHistory payment) {
-    return {
-      'syncId': payment.syncId,
+  const PaymentSyncMapper();
 
+  @override
+  Map<String, dynamic> toMap(PaymentHistory payment,SyncExportContext context) {
+    return {
+      'id': payment.id,
       'invoiceId': payment.invoiceId,
       'customerId': payment.customerId,
-
       'amount': payment.amount,
-
       'paymentMethod': payment.paymentMethod,
-
-      // 'referenceNo': payment.referenceNo,
-
       'notes': payment.notes,
-
       'paidAt': payment.paidAt.toIso8601String(),
-
       'createdAt': payment.createdAt.toIso8601String(),
       'updatedAt': payment.updatedAt.toIso8601String(),
+      'syncId': payment.syncId,
       'deletedAt': payment.deletedAt?.toIso8601String(),
     };
   }
 
   @override
   PaymentHistoriesCompanion toCompanion(
-      Map<String, dynamic> json,
+      Map<String, dynamic> json,SyncImportContext context
       ) {
     return PaymentHistoriesCompanion(
-      syncId: Value(json['syncId']),
-
+      id: Value(json['id']),
       invoiceId: Value(json['invoiceId']),
       customerId: Value(json['customerId']),
 
       amount: Value(
-        (json['amount'] as num).toDouble(),
+        (json['amount'] as num?)?.toDouble() ?? 0,
       ),
 
-      paymentMethod: Value(json['paymentMethod']),
-
-      // referenceNo: Value(json['referenceNo']),
+      paymentMethod: Value(
+        json['paymentMethod'] ?? 'Cash',
+      ),
 
       notes: Value(json['notes']),
 
       paidAt: Value(
-        DateTime.parse(json['paidAt']),
+        json['paidAt'] != null
+            ? DateTime.parse(json['paidAt'])
+            : DateTime.now(),
       ),
 
       createdAt: Value(
-        DateTime.parse(json['createdAt']),
+        json['createdAt'] != null
+            ? DateTime.parse(json['createdAt'])
+            : DateTime.now(),
       ),
 
       updatedAt: Value(
-        DateTime.parse(json['updatedAt']),
+        json['updatedAt'] != null
+            ? DateTime.parse(json['updatedAt'])
+            : DateTime.now(),
       ),
 
-      deletedAt: json['deletedAt'] == null
-          ? const Value.absent()
-          : Value(
-        DateTime.parse(
-          json['deletedAt'],
-        ),
+      syncId: Value(
+        json['syncId'] ?? '',
+      ),
+
+      deletedAt: Value(
+        json['deletedAt'] != null
+            ? DateTime.parse(json['deletedAt'])
+            : null,
       ),
     );
   }

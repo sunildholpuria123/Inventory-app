@@ -8,7 +8,7 @@ import '../../core/provider/network_provider.dart';
 import '../model/sync_device.dart';
 import '../model/sync_progress.dart';
 import '../model/sync_result.dart';
-import '../model/sync_statistics.dart';
+import '../model/database_statistics.dart';
 import '../model/sync_status.dart';
 import '../model/sync_table.dart';
 import '../provider/device_provider.dart';
@@ -30,6 +30,8 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
     SyncTable.invoiceItems,
     SyncTable.payments,
     SyncTable.expenses,
+    SyncTable.category,
+    SyncTable.businessSetting
   };
 
   List<SyncDevice> _devices = [];
@@ -178,7 +180,7 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
     );
   }
 
-  Widget _buildStatistics(SyncStatistics stats) {
+  Widget _buildStatistics(DatabaseStatistics stats) {
     return Card(
       elevation: 0,
       child: Padding(
@@ -206,6 +208,8 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
             _buildStatRow(Icons.payments, "Payments", stats.payments),
 
             _buildStatRow(Icons.money_off, "Expenses", stats.expenses),
+            _buildStatRow(Icons.category, "Category", stats.category),
+            _buildStatRow(Icons.business, "Business Setting", stats.businessSetting),
           ],
         ),
       ),
@@ -436,6 +440,12 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
 
       case SyncTable.expenses:
         return "Expenses";
+
+      case SyncTable.category:
+        return "Category";
+
+      case SyncTable.businessSetting:
+        return "Business Settings";
 
     }
   }

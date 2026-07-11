@@ -1,4 +1,5 @@
 import '../../../data/database/app_database.dart';
+import 'package:drift/drift.dart';
 
 class BusinessSettingsRepository {
   final AppDatabase db;
@@ -44,6 +45,10 @@ class BusinessSettingsRepository {
               upiId: data.upiId.value,
 
               footerMessage: data.footerMessage.value,
+              createdAt: existing.createdAt,
+              updatedAt: DateTime.now(),
+              syncId: existing.syncId,
+              deletedAt: existing.deletedAt,
             ),
           );
     }

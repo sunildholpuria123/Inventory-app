@@ -11,39 +11,25 @@ class NetworkMessage {
   /// Error message (optional)
   final String? message;
 
-  const NetworkMessage({
-    required this.type,
-    this.payload,
-    this.message,
-  });
+  const NetworkMessage({required this.type, this.payload, this.message});
 
   Map<String, dynamic> toJson() {
-    return {
-      'type': type.name,
-      'payload': payload,
-      'message': message,
-    };
+    return {'type': type.name, 'payload': payload, 'message': message};
   }
 
-  factory NetworkMessage.fromJson(
-      Map<String, dynamic> json,
-      ) {
+  factory NetworkMessage.fromJson(Map<String, dynamic> json) {
+    final type = MessageType.values.where((e) => e.name == json['type']);
+
     return NetworkMessage(
-      type: MessageType.values.firstWhere(
-            (e) => e.name == json['type'],
-      ),
-      payload: json['payload'],
-      message: json['message'],
+      type: type.isEmpty ? MessageType.error : type.first,
+      payload: json['payload'] as String?,
+      message: json['message'] as String?,
     );
   }
 
   String encode() => jsonEncode(toJson());
 
-  factory NetworkMessage.decode(
-      String source,
-      ) {
-    return NetworkMessage.fromJson(
-      jsonDecode(source),
-    );
+  factory NetworkMessage.decode(String source) {
+    return NetworkMessage.fromJson(jsonDecode(source));
   }
 }
