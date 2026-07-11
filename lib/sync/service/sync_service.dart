@@ -165,9 +165,9 @@ class SyncService {
     required double progress,
   }) {
     progressManager.emit(
-      status: SyncStatus.exporting,
-      message: 'Exporting database...',
-      progress: 0.20,
+      status: status,
+      message: message,
+      progress: progress,
     );
   }
 
@@ -197,7 +197,11 @@ class SyncService {
           await repository.importData(packet);
 
           debugPrint("[SYNC] Import completed");
-
+          _emitProgress(
+            status: SyncStatus.completed,
+            message: "Import completed successfully",
+            progress: 1.0,
+          );
           final ack = NetworkMessage(type: MessageType.ack);
 
           await transport.send(Uint8List.fromList(utf8.encode(ack.encode())));
