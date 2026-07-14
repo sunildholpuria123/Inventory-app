@@ -8,4 +8,5 @@ enum SyncStatus {
   importing,
   completed,
   failed,
+  waitingPermission
 }

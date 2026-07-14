@@ -1,0 +1,4 @@
+enum SyncRole {
+  sender,
+  receiver,
+}

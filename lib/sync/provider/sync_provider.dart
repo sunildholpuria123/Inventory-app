@@ -4,6 +4,8 @@ import 'package:inventory_desktop/data/database/app_database.dart';
 import '../../data/providers/database_provider.dart';
 
 import '../../presentation/settings/provider/settings_provider.dart';
+import '../model/sync_request.dart';
+import '../model/sync_role.dart';
 import '../model/sync_statistics.dart';
 import '../repository/sync_history_repository.dart';
 import '../repository/sync_repository.dart';
@@ -17,6 +19,7 @@ import '../service/transport_service.dart';
 import '../model/database_statistics.dart';
 
 import '../utils/sync_codec.dart';
+import 'device_provider.dart';
 
 ///------------------------------------------------------------
 /// Transport
@@ -88,6 +91,7 @@ final syncServiceProvider = Provider<SyncService>((ref) {
     repository: ref.watch(syncRepositoryProvider),
     discovery: ref.watch(discoveryServiceProvider),
     transport: ref.watch(transportServiceProvider),
+    trustedService: ref.watch(trustedDeviceServiceProvider),
     codec: const SyncCodec(),
   );
 
@@ -103,6 +107,5 @@ final syncServiceProvider = Provider<SyncService>((ref) {
 final syncStatisticsProvider = FutureProvider<DatabaseStatistics>((ref) async {
   return ref.watch(syncRepositoryProvider).getStatistics();
 });
-
-
-
+final syncRoleProvider = StateProvider<SyncRole>((ref) => SyncRole.sender);
+final incomingSyncRequestProvider = StateProvider<SyncRequest?>((ref) => null);
