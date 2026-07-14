@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
+import 'package:inventory_desktop/sync/service/trusted_device_service.dart';
 
 import '../model/message_type.dart';
 import '../model/network_message.dart';
+import '../model/pending_sync_request.dart';
 import '../model/sync_device.dart';
 import '../model/sync_progress.dart';
+import '../model/sync_request.dart';
 import '../model/sync_result.dart';
 import '../model/sync_status.dart';
 import '../model/sync_table.dart';
@@ -22,12 +25,14 @@ class SyncService {
   final DiscoveryService discovery;
   final TransportService transport;
   final SyncCodec codec;
+  final TrustedDeviceService trustedService;
 
   SyncService({
     required this.repository,
     required this.discovery,
     required this.transport,
     required this.codec,
+    required this.trustedService,
   });
 
   static const Duration _ackTimeout = Duration(seconds: 30);
@@ -38,11 +43,9 @@ class SyncService {
 
   bool get isConnected => transport.isConnected;
 
-  final SyncProgressManager progressManager =
-  SyncProgressManager();
+  final SyncProgressManager progressManager = SyncProgressManager();
 
-  Stream<SyncProgress> get progress =>
-      progressManager.stream;
+  Stream<SyncProgress> get progress => progressManager.stream;
 
   StreamSubscription<Uint8List>? _packetSubscription;
 
@@ -53,6 +56,13 @@ class SyncService {
   bool _isSyncing = false;
 
   bool get isSyncing => _isSyncing;
+  final StreamController<PendingSyncRequest> _pendingRequestController =
+      StreamController.broadcast();
+
+  Stream<PendingSyncRequest> get pendingRequests =>
+      _pendingRequestController.stream;
+
+  Completer<bool>? _permissionCompleter;
 
   //-------------------------------------------------------
   // START
@@ -164,11 +174,7 @@ class SyncService {
     required String message,
     required double progress,
   }) {
-    progressManager.emit(
-      status: status,
-      message: message,
-      progress: progress,
-    );
+    progressManager.emit(status: status, message: message, progress: progress);
   }
 
   //-------------------------------------------------------
@@ -273,6 +279,43 @@ class SyncService {
         case MessageType.progress:
           debugPrint("[SYNC] Progress received");
           break;
+        case MessageType.syncRequest:
+          final request = SyncRequest.fromJson(
+            jsonDecode(networkMessage.payload!),
+          );
+
+          final pending = PendingSyncRequest(
+            sender: SyncDevice(
+              id: request.deviceId,
+              name: request.deviceName,
+              ip: transport.remoteAddress?.address ?? "",
+              port: transport.remotePort ?? 0,
+              isDesktop: true,
+            ),
+            tables: request.tables
+                .map((e) => SyncTable.values.firstWhere((t) => t.name == e))
+                .toList(),
+          );
+          if (await trustedService.isTrusted(request.deviceId)) {
+            await acceptRequest();
+
+            return;
+          }
+
+          _pendingRequestController.add(pending);
+
+          break;
+        case MessageType.syncAccepted:
+          if (_permissionCompleter != null &&
+              !_permissionCompleter!.isCompleted) {
+            _permissionCompleter!.complete(true);
+          }
+          break;
+        case MessageType.syncRejected:
+          if (_ackCompleter != null && !_ackCompleter!.isCompleted) {
+            _ackCompleter!.complete();
+          }
+          break;
       }
     } catch (e, stackTrace) {
       debugPrint("[SYNC] Receive error : $e");
@@ -314,6 +357,43 @@ class SyncService {
       );
 
       await connect(device);
+      _emitProgress(
+        status: SyncStatus.waitingPermission,
+        message: "Waiting for receiver permission...",
+        progress: .10,
+      );
+      final statistics = await repository.getStatistics();
+      final packet = await repository.exportData(
+        deviceId: _currentDevice!.id,
+        deviceName: _currentDevice!.name,
+        tables: tables,
+      );
+      final request = SyncRequest(
+        deviceId: _currentDevice!.id,
+        deviceName: _currentDevice!.name,
+        statistics: {
+          "customers": statistics.customers,
+          "suppliers": statistics.suppliers,
+          "products": statistics.products,
+          "invoices": statistics.invoices,
+          "invoiceItems": statistics.invoiceItems,
+          "payments": statistics.payments,
+          "expenses": statistics.expenses,
+        },
+        totalRecords: statistics.total,
+        estimatedBytes: utf8.encode(codec.encodeBase64(packet)).length,
+        tables: tables.map((e) => e.name).toList(),
+      );
+
+      final message = NetworkMessage(
+        type: MessageType.syncRequest,
+        payload: jsonEncode(request.toJson()),
+      );
+      await requestPermission(
+        sender: _currentDevice!,
+        tables: tables,
+        message: message,
+      );
 
       await sendDatabase(tables: tables);
 
@@ -381,5 +461,39 @@ class SyncService {
     await transport.dispose();
 
     await progressManager.dispose();
+  }
+
+  Future<void> requestPermission({
+    required SyncDevice sender,
+    required List<SyncTable> tables,
+    required NetworkMessage message,
+  }) async {
+    _permissionCompleter = Completer<bool>();
+
+    await transport.send(Uint8List.fromList(utf8.encode(message.encode())));
+
+    final accepted = await _permissionCompleter!.future.timeout(
+      const Duration(minutes: 2),
+    );
+
+    if (!accepted) {
+      throw Exception("Synchronization request rejected.");
+    }
+  }
+
+  Future<void> acceptRequest() async {
+    final message = NetworkMessage(type: MessageType.syncAccepted);
+
+    await transport.send(Uint8List.fromList(utf8.encode(message.encode())));
+
+    debugPrint("[SYNC] Permission Accepted");
+  }
+
+  Future<void> rejectRequest() async {
+    final message = NetworkMessage(type: MessageType.syncRejected);
+
+    await transport.send(Uint8List.fromList(utf8.encode(message.encode())));
+
+    debugPrint("[SYNC] Permission Rejected");
   }
 }
