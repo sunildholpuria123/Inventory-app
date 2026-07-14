@@ -2,6 +2,14 @@
 
 A modern Flutter-based Inventory ERP application built for Desktop, Mobile, and Web. The application helps businesses manage customers, suppliers, products, invoices, purchases, payments, reports, and business settings from a single platform.
 
+# Application Screenshots
+
+<p align="center"> <a href="screenshots/image1.jpeg"><img src="screenshots/image2.jpeg" width="220"></a> <a href="screenshots/image3.jpeg"><img src="screenshots/image4.jpeg" width="220"></a> <a href="screenshots/image5.jpeg"><img src="screenshots/image6.jpeg" width="220"></a> </p>
+
+<p align="center"> <a href="screenshots/image7.jpeg"><img src="screenshots/image8.jpeg" width="220"></a> <a href="screenshots/image9.jpeg"><img src="screenshots/image10.jpeg" width="220"></a> <a href="screenshots/image11.jpeg"><img src="screenshots/image12.jpeg" width="220"></a> </p>
+<p align="center"> <a href="screenshots/image12.jpeg"><img src="screenshots/image13.jpeg" width="220"></a> <a href="screenshots/image14.jpeg"><img src="screenshots/image15.jpeg" width="220"></a> <a href="screenshots/image16.jpeg"><img src="screenshots/image17.jpeg" width="220"></a> </p>
+<p align="center"> <a href="screenshots/image18.jpeg"><img src="screenshots/image13.jpeg" width="220"></a></p>
+
 ✨ Features
 
 Dashboard
@@ -80,11 +88,11 @@ Sun Module
 The project follows a clean and scalable architecture.
 
 Presentation
-    │
+│
 State Management (Riverpod)
-    │
+│
 Repository
-    │
+│
 Drift Database
 
 Technologies Used
@@ -103,23 +111,23 @@ Technologies Used
 📂 Project Structure
 
 lib/
- ├── core/
- ├── data/
- │    ├── database/
- │    ├── providers/
- │    └── repositories/
- ├── features/
- │    ├── dashboard/
- │    ├── customers/
- │    ├── suppliers/
- │    ├── products/
- │    ├── purchases/
- │    ├── invoices/
- │    ├── reports/
- │    ├── settings/
- │    └── sun/
- ├── shared/
- └── main.dart
+├── core/
+├── data/
+│    ├── database/
+│    ├── providers/
+│    └── repositories/
+├── features/
+│    ├── dashboard/
+│    ├── customers/
+│    ├── suppliers/
+│    ├── products/
+│    ├── purchases/
+│    ├── invoices/
+│    ├── reports/
+│    ├── settings/
+│    └── sun/
+├── shared/
+└── main.dart
 
 ---
 
