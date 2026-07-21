@@ -7,7 +7,6 @@ import '../provider/settings_provider.dart';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 
@@ -187,24 +186,8 @@ class _BusinessSettingsScreenState
 
     if (imagePath == null) return;
 
-    final cropped = await ImageCropper().cropImage(
-      sourcePath: imagePath,
-      compressQuality: 100,
-      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Crop QR Code',
-          lockAspectRatio: true,
-          hideBottomControls: false,
-        ),
-        IOSUiSettings(title: 'Crop QR Code', aspectRatioLockEnabled: true),
-      ],
-    );
-
-    if (cropped == null) return;
-
     setState(() {
-      _upiQrPath = cropped.path;
+      _upiQrPath = imagePath;
     });
   }
 
