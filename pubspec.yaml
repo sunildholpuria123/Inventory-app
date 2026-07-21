@@ -85,6 +85,8 @@ dependencies:
   multicast_dns: ^0.3.3
   connectivity_plus: ^7.0.0
   network_info_plus: ^6.1.4
+  qr: ^3.0.2
+  image: ^4.2.0
 flutter:
   assets:
     - assets/client_secret.json

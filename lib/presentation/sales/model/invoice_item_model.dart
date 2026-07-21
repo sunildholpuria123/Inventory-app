@@ -32,7 +32,7 @@ class InvoiceItemModel {
 
   double get total {
     if (isAreaBased) {
-      return area! * price;
+      return (height! * width!*qty) * price;
     }
 
     return qty * price;
