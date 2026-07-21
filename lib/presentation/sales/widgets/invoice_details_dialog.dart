@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:open_filex/open_filex.dart';
 
 import '../../../core/utils/invoice_share_helper.dart';
 import '../../../data/database/app_database.dart';
@@ -234,23 +235,7 @@ class InvoiceDetailsDialog extends StatelessWidget {
 
                   child:
                   FilledButton.icon(
-                    onPressed:
-                        () async {
-                      final file =
-                      File(
-                        invoice.pdfPath!,
-                      );
-
-                      if (await file
-                          .exists()) {
-                        Process.run(
-                          'explorer',
-                          [
-                            file.path,
-                          ],
-                        );
-                      }
-                    },
+                    onPressed: () => _openPdf(context),
 
                     icon:
                     const Icon(
@@ -331,6 +316,38 @@ class InvoiceDetailsDialog extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+  Future<void> _openPdf(BuildContext context) async {
+    if (invoice.pdfPath == null || invoice.pdfPath!.isEmpty) {
+      _showMessage(context, "PDF path is not available.");
+      return;
+    }
+
+    final file = File(invoice.pdfPath!);
+
+    if (!await file.exists()) {
+      _showMessage(context, "Invoice PDF not found.");
+      return;
+    }
+
+    final result = await OpenFilex.open(file.path);
+
+    if (result.type != ResultType.done) {
+      _showMessage(
+        context,
+        result.message.isNotEmpty
+            ? result.message
+            : "Unable to open PDF.",
+      );
+    }
+  }
+  void _showMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }

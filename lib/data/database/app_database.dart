@@ -58,14 +58,14 @@ part 'app_database.g.dart';
     CustomerDocuments,
     CustomerFollowUps,
     CustomerLoyalties,
-    SyncHistories
+    SyncHistories,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   // PRODUCTS
 
@@ -145,18 +145,21 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-    onCreate: (m) async {
+    onCreate: (Migrator m) async {
       await m.createAll();
-
     },
-
-    onUpgrade: (m, from, to) async {
+    onUpgrade: (Migrator m, int from, int to) async {
       if (from < 2) {
-        await m.addColumn(products, products.sku);
+        await m.addColumn(businessSettings, businessSettings.upiMerchantName);
+
+        await m.addColumn(businessSettings, businessSettings.upiQrImagePath);
+
+        await m.addColumn(businessSettings, businessSettings.enableUpiPayment);
+        await m.addColumn(businessSettings, businessSettings.stampPath);
+        await m.addColumn(businessSettings, businessSettings.signaturePath);
       }
     },
   );
-
 }
 
 LazyDatabase _openConnection() {

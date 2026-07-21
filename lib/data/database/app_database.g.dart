@@ -10980,6 +10980,65 @@ class $BusinessSettingsTable extends BusinessSettings
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _enableUpiPaymentMeta = const VerificationMeta(
+    'enableUpiPayment',
+  );
+  @override
+  late final GeneratedColumn<bool> enableUpiPayment = GeneratedColumn<bool>(
+    'enable_upi_payment',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enable_upi_payment" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _upiMerchantNameMeta = const VerificationMeta(
+    'upiMerchantName',
+  );
+  @override
+  late final GeneratedColumn<String> upiMerchantName = GeneratedColumn<String>(
+    'upi_merchant_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _stampPathMeta = const VerificationMeta(
+    'stampPath',
+  );
+  @override
+  late final GeneratedColumn<String> stampPath = GeneratedColumn<String>(
+    'stamp_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _signaturePathMeta = const VerificationMeta(
+    'signaturePath',
+  );
+  @override
+  late final GeneratedColumn<String> signaturePath = GeneratedColumn<String>(
+    'signature_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _upiQrImagePathMeta = const VerificationMeta(
+    'upiQrImagePath',
+  );
+  @override
+  late final GeneratedColumn<String> upiQrImagePath = GeneratedColumn<String>(
+    'upi_qr_image_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -10999,6 +11058,11 @@ class $BusinessSettingsTable extends BusinessSettings
     updatedAt,
     syncId,
     deletedAt,
+    enableUpiPayment,
+    upiMerchantName,
+    stampPath,
+    signaturePath,
+    upiQrImagePath,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -11122,6 +11186,48 @@ class $BusinessSettingsTable extends BusinessSettings
         deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
       );
     }
+    if (data.containsKey('enable_upi_payment')) {
+      context.handle(
+        _enableUpiPaymentMeta,
+        enableUpiPayment.isAcceptableOrUnknown(
+          data['enable_upi_payment']!,
+          _enableUpiPaymentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('upi_merchant_name')) {
+      context.handle(
+        _upiMerchantNameMeta,
+        upiMerchantName.isAcceptableOrUnknown(
+          data['upi_merchant_name']!,
+          _upiMerchantNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('stamp_path')) {
+      context.handle(
+        _stampPathMeta,
+        stampPath.isAcceptableOrUnknown(data['stamp_path']!, _stampPathMeta),
+      );
+    }
+    if (data.containsKey('signature_path')) {
+      context.handle(
+        _signaturePathMeta,
+        signaturePath.isAcceptableOrUnknown(
+          data['signature_path']!,
+          _signaturePathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('upi_qr_image_path')) {
+      context.handle(
+        _upiQrImagePathMeta,
+        upiQrImagePath.isAcceptableOrUnknown(
+          data['upi_qr_image_path']!,
+          _upiQrImagePathMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -11199,6 +11305,26 @@ class $BusinessSettingsTable extends BusinessSettings
         DriftSqlType.dateTime,
         data['${effectivePrefix}deleted_at'],
       ),
+      enableUpiPayment: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enable_upi_payment'],
+      )!,
+      upiMerchantName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}upi_merchant_name'],
+      ),
+      stampPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}stamp_path'],
+      ),
+      signaturePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}signature_path'],
+      ),
+      upiQrImagePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}upi_qr_image_path'],
+      ),
     );
   }
 
@@ -11226,6 +11352,11 @@ class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
   final DateTime updatedAt;
   final String syncId;
   final DateTime? deletedAt;
+  final bool enableUpiPayment;
+  final String? upiMerchantName;
+  final String? stampPath;
+  final String? signaturePath;
+  final String? upiQrImagePath;
   const BusinessSetting({
     required this.id,
     required this.companyName,
@@ -11244,6 +11375,11 @@ class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
     required this.updatedAt,
     required this.syncId,
     this.deletedAt,
+    required this.enableUpiPayment,
+    this.upiMerchantName,
+    this.stampPath,
+    this.signaturePath,
+    this.upiQrImagePath,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -11288,6 +11424,19 @@ class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
     map['sync_id'] = Variable<String>(syncId);
     if (!nullToAbsent || deletedAt != null) {
       map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    map['enable_upi_payment'] = Variable<bool>(enableUpiPayment);
+    if (!nullToAbsent || upiMerchantName != null) {
+      map['upi_merchant_name'] = Variable<String>(upiMerchantName);
+    }
+    if (!nullToAbsent || stampPath != null) {
+      map['stamp_path'] = Variable<String>(stampPath);
+    }
+    if (!nullToAbsent || signaturePath != null) {
+      map['signature_path'] = Variable<String>(signaturePath);
+    }
+    if (!nullToAbsent || upiQrImagePath != null) {
+      map['upi_qr_image_path'] = Variable<String>(upiQrImagePath);
     }
     return map;
   }
@@ -11335,6 +11484,19 @@ class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
       deletedAt: deletedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(deletedAt),
+      enableUpiPayment: Value(enableUpiPayment),
+      upiMerchantName: upiMerchantName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(upiMerchantName),
+      stampPath: stampPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stampPath),
+      signaturePath: signaturePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(signaturePath),
+      upiQrImagePath: upiQrImagePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(upiQrImagePath),
     );
   }
 
@@ -11361,6 +11523,11 @@ class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       syncId: serializer.fromJson<String>(json['syncId']),
       deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      enableUpiPayment: serializer.fromJson<bool>(json['enableUpiPayment']),
+      upiMerchantName: serializer.fromJson<String?>(json['upiMerchantName']),
+      stampPath: serializer.fromJson<String?>(json['stampPath']),
+      signaturePath: serializer.fromJson<String?>(json['signaturePath']),
+      upiQrImagePath: serializer.fromJson<String?>(json['upiQrImagePath']),
     );
   }
   @override
@@ -11384,6 +11551,11 @@ class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'syncId': serializer.toJson<String>(syncId),
       'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'enableUpiPayment': serializer.toJson<bool>(enableUpiPayment),
+      'upiMerchantName': serializer.toJson<String?>(upiMerchantName),
+      'stampPath': serializer.toJson<String?>(stampPath),
+      'signaturePath': serializer.toJson<String?>(signaturePath),
+      'upiQrImagePath': serializer.toJson<String?>(upiQrImagePath),
     };
   }
 
@@ -11405,6 +11577,11 @@ class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
     DateTime? updatedAt,
     String? syncId,
     Value<DateTime?> deletedAt = const Value.absent(),
+    bool? enableUpiPayment,
+    Value<String?> upiMerchantName = const Value.absent(),
+    Value<String?> stampPath = const Value.absent(),
+    Value<String?> signaturePath = const Value.absent(),
+    Value<String?> upiQrImagePath = const Value.absent(),
   }) => BusinessSetting(
     id: id ?? this.id,
     companyName: companyName ?? this.companyName,
@@ -11427,6 +11604,17 @@ class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
     updatedAt: updatedAt ?? this.updatedAt,
     syncId: syncId ?? this.syncId,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    enableUpiPayment: enableUpiPayment ?? this.enableUpiPayment,
+    upiMerchantName: upiMerchantName.present
+        ? upiMerchantName.value
+        : this.upiMerchantName,
+    stampPath: stampPath.present ? stampPath.value : this.stampPath,
+    signaturePath: signaturePath.present
+        ? signaturePath.value
+        : this.signaturePath,
+    upiQrImagePath: upiQrImagePath.present
+        ? upiQrImagePath.value
+        : this.upiQrImagePath,
   );
   BusinessSetting copyWithCompanion(BusinessSettingsCompanion data) {
     return BusinessSetting(
@@ -11453,6 +11641,19 @@ class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       syncId: data.syncId.present ? data.syncId.value : this.syncId,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      enableUpiPayment: data.enableUpiPayment.present
+          ? data.enableUpiPayment.value
+          : this.enableUpiPayment,
+      upiMerchantName: data.upiMerchantName.present
+          ? data.upiMerchantName.value
+          : this.upiMerchantName,
+      stampPath: data.stampPath.present ? data.stampPath.value : this.stampPath,
+      signaturePath: data.signaturePath.present
+          ? data.signaturePath.value
+          : this.signaturePath,
+      upiQrImagePath: data.upiQrImagePath.present
+          ? data.upiQrImagePath.value
+          : this.upiQrImagePath,
     );
   }
 
@@ -11475,13 +11676,18 @@ class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('syncId: $syncId, ')
-          ..write('deletedAt: $deletedAt')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('enableUpiPayment: $enableUpiPayment, ')
+          ..write('upiMerchantName: $upiMerchantName, ')
+          ..write('stampPath: $stampPath, ')
+          ..write('signaturePath: $signaturePath, ')
+          ..write('upiQrImagePath: $upiQrImagePath')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     companyName,
     ownerName,
@@ -11499,7 +11705,12 @@ class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
     updatedAt,
     syncId,
     deletedAt,
-  );
+    enableUpiPayment,
+    upiMerchantName,
+    stampPath,
+    signaturePath,
+    upiQrImagePath,
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -11520,7 +11731,12 @@ class BusinessSetting extends DataClass implements Insertable<BusinessSetting> {
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.syncId == this.syncId &&
-          other.deletedAt == this.deletedAt);
+          other.deletedAt == this.deletedAt &&
+          other.enableUpiPayment == this.enableUpiPayment &&
+          other.upiMerchantName == this.upiMerchantName &&
+          other.stampPath == this.stampPath &&
+          other.signaturePath == this.signaturePath &&
+          other.upiQrImagePath == this.upiQrImagePath);
 }
 
 class BusinessSettingsCompanion extends UpdateCompanion<BusinessSetting> {
@@ -11541,6 +11757,11 @@ class BusinessSettingsCompanion extends UpdateCompanion<BusinessSetting> {
   final Value<DateTime> updatedAt;
   final Value<String> syncId;
   final Value<DateTime?> deletedAt;
+  final Value<bool> enableUpiPayment;
+  final Value<String?> upiMerchantName;
+  final Value<String?> stampPath;
+  final Value<String?> signaturePath;
+  final Value<String?> upiQrImagePath;
   const BusinessSettingsCompanion({
     this.id = const Value.absent(),
     this.companyName = const Value.absent(),
@@ -11559,6 +11780,11 @@ class BusinessSettingsCompanion extends UpdateCompanion<BusinessSetting> {
     this.updatedAt = const Value.absent(),
     this.syncId = const Value.absent(),
     this.deletedAt = const Value.absent(),
+    this.enableUpiPayment = const Value.absent(),
+    this.upiMerchantName = const Value.absent(),
+    this.stampPath = const Value.absent(),
+    this.signaturePath = const Value.absent(),
+    this.upiQrImagePath = const Value.absent(),
   });
   BusinessSettingsCompanion.insert({
     this.id = const Value.absent(),
@@ -11578,6 +11804,11 @@ class BusinessSettingsCompanion extends UpdateCompanion<BusinessSetting> {
     this.updatedAt = const Value.absent(),
     this.syncId = const Value.absent(),
     this.deletedAt = const Value.absent(),
+    this.enableUpiPayment = const Value.absent(),
+    this.upiMerchantName = const Value.absent(),
+    this.stampPath = const Value.absent(),
+    this.signaturePath = const Value.absent(),
+    this.upiQrImagePath = const Value.absent(),
   }) : companyName = Value(companyName);
   static Insertable<BusinessSetting> custom({
     Expression<int>? id,
@@ -11597,6 +11828,11 @@ class BusinessSettingsCompanion extends UpdateCompanion<BusinessSetting> {
     Expression<DateTime>? updatedAt,
     Expression<String>? syncId,
     Expression<DateTime>? deletedAt,
+    Expression<bool>? enableUpiPayment,
+    Expression<String>? upiMerchantName,
+    Expression<String>? stampPath,
+    Expression<String>? signaturePath,
+    Expression<String>? upiQrImagePath,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -11616,6 +11852,11 @@ class BusinessSettingsCompanion extends UpdateCompanion<BusinessSetting> {
       if (updatedAt != null) 'updated_at': updatedAt,
       if (syncId != null) 'sync_id': syncId,
       if (deletedAt != null) 'deleted_at': deletedAt,
+      if (enableUpiPayment != null) 'enable_upi_payment': enableUpiPayment,
+      if (upiMerchantName != null) 'upi_merchant_name': upiMerchantName,
+      if (stampPath != null) 'stamp_path': stampPath,
+      if (signaturePath != null) 'signature_path': signaturePath,
+      if (upiQrImagePath != null) 'upi_qr_image_path': upiQrImagePath,
     });
   }
 
@@ -11637,6 +11878,11 @@ class BusinessSettingsCompanion extends UpdateCompanion<BusinessSetting> {
     Value<DateTime>? updatedAt,
     Value<String>? syncId,
     Value<DateTime?>? deletedAt,
+    Value<bool>? enableUpiPayment,
+    Value<String?>? upiMerchantName,
+    Value<String?>? stampPath,
+    Value<String?>? signaturePath,
+    Value<String?>? upiQrImagePath,
   }) {
     return BusinessSettingsCompanion(
       id: id ?? this.id,
@@ -11656,6 +11902,11 @@ class BusinessSettingsCompanion extends UpdateCompanion<BusinessSetting> {
       updatedAt: updatedAt ?? this.updatedAt,
       syncId: syncId ?? this.syncId,
       deletedAt: deletedAt ?? this.deletedAt,
+      enableUpiPayment: enableUpiPayment ?? this.enableUpiPayment,
+      upiMerchantName: upiMerchantName ?? this.upiMerchantName,
+      stampPath: stampPath ?? this.stampPath,
+      signaturePath: signaturePath ?? this.signaturePath,
+      upiQrImagePath: upiQrImagePath ?? this.upiQrImagePath,
     );
   }
 
@@ -11713,6 +11964,21 @@ class BusinessSettingsCompanion extends UpdateCompanion<BusinessSetting> {
     if (deletedAt.present) {
       map['deleted_at'] = Variable<DateTime>(deletedAt.value);
     }
+    if (enableUpiPayment.present) {
+      map['enable_upi_payment'] = Variable<bool>(enableUpiPayment.value);
+    }
+    if (upiMerchantName.present) {
+      map['upi_merchant_name'] = Variable<String>(upiMerchantName.value);
+    }
+    if (stampPath.present) {
+      map['stamp_path'] = Variable<String>(stampPath.value);
+    }
+    if (signaturePath.present) {
+      map['signature_path'] = Variable<String>(signaturePath.value);
+    }
+    if (upiQrImagePath.present) {
+      map['upi_qr_image_path'] = Variable<String>(upiQrImagePath.value);
+    }
     return map;
   }
 
@@ -11735,7 +12001,12 @@ class BusinessSettingsCompanion extends UpdateCompanion<BusinessSetting> {
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('syncId: $syncId, ')
-          ..write('deletedAt: $deletedAt')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('enableUpiPayment: $enableUpiPayment, ')
+          ..write('upiMerchantName: $upiMerchantName, ')
+          ..write('stampPath: $stampPath, ')
+          ..write('signaturePath: $signaturePath, ')
+          ..write('upiQrImagePath: $upiQrImagePath')
           ..write(')'))
         .toString();
   }
@@ -19962,6 +20233,11 @@ typedef $$BusinessSettingsTableCreateCompanionBuilder =
       Value<DateTime> updatedAt,
       Value<String> syncId,
       Value<DateTime?> deletedAt,
+      Value<bool> enableUpiPayment,
+      Value<String?> upiMerchantName,
+      Value<String?> stampPath,
+      Value<String?> signaturePath,
+      Value<String?> upiQrImagePath,
     });
 typedef $$BusinessSettingsTableUpdateCompanionBuilder =
     BusinessSettingsCompanion Function({
@@ -19982,6 +20258,11 @@ typedef $$BusinessSettingsTableUpdateCompanionBuilder =
       Value<DateTime> updatedAt,
       Value<String> syncId,
       Value<DateTime?> deletedAt,
+      Value<bool> enableUpiPayment,
+      Value<String?> upiMerchantName,
+      Value<String?> stampPath,
+      Value<String?> signaturePath,
+      Value<String?> upiQrImagePath,
     });
 
 class $$BusinessSettingsTableFilterComposer
@@ -20075,6 +20356,31 @@ class $$BusinessSettingsTableFilterComposer
 
   ColumnFilters<DateTime> get deletedAt => $composableBuilder(
     column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enableUpiPayment => $composableBuilder(
+    column: $table.enableUpiPayment,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get upiMerchantName => $composableBuilder(
+    column: $table.upiMerchantName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stampPath => $composableBuilder(
+    column: $table.stampPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get signaturePath => $composableBuilder(
+    column: $table.signaturePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get upiQrImagePath => $composableBuilder(
+    column: $table.upiQrImagePath,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -20172,6 +20478,31 @@ class $$BusinessSettingsTableOrderingComposer
     column: $table.deletedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get enableUpiPayment => $composableBuilder(
+    column: $table.enableUpiPayment,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get upiMerchantName => $composableBuilder(
+    column: $table.upiMerchantName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stampPath => $composableBuilder(
+    column: $table.stampPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get signaturePath => $composableBuilder(
+    column: $table.signaturePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get upiQrImagePath => $composableBuilder(
+    column: $table.upiQrImagePath,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$BusinessSettingsTableAnnotationComposer
@@ -20239,6 +20570,29 @@ class $$BusinessSettingsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get deletedAt =>
       $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get enableUpiPayment => $composableBuilder(
+    column: $table.enableUpiPayment,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get upiMerchantName => $composableBuilder(
+    column: $table.upiMerchantName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get stampPath =>
+      $composableBuilder(column: $table.stampPath, builder: (column) => column);
+
+  GeneratedColumn<String> get signaturePath => $composableBuilder(
+    column: $table.signaturePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get upiQrImagePath => $composableBuilder(
+    column: $table.upiQrImagePath,
+    builder: (column) => column,
+  );
 }
 
 class $$BusinessSettingsTableTableManager
@@ -20295,6 +20649,11 @@ class $$BusinessSettingsTableTableManager
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<String> syncId = const Value.absent(),
                 Value<DateTime?> deletedAt = const Value.absent(),
+                Value<bool> enableUpiPayment = const Value.absent(),
+                Value<String?> upiMerchantName = const Value.absent(),
+                Value<String?> stampPath = const Value.absent(),
+                Value<String?> signaturePath = const Value.absent(),
+                Value<String?> upiQrImagePath = const Value.absent(),
               }) => BusinessSettingsCompanion(
                 id: id,
                 companyName: companyName,
@@ -20313,6 +20672,11 @@ class $$BusinessSettingsTableTableManager
                 updatedAt: updatedAt,
                 syncId: syncId,
                 deletedAt: deletedAt,
+                enableUpiPayment: enableUpiPayment,
+                upiMerchantName: upiMerchantName,
+                stampPath: stampPath,
+                signaturePath: signaturePath,
+                upiQrImagePath: upiQrImagePath,
               ),
           createCompanionCallback:
               ({
@@ -20333,6 +20697,11 @@ class $$BusinessSettingsTableTableManager
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<String> syncId = const Value.absent(),
                 Value<DateTime?> deletedAt = const Value.absent(),
+                Value<bool> enableUpiPayment = const Value.absent(),
+                Value<String?> upiMerchantName = const Value.absent(),
+                Value<String?> stampPath = const Value.absent(),
+                Value<String?> signaturePath = const Value.absent(),
+                Value<String?> upiQrImagePath = const Value.absent(),
               }) => BusinessSettingsCompanion.insert(
                 id: id,
                 companyName: companyName,
@@ -20351,6 +20720,11 @@ class $$BusinessSettingsTableTableManager
                 updatedAt: updatedAt,
                 syncId: syncId,
                 deletedAt: deletedAt,
+                enableUpiPayment: enableUpiPayment,
+                upiMerchantName: upiMerchantName,
+                stampPath: stampPath,
+                signaturePath: signaturePath,
+                upiQrImagePath: upiQrImagePath,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

@@ -49,6 +49,17 @@ class BusinessSettingsRepository {
               updatedAt: DateTime.now(),
               syncId: existing.syncId,
               deletedAt: existing.deletedAt,
+              upiMerchantName: data.upiMerchantName.present
+                  ? data.upiMerchantName.value
+                  : existing.upiMerchantName,
+
+              upiQrImagePath: data.upiQrImagePath.present
+                  ? data.upiQrImagePath.value
+                  : existing.upiQrImagePath,
+
+              enableUpiPayment: data.enableUpiPayment.present
+                  ? data.enableUpiPayment.value
+                  : existing.enableUpiPayment,
             ),
           );
     }

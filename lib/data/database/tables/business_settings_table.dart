@@ -35,4 +35,13 @@ class BusinessSettings extends Table {
   TextColumn get syncId => text().clientDefault(() => const Uuid().v4())();
 
   DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  BoolColumn get enableUpiPayment =>
+      boolean().withDefault(const Constant(false))();
+
+  TextColumn get upiMerchantName => text().nullable()();
+  TextColumn get stampPath => text().nullable()();
+  TextColumn get signaturePath => text().nullable()();
+
+  TextColumn get upiQrImagePath => text().nullable()();
 }
